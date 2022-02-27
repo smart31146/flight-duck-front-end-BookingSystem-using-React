@@ -245,9 +245,10 @@ export const saveHotelSearchDataToLocalStorage = (details) => {
   localStorage.setItem("destination", details.destinationCode);
   localStorage.setItem("hotel_destination", details.hotelDestinationCode);
   localStorage.setItem("departure_date", details.updatedDepartureDate);
-  localStorage.setItem("return_date", details.updatedReturnDate);
   localStorage.setItem("adults", details.adults);
+  localStorage.setItem("children", details.children);
   localStorage.setItem("rooms", details.numberOfRooms);
+  localStorage.setItem("days", details.days);
 };
 
 export const savePackageSearchDataToLocalStorage = (details) => {
@@ -275,10 +276,8 @@ export const getCacheFlightHotelsPackage = (details) => {
       "originplace": localStorage.getItem("origin"),
       "destinationplace": localStorage.getItem("destination"),
       "outbounddate": departure_date,
-      "inbounddate": return_date,
-      "rooms": Number(localStorage.getItem("rooms")),
       "adults": Number(localStorage.getItem("adults")),
-      "children": "0",
+      "children": Number(localStorage.getItem("children")),
       "country": localStorage.getItem("country_code"),
       "currency_format": localStorage.getItem("currency"),
       "locale": "EN",

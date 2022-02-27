@@ -277,8 +277,8 @@ const Search = (props) => {
 			savePackageSearchDataToLocalStorage({
 				destinationCode, originCode,
 				updatedDepartureDate, hotelDestinationCode,
-				updatedReturnDate, adults,
-				searchForMonths
+				updatedReturnDate, adults, children,
+				searchForMonths, days
 			});
 			localStorage.removeItem("only_hotel");
 			localStorage.removeItem("only_flight");
@@ -358,6 +358,22 @@ const Search = (props) => {
 							onChange={handleChange("adults")}
 							required
 							title="Number of adults"
+						/>
+					</div>
+				</div>
+				<div className="col-lg-1 col-md-4">
+					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
+						<i className="fa fa-users" />
+						<input
+							id="number"
+							type="number"
+							className="w-100"
+							name="children"
+							placeholder="0"
+							value={children}
+							min={0}
+							onChange={handleChange("children")}
+							title="Number of children"
 						/>
 					</div>
 				</div>
