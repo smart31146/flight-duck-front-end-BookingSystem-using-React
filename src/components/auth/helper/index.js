@@ -247,7 +247,6 @@ export const saveHotelSearchDataToLocalStorage = (details) => {
   localStorage.setItem("departure_date", details.updatedDepartureDate);
   localStorage.setItem("adults", details.adults);
   localStorage.setItem("children", details.children);
-  localStorage.setItem("rooms", details.numberOfRooms);
   localStorage.setItem("days", details.days);
 };
 
@@ -264,14 +263,12 @@ const zeroIfNull = (val) => {
   return Number(val);
 }
 
-export const getCacheFlightHotelsPackage = (details) => {
+export const getCacheFlightHotelsPackage = () => {
   var user_details = localStorage.getItem("jwt");
   var user_id = 1;
   if (user_details) {
     user_id = JSON.parse(user_details)["id"];
   }
-
-  var departure_date = localStorage.getItem("departure_date");
 
   return fetch(`${API_URL}flights/cache-flight-hotels-package/`, {
     method: "POST",
@@ -279,7 +276,7 @@ export const getCacheFlightHotelsPackage = (details) => {
     body: JSON.stringify({
       "origin": localStorage.getItem("origin"),
       "destination": localStorage.getItem("destination"),
-      "outbound_date": departure_date,
+      "outbound_date": localStorage.getItem("departure_date"),
       "adults": zeroIfNull(localStorage.getItem("adults")),
       "children": zeroIfNull(localStorage.getItem("children")),
       "country": localStorage.getItem("country_code"),
@@ -291,10 +288,10 @@ export const getCacheFlightHotelsPackage = (details) => {
       "user_id": user_id
     })
   })
-    .then((response) => {
-      return response.json();
-    })
-    .catch((err) => { return err });
+      .then((response) => {
+        return response.json();
+      })
+      .catch((err) => { return err });
 };
 
 export const hotelBookingAPI = (data) => {
