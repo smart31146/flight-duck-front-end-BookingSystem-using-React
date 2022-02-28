@@ -256,6 +256,14 @@ export const savePackageSearchDataToLocalStorage = (details) => {
   localStorage.setItem("searchForMonths", details.searchForMonths);
 };
 
+const zeroIfNull = (val) => {
+  if (typeof val === "undefined" || val == "undefined") {
+    return 0;
+  }
+  console.debug(typeof val, "is expecting a string");
+  return Number(val);
+}
+
 export const getCacheFlightHotelsPackage = (details) => {
   var user_details = localStorage.getItem("jwt");
   var user_id = 1;
@@ -273,11 +281,11 @@ export const getCacheFlightHotelsPackage = (details) => {
     method: "POST",
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      "originplace": localStorage.getItem("origin"),
-      "destinationplace": localStorage.getItem("destination"),
-      "outbounddate": departure_date,
-      "adults": Number(localStorage.getItem("adults")),
-      "children": Number(localStorage.getItem("children")),
+      "origin": localStorage.getItem("origin"),
+      "destination": localStorage.getItem("destination"),
+      "outbound_date": departure_date,
+      "adults": zeroIfNull(localStorage.getItem("adults")),
+      "children": zeroIfNull(localStorage.getItem("children")),
       "country": localStorage.getItem("country_code"),
       "currency_format": localStorage.getItem("currency"),
       "locale": "EN",

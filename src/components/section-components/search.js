@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Search = (props) => {
+const Search = () => {
 	let history = useHistory();
 	const classes = useStyles();
 	const [searchForMonths, setSearchForMonths] = useState(false);
@@ -283,7 +283,8 @@ const Search = (props) => {
 			localStorage.removeItem("only_hotel");
 			localStorage.removeItem("only_flight");
 			localStorage.setItem("only_hotel", "false");
-			history.push("/flight-hotel-package");
+			//history.push("/flight-hotel-package");
+			history.push({pathname: '/flight-hotel-package', state: {message: "hello, im a passed message!"}});
 		// }
 	};
 
