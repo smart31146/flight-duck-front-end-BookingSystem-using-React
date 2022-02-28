@@ -273,10 +273,6 @@ export const getCacheFlightHotelsPackage = (details) => {
 
   var departure_date = localStorage.getItem("departure_date");
 
-  var return_date = localStorage.getItem("return_date")
-
-  var number_of_days = Math.floor((Date.parse(return_date) - Date.parse(departure_date)) / 86400000);
-
   return fetch(`${API_URL}flights/cache-flight-hotels-package/`, {
     method: "POST",
     headers: { 'Content-Type': 'application/json' },
@@ -290,7 +286,7 @@ export const getCacheFlightHotelsPackage = (details) => {
       "currency_format": localStorage.getItem("currency"),
       "locale": "EN",
       "destination_code": localStorage.getItem("hotel_destination"),
-      "trip_days": number_of_days,
+      "trip_days":  localStorage.getItem("days"),
       "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
       "user_id": user_id
     })
