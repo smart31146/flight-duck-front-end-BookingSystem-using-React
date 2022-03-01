@@ -12,7 +12,7 @@ import Ads from './section-components/ads';
 import Subscribe from './section-components/subscribe';
 import Footer from './global-components/footer';
 
-const Home_V1 = () => {
+const Home_V1 = ({ userName }) => {
     return <div>
         <Navbar />
         <Search />

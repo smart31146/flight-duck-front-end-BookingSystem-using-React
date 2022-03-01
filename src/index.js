@@ -31,6 +31,26 @@ import ForgotPassword from './components/auth/forgotpassword';
 import PrivateRoutes from "./components/auth/helper/PrivateRoutes";
 import HotelBooking from './components/section-components/hotel-booking';
 import BookingConfirmationDetailsPage from './components/booking-confirmation-details';
+import { BasicProvider } from "./BasicContext";
+import { createGlobalState } from 'react-hooks-global-state';
+
+export const { setGlobalState, useGlobalState } = createGlobalState({
+	country_code: '',
+	currency: '',
+	destination: "",
+	origin: "",
+	departure_date: "",
+	return_date: "",
+	adults: null,
+	children: null,
+	//suggestions: [],
+	// keyValue: "",
+	// destinationName: "",
+	// error: "",
+	// errorMessage: "Check all fields again",
+	// alert: null,
+	days: null,
+});
 
 class Root extends Component {
 
@@ -43,16 +63,19 @@ class Root extends Component {
 				}
 			}
 		)
-		.then(resp => resp.json())
-		.then((resp) => {
-			localStorage.setItem("country_code", resp.country_code);
-			localStorage.setItem("currency", resp.currency);
-		})
+			.then(resp => resp.json())
+			.then((resp) => {
+				localStorage.setItem("country_code", resp.country_code);
+				localStorage.setItem("currency", resp.currency);
+				setGlobalState("country_code", resp.country_code)
+				setGlobalState("currency", resp.currency)
+			})
 	}
 
     render() {
         return(
 			<HashRouter basename="/">
+				<BasicProvider>
 				<div>
 					<Switch>
 						<Route exact path="/" component={HomeV1} />
@@ -86,6 +109,7 @@ class Root extends Component {
 						<PrivateRoutes path="/user-profile" component={UserProfile} />
 					</Switch>
 				</div>
+				</BasicProvider>
 			</HashRouter>
         )
     }

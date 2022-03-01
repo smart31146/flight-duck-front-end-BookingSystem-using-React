@@ -22,6 +22,7 @@ import { addMonths } from 'date-fns';
 import Moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { setGlobalState, useGlobalState } from '../../index'
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -43,13 +44,35 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+const printGlobalState = (destination, origin, departureDate, return_date, adults, children, days) => {
+
+	console.log("destination is " + destination)
+	console.log("origin is " + origin)
+	console.log("return_date is " + return_date)
+	console.log("adults is " + adults)
+	console.log("chuldren is " + children)
+	console.log("departureDate is " + departureDate)
+	console.log("days is " + days)
+}
+
+
 const Search = () => {
+	const [destination] = useGlobalState("destination")
+	const [origin] = useGlobalState("origin")
+	const [departureDate] = useGlobalState("departure_date")
+	const [return_date] = useGlobalState("return_date")
+	const [adults] = useGlobalState("adults")
+	const [children] = useGlobalState("children")
+	const [days] = useGlobalState("days")
+	printGlobalState(destination, origin, departureDate, return_date, adults, children, days);
+
+
 	let history = useHistory();
 	const classes = useStyles();
 	const [searchForMonths, setSearchForMonths] = useState(false);
 	const [originList, originListData] = useState([]);
 	const [destinationList, destinationListData] = useState([]);
-	const [departureDate, setDepartureDate] = useState(null);
+	//const [departureDate, setDepartureDate] = useState(null);
 	const [returnDate, setReturnDate] = useState(null);
 
 	useEffect(() => {
@@ -70,7 +93,6 @@ const Search = () => {
 
 
 	const [values, setValues] = useState({
-		destination: "",
 		origin: "",
 		departure_date: "",
 		return_date: "",
@@ -87,12 +109,9 @@ const Search = () => {
 		// originList: []
 	});
 
-	const [value, setValue] = React.useState(new Date());
-
-	const {destination, origin, departure_date, return_date,
-		adults, children, daysOptions, selectedDayOption,
-		numberOfRooms, suggestions, keyValue, destinationName,
-		error, errorMessage, alert, days
+	const {daysOptions, selectedDayOption,
+		numberOfRooms, suggestions, keyValue,
+		error, errorMessage, alert
 		// originList
 	} = values;
 
@@ -114,6 +133,8 @@ const Search = () => {
 		);
 	};
 
+
+
 	function updateOriginList() {
 		fetch(
 			`${API_URL}flights/get-airport-code/`, {
@@ -132,6 +153,7 @@ const Search = () => {
 
 
 	const handleChange = (name) => (event) => {
+		setGlobalState(name, event.target.value)
 		setValues({ ...values, error: false, [name]: event.target.value });
 		if (name === "destination") {
 			const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
@@ -388,7 +410,7 @@ const Search = () => {
 									minDate={minDate}
 									maxDate={maxDate}
 									value={departureDate}
-									onChange={(date) => setDepartureDate(date)}
+									onChange={(date) => setGlobalState("departure_date", date)}
 									renderInput={(params) => <TextField {...params} helperText={null} />}
 								/>
 							</Stack>
