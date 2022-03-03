@@ -63,7 +63,7 @@ const HotelFlightPackageList = () => {
     // setState(state => ({
     //   loading: !state.loading
     // }));
-    setValues({ ...values, error: false, loading: loading});
+    setValues({ ...values, error: false, loading: !loading});
   }
 
   const zeroIfNull = (val) => {
@@ -84,6 +84,7 @@ const HotelFlightPackageList = () => {
   const [countryCode] = useGlobalState("country_code");
   const [currency] = useGlobalState("currency");
   const [destinationCode] = useGlobalState("destination_code");
+  const [hotelCode] = useGlobalState("hotel_destination")
 
   const getCacheFlightHotelsPackage = () => {
     var user_details = localStorage.getItem("jwt");
@@ -100,13 +101,13 @@ const HotelFlightPackageList = () => {
         "destinationplace": destination,
         "outbounddate": departureDate,
         "inbounddate": "2022-03-05",
+        "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
         "country": countryCode,
-        "rooms": 1,
         "currency_format": currency,
         "locale": "EN",
-        "destination_code": destinationCode,
+        "destination_code": hotelCode,
         "trip_days":  days,
         "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
         "user_id": user_id
@@ -119,13 +120,15 @@ const HotelFlightPackageList = () => {
       body: JSON.stringify({
         "originplace": origin,
         "destinationplace": destination,
-        "outbound_date": departureDate,
+        "outbounddate": departureDate,
+        "inbounddate": "2022-03-05",
+        "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
         "country": countryCode,
         "currency_format": currency,
         "locale": "EN",
-        "destination_code": localStorage.getItem("hotel_destination"),
+        "destination_code": hotelCode,
         "trip_days":  days,
         "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
         "user_id": user_id
