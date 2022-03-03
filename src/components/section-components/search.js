@@ -296,7 +296,14 @@ const Search = () => {
 			const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
 			const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
 
-			savePackageSearchDataToLocalStorage({
+			setGlobalState("destination_code", destinationCode)
+			setGlobalState("origin", originCode)
+			setGlobalState("hotel_destination", hotelDestinationCode)
+			setGlobalState("departure_date", updatedDepartureDate)
+			setGlobalState("return_date", updatedReturnDate)
+
+
+		savePackageSearchDataToLocalStorage({
 				destinationCode, originCode,
 				updatedDepartureDate, hotelDestinationCode,
 				updatedReturnDate, adults, children,
@@ -305,8 +312,8 @@ const Search = () => {
 			localStorage.removeItem("only_hotel");
 			localStorage.removeItem("only_flight");
 			localStorage.setItem("only_hotel", "false");
-			//history.push("/flight-hotel-package");
-			history.push({pathname: '/flight-hotel-package', state: {message: "hello, im a passed message!"}});
+
+			history.push("/flight-hotel-package");
 		// }
 	};
 

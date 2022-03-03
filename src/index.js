@@ -38,6 +38,8 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	country_code: '',
 	currency: '',
 	destination: "",
+	destination_code: "",
+	hotel_destination: "",
 	origin: "",
 	departure_date: "",
 	return_date: "",

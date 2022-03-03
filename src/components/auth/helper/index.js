@@ -1,5 +1,6 @@
 import Moment from 'moment';
 import paginate from '../../flights/paginate_flight_hotel_package';
+import {useGlobalState} from "../../../index";
 
 // const API_URL = "http://0d46-180-188-242-233.ngrok.io/"
 const API_URL = "http://127.0.0.1:8000/"
@@ -10,6 +11,7 @@ const HOTEL_BEDS_API_KEY = "ce0f06ea4efa6d559dd869faae735266"
 const HOTEL_BEDS_API_SECRET = "58a4678b4c"
 const FLIGHTS_API_URL = "https://partners.api.skyscanner.net/apiservices/"
 const FLIGHTS_API_KEY = "prtl6749387986743898559646983194"
+
 
 
 export const isAuthenticated = () => {
