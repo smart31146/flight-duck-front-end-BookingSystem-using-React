@@ -83,6 +83,7 @@ const HotelFlightPackageList = () => {
   const [departureDate] = useGlobalState("departure_date");
   const [countryCode] = useGlobalState("country_code");
   const [currency] = useGlobalState("currency");
+  const [destinationCode] = useGlobalState("destination_code");
 
   const getCacheFlightHotelsPackage = () => {
     var user_details = localStorage.getItem("jwt");
@@ -95,15 +96,17 @@ const HotelFlightPackageList = () => {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        "origin": origin,
-        "destination": destination,
-        "outbound_date": departureDate,
+        "originplace": origin,
+        "destinationplace": destination,
+        "outbounddate": departureDate,
+        "inbounddate": "2022-03-05",
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
         "country": countryCode,
+        "rooms": 1,
         "currency_format": currency,
         "locale": "EN",
-        "destination_code": localStorage.getItem("hotel_destination"),
+        "destination_code": destinationCode,
         "trip_days":  days,
         "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
         "user_id": user_id
@@ -114,8 +117,8 @@ const HotelFlightPackageList = () => {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        "origin": origin,
-        "destination": destination,
+        "originplace": origin,
+        "destinationplace": destination,
         "outbound_date": departureDate,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
