@@ -49,13 +49,14 @@ const HotelFlightPackageList = () => {
     hotelName: '',
     completeList: [],
     filteredData: [],
-    accomodationType: ''
+    accomodationType: '',
+    heyNow: 'NOPE'
   });
 
   const { accomodationType, filteredData, completeList, hotelName,
     starRating, priceRange, paginated_data, pageNumber,
     hotelFlightPackageList, loading, price_sort_text, price_sort,
-    departure_time_sort_text, departure_time_sort
+    departure_time_sort_text, departure_time_sort, heyNow
   } = values;
 
 
@@ -153,7 +154,7 @@ const HotelFlightPackageList = () => {
         "user_id": user_id
       })
     })
-        .then((response) => {
+        .then(function(response){
           return response.json();
         })
         .catch((err) => { return err });
@@ -169,15 +170,21 @@ const HotelFlightPackageList = () => {
     // const return_date = localStorage.getItem("flight_return_date");
     getCacheFlightHotelsPackage()
         .then((data) => {
+          console.log(data.list)
+          console.log(data.list.length)
           if (data.list.length > 0) {
             const result = paginate(data.list);
-            setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber]   });
+            setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
+            console.log(completeList)
+            setValues({ ...values, error: false, heyNow: "HEYNOWURAROCKSTART" });
+            console.log(heyNow)
           } else {
             console.log("sorry no packages found========");
           }
           setValues({ ...values, loading: false });
           console.log("loaidng is" + loading)
           console.log(filteredData, hotelFlightPackageList, completeList)
+          console.log(heyNow)
         })
         .catch((e) => {
           console.log("packages data error=======", e);
