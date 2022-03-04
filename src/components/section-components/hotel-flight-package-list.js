@@ -97,7 +97,15 @@ const HotelFlightPackageList = () => {
   const [hotelCode] = useGlobalState("hotel_destination")
 
 
+  const addDays = (date, days) => {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
+
   const getCacheFlightHotelsPackage = () => {
+    const updatedInbound = addDays(departureDate,days);
     var user_details = localStorage.getItem("jwt");
     var user_id = 1;
     if (user_details) {
@@ -111,7 +119,7 @@ const HotelFlightPackageList = () => {
         "originplace": origin,
         "destinationplace": destination,
         "outbounddate": departureDate,
-        "inbounddate": "2022-03-05",
+        "inbounddate": '2022-04-06',
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
