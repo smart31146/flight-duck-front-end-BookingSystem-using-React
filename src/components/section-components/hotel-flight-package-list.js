@@ -122,12 +122,12 @@ const HotelFlightPackageList = () => {
         "inbounddate": '2022-04-06',
         "rooms": 1,
         "adults": zeroIfNull(adults),
-        "children": zeroIfNull(children),
+        "children": children,
         "country": countryCode,
         "currency_format": currency,
         "locale": "EN",
         "destination_code": hotelCode,
-        "trip_days":  days,
+        "trip_days":  zeroIfNull(days),
         "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
         "user_id": user_id
       })
@@ -161,7 +161,8 @@ const HotelFlightPackageList = () => {
 
 
   const searchCacheFlightHotelsPackage = () => {
-    toggleLoading();
+    setValues({ ...values, loading: true });
+    console.log("loaidng is" + loading)
     // const destination = localStorage.getItem("flight_destination");
     // const origin = localStorage.getItem("flight_origin");
     // const departure_date = localStorage.getItem("flight_departure_date");
@@ -174,11 +175,13 @@ const HotelFlightPackageList = () => {
           } else {
             console.log("sorry no packages found========");
           }
-          toggleLoading();
+          setValues({ ...values, loading: false });
+          console.log("loaidng is" + loading)
+          console.log(filteredData, hotelFlightPackageList, completeList)
         })
         .catch((e) => {
           console.log("packages data error=======", e);
-          toggleLoading();
+          setValues({ ...values, loading: false });
         });
 
   }
