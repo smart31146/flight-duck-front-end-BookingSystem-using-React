@@ -132,7 +132,7 @@ const HotelFlightPackageList = () => {
         "originplace": origin,
         "destinationplace": destination,
         "outbounddate": departureDate,
-        "inbounddate": "2022-03-05",
+        "inbounddate": "2022-03-06",
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
