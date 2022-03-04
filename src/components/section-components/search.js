@@ -117,7 +117,7 @@ const Search = () => {
 	} = values;
 
 	const hideAlert = (event) => {
-		setValues({ ...values, alert: null, error: false });
+		setValues({ ...values, error: false, alert: null, });
 	}
 
 	const errorAlertDialog = () => {

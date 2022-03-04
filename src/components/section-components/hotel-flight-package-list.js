@@ -41,21 +41,16 @@ const HotelFlightPackageList = () => {
     price_sort: "down",
     price_sort_text: "Price High to Low",
     loading: false,
-    hotelFlightPackageList: [],
     pageNumber: 0,
-    paginated_data: [],
     priceRange: [10, 50000],
     starRating: '',
     hotelName: '',
-    completeList: [],
-    filteredData: [],
     accomodationType: '',
     heyNow: 'NOPE'
   });
 
-  const { accomodationType, filteredData, completeList, hotelName,
-    starRating, priceRange, paginated_data, pageNumber,
-    hotelFlightPackageList, loading, price_sort_text, price_sort,
+  const { accomodationType, hotelName,
+    starRating, priceRange, pageNumber, loading, price_sort_text, price_sort,
     departure_time_sort_text, departure_time_sort, heyNow
   } = values;
 
@@ -160,6 +155,13 @@ const HotelFlightPackageList = () => {
         .catch((err) => { return err });
   };
 
+  let paginated_data = [];
+
+  let completeList = [];
+
+  let filteredData = [];
+
+  let hotelFlightPackageList = [];
 
   const searchCacheFlightHotelsPackage = () => {
     setValues({ ...values, loading: true });
@@ -174,17 +176,19 @@ const HotelFlightPackageList = () => {
           console.log(data.list.length)
           if (data.list.length > 0) {
             const result = paginate(data.list);
-            setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
-            console.log(completeList)
-            setValues({ ...values, error: false, heyNow: "HEYNOWURAROCKSTART" });
-            console.log(heyNow)
+            //setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
+            paginated_data = result;
+            completeList = data.list;
+            filteredData = data.list;
+            hotelFlightPackageList = result[pageNumber];
           } else {
             console.log("sorry no packages found========");
           }
+          // console.log(completeList)
+          // console.log(filteredData)
+          // console.log(hotelFlightPackageList)
+          // console.log(paginated_data)
           setValues({ ...values, loading: false });
-          console.log("loaidng is" + loading)
-          console.log(filteredData, hotelFlightPackageList, completeList)
-          console.log(heyNow)
         })
         .catch((e) => {
           console.log("packages data error=======", e);
@@ -281,6 +285,7 @@ const HotelFlightPackageList = () => {
       let type = accomodationType;
       let name = hotelName;
       let list = completeList || [];
+      console.log('list is' + list)
       let alist = list.filter(r =>
         parseFloat(r.deal_price) <= parseInt(priceRange[1])
         && parseFloat(r.deal_price) >= parseInt(priceRange[0])
@@ -319,13 +324,18 @@ const HotelFlightPackageList = () => {
 
   let publicUrl = process.env.PUBLIC_URL + '/'
   let imagealt = 'image'
-  let flight;
-  flight =
-      <div className="tour-list-area">
-        {hotelFlightPackageList.map((flightDetails) => {
-          return <FlightHotelPackageItem key={flightDetails.outbounddate} {...flightDetails} />
-        })};
-      </div>
+
+  const flight = () => {
+    return (
+        !loading && (
+        <div className="tour-list-area">
+          {hotelFlightPackageList.map((flightDetails) => {
+            return <FlightHotelPackageItem key={flightDetails.outbounddate} {...flightDetails} />
+          })};
+        </div>
+    )
+  )
+  };
 
   return(
 
@@ -358,7 +368,7 @@ const HotelFlightPackageList = () => {
                 </div> */}
               </div>
             </div>
-            {flight}
+            {flight()}
             <div className="text-md-center text-left">
               <div className="tp-pagination text-md-center text-left d-inline-block mt-4">
                 <ul>
