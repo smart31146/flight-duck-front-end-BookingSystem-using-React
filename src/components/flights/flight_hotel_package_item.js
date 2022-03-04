@@ -5,6 +5,8 @@ import { red, blue, green } from "@material-ui/core/colors";
 import { AutoRotatingCarousel, Slide } from "material-auto-rotating-carousel";
 
 const FlightHotelPackageItem = (flightDetails) => {
+  console.log(flightDetails)
+  console.log(flightDetails.images)
   const [handleOpen, setHandleOpen] = useState({ open: false });
   const history = useHistory();
   const handleClick = () => {

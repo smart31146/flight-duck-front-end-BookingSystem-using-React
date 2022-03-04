@@ -46,12 +46,15 @@ const HotelFlightPackageList = () => {
     starRating: '',
     hotelName: '',
     accomodationType: '',
-    heyNow: 'NOPE'
+    // paginated_data: [],
+    // completeList: [],
+    // filteredData: [],
+    // hotelFlightPackageList: [],
   });
 
   const { accomodationType, hotelName,
     starRating, priceRange, pageNumber, loading, price_sort_text, price_sort,
-    departure_time_sort_text, departure_time_sort, heyNow
+    departure_time_sort_text, departure_time_sort
   } = values;
 
 
@@ -91,6 +94,7 @@ const HotelFlightPackageList = () => {
   const [currency] = useGlobalState("currency");
   const [destinationCode] = useGlobalState("destination_code");
   const [hotelCode] = useGlobalState("hotel_destination")
+  const [hotelFlightPackageListTest] = useGlobalState("hotelFlightPackageList")
 
 
   const addDays = (date, days) => {
@@ -155,17 +159,20 @@ const HotelFlightPackageList = () => {
         .catch((err) => { return err });
   };
 
+
+
+  let hasRun = false;
+
   let paginated_data = [];
-
   let completeList = [];
-
   let filteredData = [];
-
   let hotelFlightPackageList = [];
+
 
   const searchCacheFlightHotelsPackage = () => {
     setValues({ ...values, loading: true });
-    console.log("loaidng is" + loading)
+    let result = null;
+    console.log("loading at start is" + loading)
     // const destination = localStorage.getItem("flight_destination");
     // const origin = localStorage.getItem("flight_origin");
     // const departure_date = localStorage.getItem("flight_departure_date");
@@ -175,25 +182,31 @@ const HotelFlightPackageList = () => {
           console.log(data.list)
           console.log(data.list.length)
           if (data.list.length > 0) {
-            const result = paginate(data.list);
+            result = paginate(data.list);
             //setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
-            paginated_data = result;
-            completeList = data.list;
-            filteredData = data.list;
-            hotelFlightPackageList = result[pageNumber];
+            hasRun = true;
+            hotelFlightPackageListTest.push(data.list)
+            console.log("A" + hotelFlightPackageList)
+            console.log("loading before set is" + loading)
           } else {
             console.log("sorry no packages found========");
           }
-          // console.log(completeList)
+          console.log(result)
+          console.log(hotelFlightPackageList)
           // console.log(filteredData)
           // console.log(hotelFlightPackageList)
           // console.log(paginated_data)
+          //setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
+          console.log("loading before set 2 is" + loading)
           setValues({ ...values, loading: false });
+          console.log("loading after set is" + loading)
         })
         .catch((e) => {
           console.log("packages data error=======", e);
           setValues({ ...values, loading: false });
         });
+
+    console.log("outside of fetch", hotelFlightPackageList)
 
   }
 
@@ -326,14 +339,16 @@ const HotelFlightPackageList = () => {
   let imagealt = 'image'
 
   const flight = () => {
+    console.log(hotelFlightPackageListTest) //we are giving an array needs just an object
+
     return (
-        !loading && (
         <div className="tour-list-area">
-          {hotelFlightPackageList.map((flightDetails) => {
+          {hotelFlightPackageListTest.map((flightDetails) => {
+            console.log(flightDetails)
             return <FlightHotelPackageItem key={flightDetails.outbounddate} {...flightDetails} />
           })};
         </div>
-    )
+
   )
   };
 

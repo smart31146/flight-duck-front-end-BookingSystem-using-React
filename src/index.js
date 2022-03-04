@@ -52,6 +52,7 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	// errorMessage: "Check all fields again",
 	// alert: null,
 	days: null,
+	hotelFlightPackageList: [],
 });
 
 class Root extends Component {
