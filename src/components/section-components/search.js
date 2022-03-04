@@ -76,6 +76,7 @@ const Search = () => {
 	const [returnDate, setReturnDate] = useState(null);
 
 	useEffect(() => {
+		console.log("in here")
 		const country_code = localStorage.getItem("country_code")
 		const url = `${API_URL}flights/get-airport-code/?country=${country_code}`
 		fetch(

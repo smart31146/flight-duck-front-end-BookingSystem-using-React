@@ -1,4 +1,4 @@
-import React, {Component, setState, useState} from 'react';
+import React, {Component, setState, useEffect, useRef, useState} from 'react';
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
 import Button from '@material-ui/core/Button';
@@ -59,10 +59,20 @@ const HotelFlightPackageList = () => {
   } = values;
 
 
+  useEffect(() => {
+    setValues({ ...values, error: false, destination: destination, origin: origin,
+      departure_date: departureDate, return_date: return_date });
+    console.log("hey this ran")
+    searchCacheFlightHotelsPackage()
+
+  }, [])
+
+
   const toggleLoading = () => {
     // setState(state => ({
     //   loading: !state.loading
     // }));
+    console.log("toggleloading ran")
     setValues({ ...values, error: false, loading: !loading});
   }
 
@@ -85,6 +95,7 @@ const HotelFlightPackageList = () => {
   const [currency] = useGlobalState("currency");
   const [destinationCode] = useGlobalState("destination_code");
   const [hotelCode] = useGlobalState("hotel_destination")
+
 
   const getCacheFlightHotelsPackage = () => {
     var user_details = localStorage.getItem("jwt");
@@ -169,11 +180,9 @@ const HotelFlightPackageList = () => {
     //   destination: destination, origin: origin,
     //   departure_date: departure_date, return_date: return_date
     // });
-    setValues({ ...values, error: false, destination: destination, origin: origin,
-      departure_date: departureDate, return_date: return_date });
-  // this.searchCachedFlights();
-    searchCacheFlightHotelsPackage();
 
+  // this.searchCachedFlights();
+    //searchCacheFlightHotelsPackage();
 
 
 
