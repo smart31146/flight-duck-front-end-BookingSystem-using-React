@@ -185,7 +185,9 @@ const HotelFlightPackageList = () => {
             result = paginate(data.list);
             //setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
             hasRun = true;
-            hotelFlightPackageListTest.push(data.list)
+            for (let i = 0; i < data.list.length; i++) {
+              hotelFlightPackageListTest.push(<FlightHotelPackageItem key={data.list[i].outbounddate} {...data.list[i]} />)
+            }
             console.log("A" + hotelFlightPackageList)
             console.log("loading before set is" + loading)
           } else {
@@ -338,19 +340,52 @@ const HotelFlightPackageList = () => {
   let publicUrl = process.env.PUBLIC_URL + '/'
   let imagealt = 'image'
 
-  const flight = () => {
-    console.log(hotelFlightPackageListTest) //we are giving an array needs just an object
+  // const flight = () => {
+  //   console.log(hotelFlightPackageListTest) //we are giving an array needs just an object
+  //
+  //   // if(hotelFlightPackageListTest.length > 0 ) {
+  //   //   for (var i = 0; i < 5; i++) {
+  //   //     console.log(hotelFlightPackageListTest.length)
+  //   //     objs.push(<FlightHotelPackageItem
+  //   //         key={hotelFlightPackageListTest[i].outbounddate} {...hotelFlightPackageListTest[i]} />)
+  //   //   }
+  //   // }
+  //   if(hotelFlightPackageListTest.length > 3 ) {
+  //     for (let i = 0; i < 10; i++) {
+  //       objs.push(<FlightHotelPackageItem
+  //           key={hotelFlightPackageListTest[i].outbounddate} {...hotelFlightPackageListTest[i]} />)
+  //     }
+  //   }
+  //
+  //   console.log("BELOW IS JSX array?")
+  //   console.log(objs)
+  //
+  //       return objs;
+  //
+  //       }
 
+  const flight = () => {
+    console.log(hotelFlightPackageListTest)
     return (
         <div className="tour-list-area">
           {hotelFlightPackageListTest.map((flightDetails) => {
-            console.log(flightDetails)
-            return <FlightHotelPackageItem key={flightDetails.outbounddate} {...flightDetails} />
+            return flightDetails
           })};
         </div>
 
-  )
+    )
   };
+
+
+  // return (
+    //     <div className="tour-list-area">
+    //       {hotelFlightPackageListTest.map((flightDetails) => {
+    //         console.log(flightDetails)
+    //         return <FlightHotelPackageItem key={flightDetails.outbounddate} {...flightDetails} />
+    //       })};
+    //     </div>
+
+  // )
 
   return(
 
