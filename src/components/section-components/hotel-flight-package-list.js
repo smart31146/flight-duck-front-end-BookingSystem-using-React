@@ -143,7 +143,7 @@ const HotelFlightPackageList = () => {
         "originplace": origin,
         "destinationplace": destination,
         "outbounddate": departureDate,
-        "inbounddate": "2022-03-06",
+        "inbounddate": "2022-04-10",
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
@@ -179,11 +179,22 @@ const HotelFlightPackageList = () => {
             result = paginate(data.list);
             //setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
             paginated_data = result;
-            completeList = data.list;
-            filteredData = data.list
+            // completeList = data.list;
+            // filteredData = data.list
+            //hotelFlightPackageList = data.list;
+            // for (let i = 0; i < data.list.length; i++) {
+            //   hotelFlightPackageList.push(<FlightHotelPackageItem key={data.list[i].outbounddate} {...data.list[i]} />)
+            // }
+
             for (let i = 0; i < data.list.length; i++) {
-              hotelFlightPackageList.push(<FlightHotelPackageItem key={data.list[i].outbounddate} {...data.list[i]} />)
+              hotelFlightPackageList.push(data.list[i])
+              completeList.push(data.list[i])
+              filteredData.push(data.list[i])
             }
+
+            // for (let i = 0; i < data.list.length; i++) {
+            //   hotelFlightPackageList.push(data.list[i])
+            // }
             console.log("A" + hotelFlightPackageList)
             console.log("loading before set is" + loading)
           } else {
@@ -265,7 +276,12 @@ const HotelFlightPackageList = () => {
       const result = paginate(newList);
       paginated_data = result;
       setValues({ ...values, error: false, pageNumber: 0 });
-      setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
+      //setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
+
+
+
+
+      hotelFlightPackageList = (result[0] || []);
 
     }, 100)
   }
@@ -286,12 +302,12 @@ const HotelFlightPackageList = () => {
     const result = paginate(newList);
     paginated_data = result;
     setValues({ ...values, error: false, pageNumber: 0 });
-    setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
+    // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
+    hotelFlightPackageList = (result[0] || []);
   }
 
   const filterAndSort = () => {
     setTimeout(() => {
-      let priceRange = priceRange;
       let star = starRating;
       let type = accomodationType;
       let name = hotelName;
@@ -308,13 +324,15 @@ const HotelFlightPackageList = () => {
       const result = paginate(alist);
       paginated_data = result;
       setValues({ ...values, error: false, pageNumber: 0 });
-      setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
+      // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
+      hotelFlightPackageList = (result[0] || [])
 
     }, 100)
   }
 
   const handlePage = (index) => {
-    // setValues({ ...values, error: false, pageNumber: index, hotelFlightPackageList: paginated_data[pageNumber] });
+    setValues({ ...values, error: false, pageNumber: index, });
+    console.log(pageNumber)
     hotelFlightPackageList = paginated_data[pageNumber];
   }
 
@@ -336,38 +354,24 @@ const HotelFlightPackageList = () => {
     hotelFlightPackageList = paginated_data[prevPage];
   }
 
-  let publicUrl = process.env.PUBLIC_URL + '/'
-  let imagealt = 'image'
-
-  // const flight = () => {
-  //   console.log(hotelFlightPackageListTest) //we are giving an array needs just an object
-  //
-  //   // if(hotelFlightPackageListTest.length > 0 ) {
-  //   //   for (var i = 0; i < 5; i++) {
-  //   //     console.log(hotelFlightPackageListTest.length)
-  //   //     objs.push(<FlightHotelPackageItem
-  //   //         key={hotelFlightPackageListTest[i].outbounddate} {...hotelFlightPackageListTest[i]} />)
-  //   //   }
-  //   // }
-  //   if(hotelFlightPackageListTest.length > 3 ) {
-  //     for (let i = 0; i < 10; i++) {
-  //       objs.push(<FlightHotelPackageItem
-  //           key={hotelFlightPackageListTest[i].outbounddate} {...hotelFlightPackageListTest[i]} />)
-  //     }
-  //   }
-  //
-  //   console.log("BELOW IS JSX array?")
-  //   console.log(objs)
-  //
-  //       return objs;
-  //
-  //       }
-
   const flight = () => {
+    console.log("BELOW IS INSIDE FLIGHT()")
     console.log(hotelFlightPackageList)
+
+    let arr = [];
+    console.log("flight package is " + hotelFlightPackageList.length)
+    console.log(hotelFlightPackageList)
+    if(hotelFlightPackageList.length > 0) {
+      for (let i = 0; i < hotelFlightPackageList.length; i++) {
+        arr.push(<FlightHotelPackageItem
+            key={hotelFlightPackageList[i].outbounddate} {...hotelFlightPackageList[i]} />)
+      }
+      console.log("JERJEJRE")
+      console.log(arr)
+    }
     return (
         <div className="tour-list-area">
-          {hotelFlightPackageList.map((flightDetails) => {
+          {arr.map((flightDetails) => {
             return flightDetails
           })};
         </div>
