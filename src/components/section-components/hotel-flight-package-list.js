@@ -94,7 +94,10 @@ const HotelFlightPackageList = () => {
   const [currency] = useGlobalState("currency");
   const [destinationCode] = useGlobalState("destination_code");
   const [hotelCode] = useGlobalState("hotel_destination")
-  const [hotelFlightPackageListTest] = useGlobalState("hotelFlightPackageList")
+  let [hotelFlightPackageList] = useGlobalState("hotelFlightPackageList")
+  let [paginated_data] = useGlobalState("paginated_data")
+  let [completeList] = useGlobalState("completeList")
+  let [filteredData] = useGlobalState("filteredData")
 
 
   const addDays = (date, days) => {
@@ -119,7 +122,7 @@ const HotelFlightPackageList = () => {
         "originplace": origin,
         "destinationplace": destination,
         "outbounddate": departureDate,
-        "inbounddate": '2022-04-06',
+        "inbounddate": '2022-04-10',
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": children,
@@ -160,15 +163,6 @@ const HotelFlightPackageList = () => {
   };
 
 
-
-  let hasRun = false;
-
-  let paginated_data = [];
-  let completeList = [];
-  let filteredData = [];
-  let hotelFlightPackageList = [];
-
-
   const searchCacheFlightHotelsPackage = () => {
     setValues({ ...values, loading: true });
     let result = null;
@@ -184,9 +178,11 @@ const HotelFlightPackageList = () => {
           if (data.list.length > 0) {
             result = paginate(data.list);
             //setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
-            hasRun = true;
+            paginated_data = result;
+            completeList = data.list;
+            filteredData = data.list
             for (let i = 0; i < data.list.length; i++) {
-              hotelFlightPackageListTest.push(<FlightHotelPackageItem key={data.list[i].outbounddate} {...data.list[i]} />)
+              hotelFlightPackageList.push(<FlightHotelPackageItem key={data.list[i].outbounddate} {...data.list[i]} />)
             }
             console.log("A" + hotelFlightPackageList)
             console.log("loading before set is" + loading)
@@ -265,9 +261,9 @@ const HotelFlightPackageList = () => {
         setValues({ ...values, error: false, price_sort: "down", price_sort_text: "Price High to Low" });
         newList.sort((first, second) => (first.deal_price < second.deal_price ? 1 : -1));
       }
-      setValues({ ...values, error: false, filteredData: newList });
+      filteredData = newList;
       const result = paginate(newList);
-      setValues({ ...values, error: false, paginated_data: result });
+      paginated_data = result;
       setValues({ ...values, error: false, pageNumber: 0 });
       setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
 
@@ -286,9 +282,9 @@ const HotelFlightPackageList = () => {
       newList.sort((first, second) => (new Date(first.outbounddate).getTime() < new Date(second.outbounddate).getTime() ? 1 : -1));
 
     }
-    setValues({ ...values, error: false, filteredData: newList });
+    filteredData = newList;
     const result = paginate(newList);
-    setValues({ ...values, error: false,paginated_data: result });
+    paginated_data = result;
     setValues({ ...values, error: false, pageNumber: 0 });
     setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
   }
@@ -308,9 +304,9 @@ const HotelFlightPackageList = () => {
         && (r.hotel_object.rating || '').toString().includes(`${star}`)
         && (r.hotel_object.hotel || '').toLowerCase().includes((name || '').toLocaleLowerCase())
       )
-      setValues({ ...values, error: false, filteredData: alist });
+      filteredData = alist;
       const result = paginate(alist);
-      setValues({ ...values, error: false, paginated_data: result });
+      paginated_data = result;
       setValues({ ...values, error: false, pageNumber: 0 });
       setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
 
@@ -318,7 +314,8 @@ const HotelFlightPackageList = () => {
   }
 
   const handlePage = (index) => {
-    setValues({ ...values, error: false, pageNumber: index, hotelFlightPackageList: paginated_data[pageNumber] });
+    // setValues({ ...values, error: false, pageNumber: index, hotelFlightPackageList: paginated_data[pageNumber] });
+    hotelFlightPackageList = paginated_data[pageNumber];
   }
 
   const nextPage = () => {
@@ -326,7 +323,8 @@ const HotelFlightPackageList = () => {
     if (nextPage > paginated_data.length - 1) {
       nextPage = 0
     }
-    setValues({ ...values, error: false, pageNumber: nextPage, hotelFlightPackageList: paginated_data[nextPage] });
+    setValues({ ...values, error: false, pageNumber: nextPage});
+    hotelFlightPackageList = paginated_data[nextPage];
   }
 
   const prevPage = () => {
@@ -334,7 +332,8 @@ const HotelFlightPackageList = () => {
     if (prevPage < 0) {
       prevPage = paginated_data.length - 1
     }
-    setValues({ ...values, error: false, pageNumber: prevPage, hotelFlightPackageList: paginated_data[prevPage] });
+    setValues({ ...values, error: false, pageNumber: prevPage,});
+    hotelFlightPackageList = paginated_data[prevPage];
   }
 
   let publicUrl = process.env.PUBLIC_URL + '/'
@@ -365,10 +364,10 @@ const HotelFlightPackageList = () => {
   //       }
 
   const flight = () => {
-    console.log(hotelFlightPackageListTest)
+    console.log(hotelFlightPackageList)
     return (
         <div className="tour-list-area">
-          {hotelFlightPackageListTest.map((flightDetails) => {
+          {hotelFlightPackageList.map((flightDetails) => {
             return flightDetails
           })};
         </div>
