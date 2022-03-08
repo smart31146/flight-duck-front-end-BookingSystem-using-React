@@ -38,14 +38,13 @@ const HotelFlightPackageList = () => {
     departure_date: "",
     departure_time_sort: "down",
     departure_time_sort_text: "Departure Time High to Low",
-    price_sort: "down",
-    price_sort_text: "Price High to Low",
     loading: false,
     pageNumber: 0,
     priceRange: [10, 50000],
     starRating: '',
     hotelName: '',
     accomodationType: '',
+    thisWorks: '',
     // paginated_data: [],
     // completeList: [],
     // filteredData: [],
@@ -53,8 +52,8 @@ const HotelFlightPackageList = () => {
   });
 
   const { accomodationType, hotelName,
-    starRating, priceRange, pageNumber, loading, price_sort_text, price_sort,
-    departure_time_sort_text, departure_time_sort
+    starRating, priceRange, pageNumber, loading,
+    departure_time_sort_text, departure_time_sort, thisWorks
   } = values;
 
 
@@ -98,6 +97,8 @@ const HotelFlightPackageList = () => {
   let [paginated_data] = useGlobalState("paginated_data")
   let [completeList] = useGlobalState("completeList")
   let [filteredData] = useGlobalState("filteredData")
+  let [price_sort] = useGlobalState("price_sort")
+  let [price_sort_text] = useGlobalState("price_sort_text")
 
 
   const addDays = (date, days) => {
@@ -178,6 +179,12 @@ const HotelFlightPackageList = () => {
           if (data.list.length > 0) {
             result = paginate(data.list);
             //setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
+            //FOLLLOW STANDARD BELOW
+            // this.setState({ paginated_data: result });
+            // this.setState({ conpleteList: data.list });
+            // this.setState({ filteredData: data.list });
+            // this.setState({ hotelFlightPackageList: result[this.state.pageNumber] });
+
             paginated_data = result;
             // completeList = data.list;
             // filteredData = data.list
@@ -185,11 +192,18 @@ const HotelFlightPackageList = () => {
             // for (let i = 0; i < data.list.length; i++) {
             //   hotelFlightPackageList.push(<FlightHotelPackageItem key={data.list[i].outbounddate} {...data.list[i]} />)
             // }
+            console.log("first is pagenuymber second is result")
+            console.log(result[pageNumber])
+            console.log(result)
+
 
             for (let i = 0; i < data.list.length; i++) {
-              hotelFlightPackageList.push(data.list[i])
               completeList.push(data.list[i])
               filteredData.push(data.list[i])
+            }
+            //try shoving in result data here
+            for (let i = 0; i < result[pageNumber].length; i++) {
+              hotelFlightPackageList.push(result[pageNumber][i])
             }
 
             // for (let i = 0; i < data.list.length; i++) {
@@ -200,7 +214,6 @@ const HotelFlightPackageList = () => {
           } else {
             console.log("sorry no packages found========");
           }
-          console.log(result)
           console.log(hotelFlightPackageList)
           // console.log(filteredData)
           // console.log(hotelFlightPackageList)
@@ -265,23 +278,33 @@ const HotelFlightPackageList = () => {
       let price = price_sort;
       const newList = filteredData;
       if (price === "down") {
-        setValues({ ...values, error: false, price_sort_text: "Price Low to High", price_sort: "up" });
+        //setValues({ ...values, error: false, price_sort_text: "Price Low to High", price_sort: "up" });
+        setGlobalState("price_sort_text", "Price Low to High")
+        setGlobalState("price_sort", "up")
         newList.sort((first, second) => (first.deal_price > second.deal_price ? 1 : -1));
       }
       if (price === "up") {
-        setValues({ ...values, error: false, price_sort: "down", price_sort_text: "Price High to Low" });
+        //setValues({ ...values, error: false, price_sort: "down", price_sort_text: "Price High to Low" });
+        setGlobalState("price_sort", "down")
+        setGlobalState("price_sort_text", "Price High to Low")
         newList.sort((first, second) => (first.deal_price < second.deal_price ? 1 : -1));
       }
       filteredData = newList;
       const result = paginate(newList);
       paginated_data = result;
+      console.log("below is result")
+      console.log(result)
+
       setValues({ ...values, error: false, pageNumber: 0 });
       //setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
 
 
 
 
-      hotelFlightPackageList = (result[0] || []);
+      setGlobalState("hotelFlightPackageList", (result[0] || []))
+      console.log("after setting global state")
+      console.log(hotelFlightPackageList)
+      flight()
 
     }, 100)
   }
@@ -326,6 +349,7 @@ const HotelFlightPackageList = () => {
       setValues({ ...values, error: false, pageNumber: 0 });
       // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
       hotelFlightPackageList = (result[0] || [])
+
 
     }, 100)
   }
@@ -427,6 +451,8 @@ const HotelFlightPackageList = () => {
                 <ul>
                   <li><a className="prev page-numbers" onClick={prevPage}><i className="la la-long-arrow-left" /></a></li>
                   {paginated_data.map((item, index) => {
+                    console.log("below is pagniated data")
+                    console.log(paginated_data)
                     return (
                       <li key={`k1${index}`}><a className="page-numbers" onClick={() => handlePage(index)}>{index + 1}</a></li>
                     )

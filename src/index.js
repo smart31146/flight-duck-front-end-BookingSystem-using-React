@@ -56,6 +56,8 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	completeList: [],
 	filteredData: [],
 	hotelFlightPackageList: [],
+	price_sort: "down",
+	price_sort_text: "Price High to Low",
 });
 
 class Root extends Component {
