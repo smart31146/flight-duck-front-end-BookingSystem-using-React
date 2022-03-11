@@ -58,6 +58,13 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	hotelFlightPackageList: [],
 	price_sort: "down",
 	price_sort_text: "Price High to Low",
+	departure_time_sort: "down",
+	departure_time_sort_text: "Departure Time High to Low",
+	pageNumber: 0,
+	priceRange: [10, 50000],
+	starRating: '',
+	hotelName: '',
+	accommodationType: '',
 });
 
 class Root extends Component {
