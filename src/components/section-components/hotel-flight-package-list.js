@@ -19,9 +19,14 @@ const HotelFlightPackageList = () => {
 
 
   useEffect(() => {
-    setValues({ ...values, error: false, destination: destination, origin: origin,
-      departure_date: departureDate, return_date: return_date });
-    console.log("hey this ran")
+    // setValues({ ...values, error: false, destination: destination, origin: origin,
+    //   departure_date: departureDate, return_date: return_date })
+
+    setGlobalState("destination", destination )
+    setGlobalState("origin", origin )
+    setGlobalState("departure_date", departureDate )
+    setGlobalState("return_date", return_date )
+
     searchCacheFlightHotelsPackage()
 
   }, [])
@@ -147,20 +152,7 @@ const HotelFlightPackageList = () => {
           console.log(data.list.length)
           if (data.list.length > 0) {
             result = paginate(data.list);
-            //setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
-            //FOLLLOW STANDARD BELOW
-            // this.setState({ paginated_data: result });
-            // this.setState({ conpleteList: data.list });
-            // this.setState({ filteredData: data.list });
-            // this.setState({ hotelFlightPackageList: result[this.state.pageNumber] });
 
-            paginated_data = result;
-            // completeList = data.list;
-            // filteredData = data.list
-            //hotelFlightPackageList = data.list;
-            // for (let i = 0; i < data.list.length; i++) {
-            //   hotelFlightPackageList.push(<FlightHotelPackageItem key={data.list[i].outbounddate} {...data.list[i]} />)
-            // }
             console.log("first is pagenuymber second is result")
             console.log(result[pageNumber])
             console.log(result)
@@ -170,24 +162,22 @@ const HotelFlightPackageList = () => {
               completeList.push(data.list[i])
               filteredData.push(data.list[i])
             }
-            //try shoving in result data here
+
             for (let i = 0; i < result[pageNumber].length; i++) {
               hotelFlightPackageList.push(result[pageNumber][i])
             }
 
-            // for (let i = 0; i < data.list.length; i++) {
-            //   hotelFlightPackageList.push(data.list[i])
-            // }
+            for (let i = 0; i < 1; i++) {
+              paginated_data.push(result)
+            }
+
+
             console.log("A" + hotelFlightPackageList)
             console.log("loading before set is" + loading)
           } else {
             console.log("sorry no packages found========");
           }
           console.log(hotelFlightPackageList)
-          // console.log(filteredData)
-          // console.log(hotelFlightPackageList)
-          // console.log(paginated_data)
-          //setValues({ ...values, error: false, paginated_data: result, completeList: data.list, filteredData: data.list, hotelFlightPackageList: result[pageNumber] });
           console.log("loading before set 2 is" + loading)
           setValues({ ...values, loading: false });
           console.log("loading after set is" + loading)
@@ -198,6 +188,8 @@ const HotelFlightPackageList = () => {
         });
 
     console.log("outside of fetch", hotelFlightPackageList)
+    console.log("this is result")
+    console.log(result)
 
   }
 
@@ -247,6 +239,8 @@ const HotelFlightPackageList = () => {
     filterAndSort()
   }
 
+
+
   const sortSearchResultsBasedOnPrices = (event) => {
     setTimeout(() => {
       let price = price_sort;
@@ -269,7 +263,8 @@ const HotelFlightPackageList = () => {
       console.log("below is result")
       console.log(result)
 
-      setValues({ ...values, error: false, pageNumber: 0 });
+      //setValues({ ...values, error: false, pageNumber: 0 });
+      setGlobalState("pageNumber", 0)
       //setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
 
 
@@ -316,6 +311,7 @@ const HotelFlightPackageList = () => {
       let name = hotelName;
       let list = completeList || [];
       console.log('list is' + list)
+      console.log("starrating is" + star)
       let alist = list.filter(r =>
         parseFloat(r.deal_price) <= parseInt(priceRange[1])
         && parseFloat(r.deal_price) >= parseInt(priceRange[0])
@@ -326,6 +322,7 @@ const HotelFlightPackageList = () => {
       filteredData = alist;
       const result = paginate(alist);
       paginated_data = result;
+      //setGlobalState("paginated_data", result);
       //setValues({ ...values, error: false, pageNumber: 0 });
       setGlobalState("pageNumber", 0);
       // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
@@ -370,6 +367,17 @@ const HotelFlightPackageList = () => {
   const flight = () => {
     console.log("BELOW IS INSIDE FLIGHT()")
     console.log(hotelFlightPackageList)
+
+    console.log("below is pagniated data")
+    console.log(paginated_data)
+
+    paginated_data.map((item, index) => {
+      console.log("below is pagniated data")
+      console.log(paginated_data)
+      return (
+          <li key={`k1${index}`}><a className="page-numbers" onClick={() => handlePage(index)}>{index + 1}</a></li>
+      )
+    })
 
     let arr = [];
     console.log("flight package is " + hotelFlightPackageList.length)
@@ -439,13 +447,13 @@ const HotelFlightPackageList = () => {
               <div className="tp-pagination text-md-center text-left d-inline-block mt-4">
                 <ul>
                   <li><a className="prev page-numbers" onClick={prevPage}><i className="la la-long-arrow-left" /></a></li>
-                  {paginated_data.map((item, index) => {
+                  {paginated_data.length > 0 ? paginated_data[0].map((item, index) => {
                     console.log("below is pagniated data")
                     console.log(paginated_data)
                     return (
                       <li key={`k1${index}`}><a className="page-numbers" onClick={() => handlePage(index)}>{index + 1}</a></li>
                     )
-                  })}
+                  }) : null }
                   <li><a className="next page-numbers" onClick={nextPage}><i className="la la-long-arrow-right" /></a></li>
                 </ul>
               </div>
