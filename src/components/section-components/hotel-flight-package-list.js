@@ -241,7 +241,9 @@ const HotelFlightPackageList = () => {
 
   const handleFilter = (e) => {
     //setValues({ ...values, error: false, [e.target.name]: e.target.value });
-    setGlobalState([e.target.name], e.target.value)
+    console.log("we are updating: ", [e.target.name][0])
+    console.log("updated with ", e.target.value)
+    setGlobalState([e.target.name][0], e.target.value)
     filterAndSort()
   }
 
