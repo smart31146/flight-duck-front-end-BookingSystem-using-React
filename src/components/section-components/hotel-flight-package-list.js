@@ -319,7 +319,7 @@ const HotelFlightPackageList = () => {
     }
     filteredData = newList;
     const result = paginate(newList);
-    paginated_data = result;
+    setGlobalState("paginated_data", result)
     //setValues({ ...values, error: false, pageNumber: 0 });
     setGlobalState("pageNumber", 0);
     // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
@@ -379,11 +379,11 @@ const HotelFlightPackageList = () => {
   }
 
   const handlePage = (index) => {
+    console.log("we are going to page number " + index)
     //setValues({ ...values, error: false, pageNumber: index, });
     setGlobalState("pageNumber", index);
-    console.log(pageNumber)
     //hotelFlightPackageList = paginated_data[pageNumber];
-    setGlobalState("hotelFlightPackageList", paginated_data[pageNumber])
+    setGlobalState("hotelFlightPackageList", paginated_data[0][pageNumber])
   }
 
   const nextPage = () => {
