@@ -12,9 +12,10 @@ const HotelFlightPackageList = () => {
 
   const [values, setValues] = useState({
     loading: false,
+    starRating: 'all1',
   });
 
-  const { loading,
+  const { loading, starRating,
   } = values;
 
 
@@ -27,9 +28,20 @@ const HotelFlightPackageList = () => {
     setGlobalState("departure_date", departureDate )
     setGlobalState("return_date", return_date )
 
-    searchCacheFlightHotelsPackage()
+
+      searchCacheFlightHotelsPackage()
+
 
   }, [])
+
+  useEffect(() => {
+
+
+    if(starRating !== "all1") {
+      filterAndSort()
+   }
+
+  }, [starRating])
 
 
   const toggleLoading = () => {
@@ -69,7 +81,7 @@ const HotelFlightPackageList = () => {
   let [departure_time_sort_text] = useGlobalState("departure_time_sort_text");
   let [pageNumber] = useGlobalState("pageNumber");
   let [priceRange] = useGlobalState("priceRange");
-  let [starRating] = useGlobalState("starRating");
+  //let [starRating] = useGlobalState("starRating");
   let [hotelName] = useGlobalState("hotelName");
   let [accommodationType] = useGlobalState("accommodationType");
 
@@ -97,7 +109,7 @@ const HotelFlightPackageList = () => {
         "originplace": origin,
         "destinationplace": destination,
         "outbounddate": departureDate,
-        "inbounddate": '2022-04-10',
+        "inbounddate": '2022-04-17',
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": children,
@@ -118,7 +130,7 @@ const HotelFlightPackageList = () => {
         "originplace": origin,
         "destinationplace": destination,
         "outbounddate": departureDate,
-        "inbounddate": "2022-04-10",
+        "inbounddate": "2022-04-17",
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
@@ -233,10 +245,9 @@ const HotelFlightPackageList = () => {
 
   const handleFilter = (e) => {
     //setValues({ ...values, error: false, [e.target.name]: e.target.value });
-    console.log("we are updating: ", [e.target.name][0])
-    console.log("updated with ", e.target.value)
-    setGlobalState([e.target.name][0], e.target.value)
-    filterAndSort()
+    setValues({ ...values, error: false, [[e.target.name][0]]: e.target.value });
+
+    //filterAndSort()
   }
 
 

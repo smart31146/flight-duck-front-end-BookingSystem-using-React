@@ -62,7 +62,6 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	departure_time_sort_text: "Departure Time High to Low",
 	pageNumber: 0,
 	priceRange: [10, 50000],
-	starRating: '',
 	hotelName: '',
 	accommodationType: '',
 });
