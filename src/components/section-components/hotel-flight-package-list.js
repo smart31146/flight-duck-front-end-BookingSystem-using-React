@@ -15,9 +15,10 @@ const HotelFlightPackageList = () => {
     starRating: 'default',
     accommodationType: 'default',
     hotelName: 'default',
+    pageNumber: 0,
   });
 
-  const { loading, starRating, accommodationType, hotelName
+  const { loading, starRating, accommodationType, hotelName, pageNumber
   } = values;
 
 
@@ -50,8 +51,17 @@ const HotelFlightPackageList = () => {
     if(hotelName !== "default") {
       filterAndSort()
     }
-
+    console.log("below is list")
+    console.log(hotelFlightPackageList)
   }, [starRating, accommodationType, hotelName])
+
+  useEffect(() => {
+    if (hotelFlightPackageList.length > 0) {
+      console.log("inside use effect pagenumber is " + pageNumber)
+      setGlobalState("hotelFlightPackageList", paginated_data[0][pageNumber])
+    }
+
+  }, [pageNumber])
 
 
   const toggleLoading = () => {
@@ -89,7 +99,7 @@ const HotelFlightPackageList = () => {
   let [price_sort_text] = useGlobalState("price_sort_text")
   let [departure_time_sort] = useGlobalState("departure_time_sort")
   let [departure_time_sort_text] = useGlobalState("departure_time_sort_text");
-  let [pageNumber] = useGlobalState("pageNumber");
+  //let [pageNumber] = useGlobalState("pageNumber");
   let [priceRange] = useGlobalState("priceRange");
   //let [starRating] = useGlobalState("starRating");
   //let [hotelName] = useGlobalState("hotelName");
@@ -285,8 +295,8 @@ const HotelFlightPackageList = () => {
       console.log("below is result")
       console.log(result)
 
-      //setValues({ ...values, error: false, pageNumber: 0 });
-      setGlobalState("pageNumber", 0)
+      setValues({ ...values, error: false, pageNumber: 0 });
+      //setGlobalState("pageNumber", 0)
       //setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
 
 
@@ -320,8 +330,8 @@ const HotelFlightPackageList = () => {
     filteredData = newList;
     const result = paginate(newList);
     setGlobalState("paginated_data", result)
-    //setValues({ ...values, error: false, pageNumber: 0 });
-    setGlobalState("pageNumber", 0);
+    setValues({ ...values, error: false, pageNumber: 0 });
+    //setGlobalState("pageNumber", 0);
     // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
     setGlobalState("hotelFlightPackageList", (result[0] || []))
   }
@@ -367,8 +377,8 @@ const HotelFlightPackageList = () => {
       const result = paginate(alist);
       setGlobalState("paginated_data", result)
       //setGlobalState("paginated_data", result);
-      //setValues({ ...values, error: false, pageNumber: 0 });
-      setGlobalState("pageNumber", 0);
+      setValues({ ...values, error: false, pageNumber: 0 });
+      //setGlobalState("pageNumber", 0);
       // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
       //hotelFlightPackageList = (result[0] || [])
       setGlobalState("hotelFlightPackageList", (result[0] || []))
@@ -380,10 +390,10 @@ const HotelFlightPackageList = () => {
 
   const handlePage = (index) => {
     console.log("we are going to page number " + index)
-    //setValues({ ...values, error: false, pageNumber: index, });
-    setGlobalState("pageNumber", index);
+    setValues({ ...values, error: false, pageNumber: index, });
+    //setGlobalState("pageNumber", index);
+    console.log("we are on page number " + pageNumber)
     //hotelFlightPackageList = paginated_data[pageNumber];
-    setGlobalState("hotelFlightPackageList", paginated_data[0][pageNumber])
   }
 
   const nextPage = () => {
@@ -391,8 +401,8 @@ const HotelFlightPackageList = () => {
     if (nextPage > paginated_data.length - 1) {
       nextPage = 0
     }
-    //setValues({ ...values, error: false, pageNumber: nextPage});
-    setGlobalState("pageNumber", nextPage);
+    setValues({ ...values, error: false, pageNumber: nextPage});
+    //setGlobalState("pageNumber", nextPage);
     //hotelFlightPackageList = paginated_data[nextPage];
     setGlobalState("hotelFlightPackageList", paginated_data[nextPage])
   }
@@ -402,8 +412,8 @@ const HotelFlightPackageList = () => {
     if (prevPage < 0) {
       prevPage = paginated_data.length - 1
     }
-    //setValues({ ...values, error: false, pageNumber: prevPage,});
-    setGlobalState("pageNumber", prevPage);
+    setValues({ ...values, error: false, pageNumber: prevPage,});
+    //setGlobalState("pageNumber", prevPage);
     //hotelFlightPackageList = paginated_data[prevPage];
     setGlobalState("hotelFlightPackageList", paginated_data[prevPage])
   }

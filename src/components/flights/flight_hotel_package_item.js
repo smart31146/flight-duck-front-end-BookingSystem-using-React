@@ -13,8 +13,6 @@ const FlightHotelPackageItem = (flightDetails) => {
       hotelDetails: { ...flightDetails.hotel_object, carrier_name: flightDetails.carrier_name, flightDetails: flightDetails }
     });
   };
-  console.log("below is object")
-  console.log(flightDetails)
 
   return (
     <div className="single-destinations-list style-three">
