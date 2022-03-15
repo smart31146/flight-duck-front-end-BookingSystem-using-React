@@ -14,9 +14,10 @@ const HotelFlightPackageList = () => {
     loading: false,
     starRating: 'default',
     accommodationType: 'default',
+    hotelName: 'default',
   });
 
-  const { loading, starRating, accommodationType
+  const { loading, starRating, accommodationType, hotelName
   } = values;
 
 
@@ -46,7 +47,11 @@ const HotelFlightPackageList = () => {
       filterAndSort()
     }
 
-  }, [starRating, accommodationType])
+    if(hotelName !== "default") {
+      filterAndSort()
+    }
+
+  }, [starRating, accommodationType, hotelName])
 
 
   const toggleLoading = () => {
@@ -87,7 +92,7 @@ const HotelFlightPackageList = () => {
   let [pageNumber] = useGlobalState("pageNumber");
   let [priceRange] = useGlobalState("priceRange");
   //let [starRating] = useGlobalState("starRating");
-  let [hotelName] = useGlobalState("hotelName");
+  //let [hotelName] = useGlobalState("hotelName");
   //let [accommodationType] = useGlobalState("accommodationType");
 
 
@@ -276,7 +281,7 @@ const HotelFlightPackageList = () => {
       }
       filteredData = newList;
       const result = paginate(newList);
-      paginated_data = result;
+      setGlobalState("paginated_data", result)
       console.log("below is result")
       console.log(result)
 
@@ -342,7 +347,7 @@ const HotelFlightPackageList = () => {
       if(hotelName === "default") {
         name = '';
       } else {
-        name = starRating;
+        name = hotelName;
       }
 
       let list = completeList || [];
@@ -357,8 +362,10 @@ const HotelFlightPackageList = () => {
         && (r.hotel_object.hotel || '').toLowerCase().includes((name || '').toLocaleLowerCase())
       )
       filteredData = alist;
+      console.log("filter list is now")
+      console.log(alist)
       const result = paginate(alist);
-      paginated_data = result;
+      setGlobalState("paginated_data", result)
       //setGlobalState("paginated_data", result);
       //setValues({ ...values, error: false, pageNumber: 0 });
       setGlobalState("pageNumber", 0);
