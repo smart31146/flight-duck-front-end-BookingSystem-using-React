@@ -12,10 +12,11 @@ const HotelFlightPackageList = () => {
 
   const [values, setValues] = useState({
     loading: false,
-    starRating: 'all1',
+    starRating: 'default',
+    accommodationType: 'default',
   });
 
-  const { loading, starRating,
+  const { loading, starRating, accommodationType
   } = values;
 
 
@@ -37,11 +38,15 @@ const HotelFlightPackageList = () => {
   useEffect(() => {
 
 
-    if(starRating !== "all1") {
+    if(starRating !== "default") {
       filterAndSort()
    }
 
-  }, [starRating])
+    if(accommodationType !== "default") {
+      filterAndSort()
+    }
+
+  }, [starRating, accommodationType])
 
 
   const toggleLoading = () => {
@@ -83,7 +88,7 @@ const HotelFlightPackageList = () => {
   let [priceRange] = useGlobalState("priceRange");
   //let [starRating] = useGlobalState("starRating");
   let [hotelName] = useGlobalState("hotelName");
-  let [accommodationType] = useGlobalState("accommodationType");
+  //let [accommodationType] = useGlobalState("accommodationType");
 
 
 
@@ -245,6 +250,7 @@ const HotelFlightPackageList = () => {
 
   const handleFilter = (e) => {
     //setValues({ ...values, error: false, [e.target.name]: e.target.value });
+    console.log("this is " + [e.target.name][0])
     setValues({ ...values, error: false, [[e.target.name][0]]: e.target.value });
 
     //filterAndSort()
@@ -317,12 +323,32 @@ const HotelFlightPackageList = () => {
 
   const filterAndSort = () => {
     setTimeout(() => {
-      let star = starRating;
+      let star = '';
       let type = accommodationType;
       let name = hotelName;
+
+      if(starRating === "default") {
+        star = '';
+      } else {
+        star = starRating;
+      }
+
+      if(accommodationType === "default") {
+        type = '';
+      } else {
+        type = accommodationType;
+      }
+
+      if(hotelName === "default") {
+        name = '';
+      } else {
+        name = starRating;
+      }
+
       let list = completeList || [];
       console.log('list is' + list)
       console.log("starrating is" + star)
+      console.log("accommodationType is " + accommodationType)
       let alist = list.filter(r =>
         parseFloat(r.deal_price) <= parseInt(priceRange[1])
         && parseFloat(r.deal_price) >= parseInt(priceRange[0])
