@@ -58,7 +58,7 @@ const HotelFlightPackageList = () => {
   useEffect(() => {
     if (hotelFlightPackageList.length > 0) {
       console.log("inside use effect pagenumber is " + pageNumber)
-      setGlobalState("hotelFlightPackageList", paginated_data[0][pageNumber])
+      setGlobalState("hotelFlightPackageList", paginated_data[pageNumber])
     }
 
   }, [pageNumber])
@@ -203,8 +203,8 @@ const HotelFlightPackageList = () => {
               paginated_data.push(result)
             }
 
-
-            console.log("A" + hotelFlightPackageList)
+            console.log("BELOW IS PAGINATED AFTER FLAT")
+            console.log(paginated_data)
             console.log("loading before set is" + loading)
           } else {
             console.log("sorry no packages found========");
@@ -218,6 +218,7 @@ const HotelFlightPackageList = () => {
           console.log("packages data error=======", e);
           setValues({ ...values, loading: false });
         });
+
 
     console.log("outside of fetch", hotelFlightPackageList)
     console.log("this is result")
@@ -423,15 +424,19 @@ const HotelFlightPackageList = () => {
     console.log(hotelFlightPackageList)
 
     console.log("below is pagniated data")
+    console.log(paginated_data.length)
+    if(paginated_data.length === 1) {
+      paginated_data = paginated_data[0]
+    }
     console.log(paginated_data)
 
-    paginated_data.map((item, index) => {
-      console.log("below is pagniated data")
-      console.log(paginated_data)
-      return (
-          <li key={`k1${index}`}><a className="page-numbers" onClick={() => handlePage(index)}>{index + 1}</a></li>
-      )
-    })
+    // paginated_data.map((item, index) => {
+    //   console.log("below is pagniated data")
+    //   console.log(paginated_data)
+    //   return (
+    //       <li key={`k1${index}`}><a className="page-numbers" onClick={() => handlePage(index)}>{index + 1}</a></li>
+    //   )
+    // })
 
     let arr = [];
     console.log("flight package is " + hotelFlightPackageList.length)
@@ -501,7 +506,7 @@ const HotelFlightPackageList = () => {
               <div className="tp-pagination text-md-center text-left d-inline-block mt-4">
                 <ul>
                   <li><a className="prev page-numbers" onClick={prevPage}><i className="la la-long-arrow-left" /></a></li>
-                  {paginated_data.length > 0 ? paginated_data[0].map((item, index) => {
+                  {paginated_data.length > 0 ? paginated_data.map((item, index) => {
                     console.log("below is pagniated data")
                     console.log(paginated_data)
                     return (
