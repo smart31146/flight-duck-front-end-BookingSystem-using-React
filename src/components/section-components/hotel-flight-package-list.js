@@ -16,9 +16,10 @@ const HotelFlightPackageList = () => {
     accommodationType: 'default',
     hotelName: 'default',
     pageNumber: 0,
+    priceRange: [10, 5001],
   });
 
-  const { loading, starRating, accommodationType, hotelName, pageNumber
+  const { loading, starRating, accommodationType, hotelName, pageNumber, priceRange
   } = values;
 
 
@@ -35,6 +36,10 @@ const HotelFlightPackageList = () => {
       searchCacheFlightHotelsPackage()
 
 
+    console.log("inside useEffect paginated")
+    console.log(paginated_data)
+
+
   }, [])
 
   useEffect(() => {
@@ -47,13 +52,26 @@ const HotelFlightPackageList = () => {
     if(accommodationType !== "default") {
       filterAndSort()
     }
+  }, [starRating, accommodationType, hotelName])
+
+  useEffect(() => {
 
     if(hotelName !== "default") {
+      console.log("hotel being run")
       filterAndSort()
     }
-    console.log("below is list")
-    console.log(hotelFlightPackageList)
-  }, [starRating, accommodationType, hotelName])
+
+  }, [hotelName])
+
+  useEffect(() => {
+
+    const start = [10, 5001];
+    if(priceRange.toString() !== start.toString()) {
+      console.log("pricerange is " + priceRange)
+      filterAndSort()
+    }
+
+  }, [priceRange])
 
   useEffect(() => {
     if (hotelFlightPackageList.length > 0) {
@@ -100,7 +118,7 @@ const HotelFlightPackageList = () => {
   let [departure_time_sort] = useGlobalState("departure_time_sort")
   let [departure_time_sort_text] = useGlobalState("departure_time_sort_text");
   //let [pageNumber] = useGlobalState("pageNumber");
-  let [priceRange] = useGlobalState("priceRange");
+  //let [priceRange] = useGlobalState("priceRange");
   //let [starRating] = useGlobalState("starRating");
   //let [hotelName] = useGlobalState("hotelName");
   //let [accommodationType] = useGlobalState("accommodationType");
@@ -199,8 +217,8 @@ const HotelFlightPackageList = () => {
               hotelFlightPackageList.push(result[pageNumber][i])
             }
 
-            for (let i = 0; i < 1; i++) {
-              paginated_data.push(result)
+            for (let i = 0; i < result.length; i++) {
+              paginated_data.push(result[i])
             }
 
             console.log("BELOW IS PAGINATED AFTER FLAT")
@@ -259,9 +277,9 @@ const HotelFlightPackageList = () => {
   }
 
   const handleSliderChange = (e, val) => {
-    //setValues({ ...values, error: false, priceRange: val });
-    setGlobalState("priceRange", val)
-    filterAndSort();
+    console.log("this is the price val" + val)
+    console.log("this is being run")
+    setValues({ ...values, error: false, priceRange: val });
   }
 
   const handleFilter = (e) => {
@@ -425,9 +443,9 @@ const HotelFlightPackageList = () => {
 
     console.log("below is pagniated data")
     console.log(paginated_data.length)
-    if(paginated_data.length === 1) {
-      paginated_data = paginated_data[0]
-    }
+    // if(paginated_data.length === 1) {
+    //   paginated_data = paginated_data[0]
+    // }
     console.log(paginated_data)
 
     // paginated_data.map((item, index) => {
@@ -540,14 +558,15 @@ const HotelFlightPackageList = () => {
               <div className="form-group has-success has-feedback">
                 <label >Price Filter</label>
                 <Slider
-                  getAriaLabel={(index) => (index === 0 ? 'Minimum price' : 'Maximum price')}
-                  defaultValue={priceRange}
+                    key={`slider-${priceRange}`}
+                    getAriaLabel={(index) => (index === 0 ? 'Minimum price' : 'Maximum price')}
+                  value={priceRange}
                   name="priceRange" onChange={handleSliderChange}
                   valueLabelDisplay="auto"
                   aria-labelledby="range-slider"
                   // getAriaValueText={'valuetext'}
                   min={10}
-                  max={100000}
+                  max={5000}
                 />
               </div>
               <div className="form-group has-success has-feedback">
