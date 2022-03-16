@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React , { Component, useState, useEffect, useRef } from 'react';
 import { Link, Redirect, withRouter, Route, useHistory } from 'react-router-dom';
 import parse from 'html-react-parser';
 import API_URL, { getFlightsDestinationAutoSuggestion, searchHotelBeds } from '../auth/helper';
@@ -12,11 +12,17 @@ import {
 } from "../auth/helper/index";
 import 'react-dropdown/style.css';
 // import DatePicker from 'react-date-picker';
-import DatePicker from "react-datepicker";
+//import DatePicker from "react-datepicker";
+import TextField from '@mui/material/TextField';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import Stack from '@mui/material/Stack';
 import { addMonths } from 'date-fns';
 import Moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { setGlobalState, useGlobalState } from '../../index'
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -38,16 +44,39 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Search = (props) => {
+const printGlobalState = (destination, origin, departureDate, return_date, adults, children, days) => {
+
+	console.log("destination is " + destination)
+	console.log("origin is " + origin)
+	console.log("return_date is " + return_date)
+	console.log("adults is " + adults)
+	console.log("chuldren is " + children)
+	console.log("departureDate is " + departureDate)
+	console.log("days is " + days)
+}
+
+
+const Search = () => {
+	const [destination] = useGlobalState("destination")
+	const [origin] = useGlobalState("origin")
+	const [departureDate] = useGlobalState("departure_date")
+	const [return_date] = useGlobalState("return_date")
+	const [adults] = useGlobalState("adults")
+	const [children] = useGlobalState("children")
+	const [days] = useGlobalState("days")
+	printGlobalState(destination, origin, departureDate, return_date, adults, children, days);
+
+
 	let history = useHistory();
 	const classes = useStyles();
 	const [searchForMonths, setSearchForMonths] = useState(false);
 	const [originList, originListData] = useState([]);
 	const [destinationList, destinationListData] = useState([]);
-	const [departureDate, setDepartureDate] = useState(null);
+	//const [departureDate, setDepartureDate] = useState(null);
 	const [returnDate, setReturnDate] = useState(null);
 
 	useEffect(() => {
+		console.log("in here")
 		const country_code = localStorage.getItem("country_code")
 		const url = `${API_URL}flights/get-airport-code/?country=${country_code}`
 		fetch(
@@ -65,7 +94,6 @@ const Search = (props) => {
 
 
 	const [values, setValues] = useState({
-		destination: "",
 		origin: "",
 		departure_date: "",
 		return_date: "",
@@ -77,19 +105,19 @@ const Search = (props) => {
 		destinationName: "",
 		error: "",
 		errorMessage: "Check all fields again",
-		alert: null
+		alert: null,
+		days: null,
 		// originList: []
 	});
 
-	const { destination, origin, departure_date, return_date,
-		adults, children, daysOptions, selectedDayOption,
-		numberOfRooms, suggestions, keyValue, destinationName,
+	const {daysOptions, selectedDayOption,
+		numberOfRooms, suggestions, keyValue,
 		error, errorMessage, alert
 		// originList
 	} = values;
 
 	const hideAlert = (event) => {
-		setValues({ ...values, alert: null, error: false });
+		setValues({ ...values, error: false, alert: null, });
 	}
 
 	const errorAlertDialog = () => {
@@ -105,6 +133,8 @@ const Search = (props) => {
 			)
 		);
 	};
+
+
 
 	function updateOriginList() {
 		fetch(
@@ -122,17 +152,19 @@ const Search = (props) => {
 			})
 	}
 
+
 	const handleChange = (name) => (event) => {
+		setGlobalState(name, event.target.value)
 		setValues({ ...values, error: false, [name]: event.target.value });
 		if (name === "destination") {
 			const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
 			fetch(
 				url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				}
-			}
 			)
 				.then(resp => resp.json()
 				)
@@ -143,11 +175,11 @@ const Search = (props) => {
 			const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
 			fetch(
 				url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				}
-			}
 			)
 				.then(resp => resp.json()
 				)
@@ -164,14 +196,14 @@ const Search = (props) => {
 	const onFlightSearchFormSubmit = (event) => {
 		event.preventDefault();
 		if (returnDate != null) {
-			if (returnDate < departureDate) {
-				setValues({
-					...values,
-					error: true,
-					errorMessage: "Return Date should be greater than Departure Date"
-				});
-				return;
-			} else {
+			// if (returnDate < departureDate) {
+			// 	setValues({
+			// 		...values,
+			// 		error: true,
+			// 		errorMessage: "Return Date should be greater than Departure Date"
+			// 	});
+			// 	return;
+			// } else {
 				const destination_code = destinationList.find((dest) => dest.airport_name === destination).airport_code;
 				const origin_code = originList.find((org) => org.airport_name === origin).airport_code;
 				const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
@@ -184,7 +216,7 @@ const Search = (props) => {
 				localStorage.removeItem("only_flight");
 				localStorage.setItem("only_flight", "true");
 				history.push("/tour-list-v2");
-			}
+			// }
 		}
 		else {
 			const destination_code = destinationList.find((dest) => dest.airport_name === destination).airport_code;
@@ -204,14 +236,14 @@ const Search = (props) => {
 	const onHotelSearchFormSubmit = (event) => {
 		event.preventDefault();
 		if (returnDate != null) {
-			if (returnDate < departureDate) {
-				setValues({
-					...values,
-					error: true,
-					errorMessage: "Return Date should be greater than Departure Date"
-				});
-				return;
-			} else {
+			// if (returnDate < departureDate) {
+			// 	setValues({
+			// 		...values,
+			// 		error: true,
+			// 		errorMessage: "Return Date should be greater than Departure Date"
+			// 	});
+			// 	return;
+			// } else {
 				const hotelDestinationCode = destinationList.find((dest) => dest.city__city_name === destination).city__city_code;
 				const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
 				const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
@@ -224,7 +256,7 @@ const Search = (props) => {
 				localStorage.removeItem("only_hotel");
 				localStorage.setItem("only_hotel", "true");
 				history.push("/hotel-list");
-			}
+			// }
 		}
 		else {
 			const hotelDestinationCode = destinationList.find((dest) => dest.city__city_name === destination).city__city_code;
@@ -251,32 +283,46 @@ const Search = (props) => {
 			});
 			return;
 		}
-		if (returnDate < departureDate) {
-			setValues({
-				...values,
-				error: true,
-				errorMessage: "Return Date should be greater than Departure Date"
-			});
-			return;
-		} else {
+		// if (returnDate < departureDate) {
+		// 	setValues({
+		// 		...values,
+		// 		error: true,
+		// 		errorMessage: "Return Date should be greater than Departure Date"
+		// 	});
+		// 	return;
+		// } else {
 			const destinationCode = destinationList.find((dest) => dest.airport_name === destination).airport_code;
 			const originCode = originList.find((org) => org.airport_name === origin).airport_code;
 			const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
 			const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
 			const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
 
-			savePackageSearchDataToLocalStorage({
+			setGlobalState("destination_code", destinationCode)
+			setGlobalState("origin", originCode)
+			setGlobalState("hotel_destination", hotelDestinationCode)
+			setGlobalState("departure_date", updatedDepartureDate)
+			setGlobalState("return_date", updatedReturnDate)
+
+
+		savePackageSearchDataToLocalStorage({
 				destinationCode, originCode,
 				updatedDepartureDate, hotelDestinationCode,
-				updatedReturnDate, adults, numberOfRooms,
-				searchForMonths
+				updatedReturnDate, adults, children,
+				searchForMonths, days
 			});
 			localStorage.removeItem("only_hotel");
 			localStorage.removeItem("only_flight");
 			localStorage.setItem("only_hotel", "false");
+
 			history.push("/flight-hotel-package");
-		}
+		// }
 	};
+
+	const date = new Date();
+
+	const minDate = new Date(date.getFullYear(), date.getMonth(), 1);
+
+	const maxDate = date.setMonth(date.getMonth()+16);
 
 	const packageHtml =
 		<form onSubmit={onSearchFlightHotelPackageFormSubmit}>
@@ -285,8 +331,8 @@ const Search = (props) => {
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
 						<input type="text" className="w-100"
 							list="data1" placeholder="Where To?"
-							value={destination}
-							onChange={handleChange("destination")}
+							   value={destination}
+							   onChange={handleChange("destination")}
 							required
 						/>
 						<datalist id="data1">
@@ -339,6 +385,7 @@ const Search = (props) => {
 							name="adults"
 							placeholder="0"
 							value={adults}
+							min={0}
 							onChange={handleChange("adults")}
 							required
 							title="Number of adults"
@@ -347,46 +394,50 @@ const Search = (props) => {
 				</div>
 				<div className="col-lg-1 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<i className="fa fa-key" />
+						<i className="fa fa-users" />
 						<input
-							className="w-100"
 							id="number"
 							type="number"
-							name="numberOfRooms"
+							className="w-100"
+							name="children"
 							placeholder="0"
-							value={numberOfRooms}
-							onChange={handleChange("numberOfRooms")}
-							required
-							title="Number of rooms"
+							value={children}
+							min={0}
+							onChange={handleChange("children")}
+							title="Number of children"
 						/>
 					</div>
 				</div>
-				<div className="col-lg-2 col-md-4">
+				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<DatePicker
-							selected={departureDate}
-							onChange={(date) => setDepartureDate(date)}
-							minDate={new Date()}
-							placeholderText="Departing"
-							maxDate={addMonths(new Date(), 3)}
-							dateFormat="yyyy-MM-dd"
-							required
-							showDisabledMonthNavigation
-						/>
-						<i className="fa fa-calendar-minus-o" />
+						<LocalizationProvider dateAdapter={AdapterDateFns}>
+							<Stack spacing={3}>
+								<DatePicker
+									views={['month', 'year']}
+									//label="Year and Month"
+									minDate={minDate}
+									maxDate={maxDate}
+									value={departureDate}
+									onChange={(date) => setGlobalState("departure_date", date)}
+									renderInput={(params) => <TextField {...params} helperText={null} />}
+								/>
+							</Stack>
+						</LocalizationProvider>
 					</div>
 				</div>
-				<div className="col-lg-2 col-md-4">
+				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<DatePicker
-							selected={returnDate}
-							onChange={(date) => setReturnDate(date)}
-							minDate={new Date()}
-							placeholderText="Returning"
-							maxDate={addMonths(new Date(), 3)}
-							dateFormat="yyyy-MM-dd"
+						<input
+							id="number"
+							type="number"
+							className="w-100"
+							name="days"
+							placeholder="Days"
+							value={days}
+							onChange={handleChange("days")}
 							required
-							showDisabledMonthNavigation
+							title="Number of days"
+							min={0}
 						/>
 						<i className="fa fa-calendar-minus-o" />
 					</div>
@@ -496,35 +547,6 @@ const Search = (props) => {
 						/>
 					</div>
 				</div>
-				<div className="col-lg-2 col-md-4">
-					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<DatePicker
-							selected={departureDate}
-							onChange={(date) => setDepartureDate(date)}
-							minDate={new Date()}
-							placeholderText="Departing"
-							maxDate={addMonths(new Date(), 3)}
-							dateFormat="yyyy-MM-dd"
-							required
-							showDisabledMonthNavigation
-						/>
-						<i className="fa fa-calendar-minus-o" />
-					</div>
-				</div>
-				<div className="col-lg-2 col-md-4">
-					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<DatePicker
-							selected={returnDate}
-							onChange={(date) => setReturnDate(date)}
-							minDate={new Date()}
-							placeholderText="Returning"
-							maxDate={addMonths(new Date(), 3)}
-							dateFormat="yyyy-MM-dd"
-							showDisabledMonthNavigation
-						/>
-						<i className="fa fa-calendar-minus-o" />
-					</div>
-				</div>
 				<div className="col-xl-4 col-lg-9 offset-xl-4 offset-lg-1 mt-3">
 					<input className="btn btn-yellow" type="submit"
 						value="Find Flights"
@@ -592,36 +614,6 @@ const Search = (props) => {
 							min="1"
 						/>
 						{/* <i className="ti-key" /> */}
-					</div>
-				</div>
-				<div className="col-lg-3 col-md-4">
-					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<DatePicker
-							selected={departureDate}
-							onChange={(date) => setDepartureDate(date)}
-							minDate={new Date()}
-							placeholderText="Check In"
-							maxDate={addMonths(new Date(), 3)}
-							dateFormat="yyyy-MM-dd"
-							required
-							showDisabledMonthNavigation
-						/>
-						<i className="fa fa-calendar-minus-o" />
-					</div>
-				</div>
-				<div className="col-lg-3 col-md-4">
-					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<DatePicker
-							selected={returnDate}
-							onChange={(date) => setReturnDate(date)}
-							minDate={new Date()}
-							placeholderText="Check out"
-							maxDate={addMonths(new Date(), 3)}
-							dateFormat="yyyy-MM-dd"
-							required
-							showDisabledMonthNavigation
-						/>
-						<i className="fa fa-calendar-minus-o" />
 					</div>
 				</div>
 				<div className="col-xl-4 col-lg-9 offset-xl-4 offset-lg-1 mt-3">

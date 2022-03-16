@@ -31,6 +31,40 @@ import ForgotPassword from './components/auth/forgotpassword';
 import PrivateRoutes from "./components/auth/helper/PrivateRoutes";
 import HotelBooking from './components/section-components/hotel-booking';
 import BookingConfirmationDetailsPage from './components/booking-confirmation-details';
+import { BasicProvider } from "./BasicContext";
+import { createGlobalState } from 'react-hooks-global-state';
+
+export const { setGlobalState, useGlobalState } = createGlobalState({
+	country_code: '',
+	currency: '',
+	destination: "",
+	destination_code: "",
+	hotel_destination: "",
+	origin: "",
+	departure_date: "",
+	return_date: "",
+	adults: null,
+	children: null,
+	//suggestions: [],
+	// keyValue: "",
+	// destinationName: "",
+	// error: "",
+	// errorMessage: "Check all fields again",
+	// alert: null,
+	days: null,
+	paginated_data: [],
+	completeList: [],
+	filteredData: [],
+	hotelFlightPackageList: [],
+	price_sort: "down",
+	price_sort_text: "Price High to Low",
+	departure_time_sort: "down",
+	departure_time_sort_text: "Departure Time High to Low",
+	pageNumber: 0,
+	priceRange: [10, 5000],
+	hotelName: '',
+	accommodationType: '',
+});
 
 class Root extends Component {
 
@@ -43,16 +77,19 @@ class Root extends Component {
 				}
 			}
 		)
-		.then(resp => resp.json())
-		.then((resp) => {
-			localStorage.setItem("country_code", resp.country_code);
-			localStorage.setItem("currency", resp.currency);
-		})
+			.then(resp => resp.json())
+			.then((resp) => {
+				localStorage.setItem("country_code", resp.country_code);
+				localStorage.setItem("currency", resp.currency);
+				setGlobalState("country_code", resp.country_code)
+				setGlobalState("currency", resp.currency)
+			})
 	}
 
     render() {
         return(
 			<HashRouter basename="/">
+				<BasicProvider>
 				<div>
 					<Switch>
 						<Route exact path="/" component={HomeV1} />
@@ -86,6 +123,7 @@ class Root extends Component {
 						<PrivateRoutes path="/user-profile" component={UserProfile} />
 					</Switch>
 				</div>
+				</BasicProvider>
 			</HashRouter>
         )
     }

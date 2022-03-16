@@ -190,7 +190,7 @@ class TourDetails extends Component {
                               <div className="text-lg-center text-left">
                                 <h5>Booking Charges - <span>$</span> {details.net}</h5>
                               </div>
-                              <p>Cancellation Charges - <span>$</span> {details.cancellationPolicies[0].amount}</p>
+                              {/*<p>Cancellation Charges - <span>$</span> {details.cancellationPolicies[0].amount}</p>*/}
                             </div>
                           </div>
                         </div>

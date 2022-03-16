@@ -1,5 +1,6 @@
 import Moment from 'moment';
 import paginate from '../../flights/paginate_flight_hotel_package';
+import {useGlobalState} from "../../../index";
 
 // const API_URL = "http://0d46-180-188-242-233.ngrok.io/"
 const API_URL = "http://127.0.0.1:8000/"
@@ -10,6 +11,7 @@ const HOTEL_BEDS_API_KEY = "ce0f06ea4efa6d559dd869faae735266"
 const HOTEL_BEDS_API_SECRET = "58a4678b4c"
 const FLIGHTS_API_URL = "https://partners.api.skyscanner.net/apiservices/"
 const FLIGHTS_API_KEY = "prtl6749387986743898559646983194"
+
 
 
 export const isAuthenticated = () => {
@@ -245,9 +247,9 @@ export const saveHotelSearchDataToLocalStorage = (details) => {
   localStorage.setItem("destination", details.destinationCode);
   localStorage.setItem("hotel_destination", details.hotelDestinationCode);
   localStorage.setItem("departure_date", details.updatedDepartureDate);
-  localStorage.setItem("return_date", details.updatedReturnDate);
   localStorage.setItem("adults", details.adults);
-  localStorage.setItem("rooms", details.numberOfRooms);
+  localStorage.setItem("children", details.children);
+  localStorage.setItem("days", details.days);
 };
 
 export const savePackageSearchDataToLocalStorage = (details) => {
@@ -255,43 +257,43 @@ export const savePackageSearchDataToLocalStorage = (details) => {
   localStorage.setItem("searchForMonths", details.searchForMonths);
 };
 
-export const getCacheFlightHotelsPackage = (details) => {
+const zeroIfNull = (val) => {
+  if (typeof val === "undefined" || val == "undefined") {
+    return 0;
+  }
+  console.debug(typeof val, "is expecting a string");
+  return Number(val);
+}
+
+export const getCacheFlightHotelsPackage = () => {
   var user_details = localStorage.getItem("jwt");
   var user_id = 1;
   if (user_details) {
     user_id = JSON.parse(user_details)["id"];
   }
 
-  var departure_date = localStorage.getItem("departure_date");
-
-  var return_date = localStorage.getItem("return_date")
-
-  var number_of_days = Math.floor((Date.parse(return_date) - Date.parse(departure_date)) / 86400000);
-
   return fetch(`${API_URL}flights/cache-flight-hotels-package/`, {
     method: "POST",
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      "originplace": localStorage.getItem("origin"),
-      "destinationplace": localStorage.getItem("destination"),
-      "outbounddate": departure_date,
-      "inbounddate": return_date,
-      "rooms": Number(localStorage.getItem("rooms")),
-      "adults": Number(localStorage.getItem("adults")),
-      "children": "0",
+      "origin": localStorage.getItem("origin"),
+      "destination": localStorage.getItem("destination"),
+      "outbound_date": localStorage.getItem("departure_date"),
+      "adults": zeroIfNull(localStorage.getItem("adults")),
+      "children": zeroIfNull(localStorage.getItem("children")),
       "country": localStorage.getItem("country_code"),
       "currency_format": localStorage.getItem("currency"),
       "locale": "EN",
       "destination_code": localStorage.getItem("hotel_destination"),
-      "trip_days": number_of_days,
+      "trip_days":  localStorage.getItem("days"),
       "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
       "user_id": user_id
     })
   })
-    .then((response) => {
-      return response.json();
-    })
-    .catch((err) => { return err });
+      .then((response) => {
+        return response.json();
+      })
+      .catch((err) => { return err });
 };
 
 export const hotelBookingAPI = (data) => {
