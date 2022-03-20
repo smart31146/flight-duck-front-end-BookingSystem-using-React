@@ -168,7 +168,6 @@ const HotelFlightPackageList = () => {
         "originplace": origin,
         "destinationplace": destination,
         "outbounddate": departureDate,
-        "inbounddate": "2022-04-17",
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
@@ -177,7 +176,6 @@ const HotelFlightPackageList = () => {
         "locale": "EN",
         "destination_code": hotelCode,
         "trip_days":  days,
-        "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
         "user_id": user_id
       })
     })
