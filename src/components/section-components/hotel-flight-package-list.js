@@ -27,11 +27,6 @@ const HotelFlightPackageList = () => {
     // setValues({ ...values, error: false, destination: destination, origin: origin,
     //   departure_date: departureDate, return_date: return_date })
 
-    setGlobalState("destination", destination )
-    setGlobalState("origin", origin )
-    setGlobalState("departure_date", departureDate )
-    setGlobalState("return_date", return_date )
-
 
       searchCacheFlightHotelsPackage()
 
@@ -167,7 +162,9 @@ const HotelFlightPackageList = () => {
       body: JSON.stringify({
         "originplace": origin,
         "destinationplace": destination,
-        "outbounddate": departureDate,
+        // "outbounddate": departureDate,
+        "outbounddate": "2022-05-15",
+        "inbounddate": "2022-05-17",
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
@@ -176,6 +173,7 @@ const HotelFlightPackageList = () => {
         "locale": "EN",
         "destination_code": hotelCode,
         "trip_days":  days,
+        "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
         "user_id": user_id
       })
     })

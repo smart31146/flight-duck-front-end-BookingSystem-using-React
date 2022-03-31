@@ -64,6 +64,13 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	priceRange: [10, 5000],
 	hotelName: '',
 	accommodationType: '',
+	currencySymbol: "",
+	flightsPaginated_data: [],
+	flightsFilteredData: [],
+	flightsCompleteList: [],
+	liveFlightsList: [],
+	flights_price_sort: "down",
+	flights_price_sort_text: "Price High to Low"
 });
 
 class Root extends Component {

@@ -4,7 +4,6 @@ import parse from 'html-react-parser';
 
 const LiveFlightItem = (flightDetails) => {
   const openInNewTab = (url) => {
-    console.log("WE IN THIS SHIT NOW")
     if (localStorage.getItem('only_flight') == 'true') {
       const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
       if (newWindow) newWindow.opener = null
