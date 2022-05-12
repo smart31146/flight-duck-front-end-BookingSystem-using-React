@@ -7,6 +7,10 @@ import { hotelBookingAPI } from '../auth/helper';
 import { withRouter } from "react-router-dom";
 import './stripe.css';
 
+
+//this is the third
+// booking page,used as a component
+
 class CheckoutForm extends React.Component {
   constructor(props) {
     super(props);
@@ -46,7 +50,7 @@ class CheckoutForm extends React.Component {
           this.setState({ loading: false });
           if (localStorage.getItem("only_hotel") == 'false') {
             let flightBookingUrl = localStorage.getItem('flight_booking_url');
-            window.location.href = flightBookingUrl;
+            //window.location.href = flightBookingUrl;
           }
           window.location.href = '#destination-details'
         })
@@ -66,10 +70,33 @@ class CheckoutForm extends React.Component {
     const { stripe } = this.props;
     return (
       <form onSubmit={this.handleSubmit} className="jumbotron">
+        <p><b>Personal details</b></p>
         {/* <div className="form-group">
           <lable>Email</lable>
           <input className="form-control" name="email" />
         </div> */}
+
+        <div className="form-group">
+          <label>Full Name</label>
+          <input className="form-control" name="line1" onChange={this.handleAddress} />
+        </div>
+        <div className="form-group">
+          <label>Email</label>
+          <input className="form-control" name="line1" onChange={this.handleAddress} />
+        </div>
+        <div className="row">
+          <div className="form-group col-md-6">
+            <label>Phone</label>
+            <input className="form-control" name="state" onChange={this.handleAddress} />
+          </div>
+          <div className="form-group col-md-6">
+            <label>Country</label>
+            <input className="form-control" name="country" onChange={this.handleAddress} />
+          </div>
+        </div>
+        <p><b>Credit Card details</b></p>
+
+
         <div className="form-group">
           <label>Card Holder Name</label>
           <input className="form-control" required name="name" onChange={this.handleAddress} />
@@ -116,6 +143,10 @@ class CheckoutForm extends React.Component {
             <input className="form-control" name="postal_code" onChange={this.handleAddress} />
           </div>
         </div>
+
+
+
+
         {
           !!!this.state.loading ?
 
@@ -133,6 +164,9 @@ class CheckoutForm extends React.Component {
             </div>
         }
       </form>
+
+
+
     );
   }
 }

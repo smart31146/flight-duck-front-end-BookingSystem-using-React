@@ -2,7 +2,7 @@ import React, {Component, setState, useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
 import Button from '@material-ui/core/Button';
-import { getFlightsDestinationAutoSuggestion, getLiveFlights, searchHotelBeds } from '../auth/helper';
+import API_URL, { getFlightsDestinationAutoSuggestion, searchHotelBeds } from '../auth/helper';
 import FlightOfflineItem from '../flights/flightoffline_item';
 import LiveFlightItem from '../flights/live_flight_item';
 import LiveFlightItemCheapest from '../flights/live_flight_item_cheapest';
@@ -84,8 +84,43 @@ const TourListV2 = () => {
   //   this.toggleLoading();
   // }
 
+ const getLiveFlights = () => {
+    let user_details = localStorage.getItem("jwt");
+    let user_id = 1;
+    if (user_details) {
+      user_id = JSON.parse(user_details)["id"];
+    }
+
+    var jsonData = {
+      "originplace": localStorage.getItem("origin"),
+      "destinationplace": localStorage.getItem("destination"),
+      "outbounddate": "2022-05-15",
+      "children": Number(localStorage.getItem("children")),
+      "adults": Number(localStorage.getItem("adults")),
+      "country": localStorage.getItem("country_code"),
+      "currency": localStorage.getItem("currency"),
+      "locale": "en-US",
+      "user_id": user_id
+    }
+    if (localStorage.getItem("return_date").toString().trim(' ') != "") {
+      jsonData['return_date'] = localStorage.getItem("return_date").toString()
+    }
+
+    return fetch(`${API_URL}flights/live-flight-prices/`, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json', 'User-id': 1 },
+      body: JSON.stringify(jsonData)
+    })
+        .then((response) => {
+          return response.json();;
+        })
+        .catch((err) => { return err });
+  };
+
   const searchLiveFlights = () => {
-    toggleLoading();
+    //toggleLoading();
+    setValues({ ...values, loading: true });
+    console.log("loading first is" + loading)
     getLiveFlights()
       .then((data) => {
         // console.log("data=========", data)
@@ -138,11 +173,12 @@ const TourListV2 = () => {
         } else {
           console.log("sorry no flights found========");
         }
-        toggleLoading();
+        setValues({ ...values, loading: false });
+        //setValues({ ...values, error: false, loading: !loading});
       })
       .catch((e) => {
         console.log("flights data error=======", e);
-        toggleLoading();
+        setValues({ ...values, loading: false });
       });
   }
 
@@ -207,7 +243,9 @@ const TourListV2 = () => {
   const sortSearchResultsBasedOnPrices = (event) => {
     setTimeout(() => {
       let price = price_sort;
-      const newList = filteredData;
+      const newList = flightsFilteredData;
+      console.log("below is newlist")
+      console.log(newList)
       if (price === "down") {
 
         setGlobalState("flights_price_sort_text", "Price Low to High")
@@ -222,7 +260,8 @@ const TourListV2 = () => {
       }
 
       const result = paginate(newList);
-      // console.log(newList, result)
+      console.log("below is result")
+      console.log(result)
 
       setValues({ ...values, error: false, pageNumber: 0 });
       setGlobalState("flightsPaginated_data", result)
@@ -232,68 +271,96 @@ const TourListV2 = () => {
 
   const filterAndSort = () => {
     setTimeout(() => {
-      let priceRange = this.state.price;
-      let carriers = this.state.carriers;
-      let maxStopage = this.state.maxStopage;
-      let list = this.state.completeList || [];
-      let alist = list.filter(r =>
-        parseFloat(r.price) <= parseInt(priceRange[1])
-        && parseFloat(r.price) >= parseInt(priceRange[0])
+      console.log(flightsCompleteList)
+      let alist = flightsCompleteList.filter(r =>
+        parseFloat(r.price) <= parseInt(price[1])
+        && parseFloat(r.price) >= parseInt(price[0])
         && (r.carriers || '').toUpperCase().includes((carriers || '').toUpperCase())
         && (!!maxStopage ? r.number_of_stops <= maxStopage : true)
       )
-      this.setState({ filteredData: alist });
+      //this.setState({ filteredData: alist });
+      console.log("below is alist")
+      console.log(alist)
+      setGlobalState("flightsFilteredData", alist)
       sortSearchResultsBasedOnPrices();
     }, 100)
   }
 
   const handleSliderChange = (e, val) => {
-    this.setState({ price: val });
+    //this.setState({ price: val });
+    setValues({ ...values, error: false, price: val });
     filterAndSort();
   }
 
  const handleFilter = (e) => {
-    this.state[e.target.name] = e.target.value;
-    filterAndSort();
+    //this.state[e.target.name] = e.target.value;
+    setValues({ ...values, error: false, [e.target.name]: e.target.value });
+   filterAndSort();
   }
 
-
+  const flight = () => {
     let publicUrl = process.env.PUBLIC_URL + '/'
     let imagealt = 'image'
     let flight;
     let flightsPageNumbersListing;
-    if (this.state.liveFlightsList.length == 0) {
-      flight =
-        <div className="tour-list-area">
-          {this.state.cachedFlightsList.map((flightDetails) => {
-            return <FlightOfflineItem key={flightDetails.id} {...flightDetails} />
-          })}
-        </div>
-    } else {
-      flight =
-        <div className="tour-list-area">
-          {this.state.liveFlightsList.map((flightDetails) => {
-            // console.log("flightsDetails========", flightDetails)
-            flightDetails.currencySymbol = this.state.currencySymbol
-            if (flightDetails.cheapest != null) {
-              return <LiveFlightItemCheapest key={flightDetails.id} {...flightDetails} />
-            } else {
-              return <LiveFlightItem key={flightDetails.id} {...flightDetails} />
-            }
 
-          })}
-        </div>
-      if (this.state.completeList.length>10) {
-        flightsPageNumbersListing = 
+
+
+
+    if (liveFlightsList.length == 0 ) {
+      return (
+          <div className="tour-list-area">
+            {cachedFlightsList.map((flightDetails) => {
+              return <FlightOfflineItem key={flightDetails.id} {...flightDetails} />
+            })}
+          </div>
+      )
+    } else {
+      return (
+          <div className="tour-list-area">
+            {liveFlightsList.map((flightDetails) => {
+              // console.log("flightsDetails========", flightDetails)
+              flightDetails.currencySymbol = currencySymbol
+              if (flightDetails.cheapest != null) {
+                return <LiveFlightItemCheapest key={flightDetails.id} {...flightDetails} />
+              } else {
+                return <LiveFlightItem key={flightDetails.id} {...flightDetails} />
+              }
+
+            })}
+          </div>
+      )
+      // if (completeList.length > 10) {
+      //   flightsPageNumbersListing =
+      //       <div>
+      //         {liveFlightsList.map((item, index) => {
+      //           return (
+      //               <li key={`item_${index}`}><a
+      //                   className={"page-numbers " + (this.state.pageNumber == index ? "current" : "")}
+      //                   onClick={() => handlePage(index)}>{index + 1}</a></li>
+      //           )
+      //         })}
+      //       </div>
+      // }
+    }
+  }
+
+  const flightsPageNumbersListing = () => {
+    if (flightsCompleteList.length > 10) {
+      return (
           <div>
-            {this.state.liveFlightsList.map((item, index) => {
+            {liveFlightsList.map((item, index) => {
               return (
-                <li key={`item_${index}`}><a className={"page-numbers " + (this.state.pageNumber == index ? "current" : "")} onClick={() => handlePage(index)}>{index + 1}</a></li>
+                  <li key={`item_${index}`}><a
+                      className={"page-numbers " + (pageNumber == index ? "current" : "")}
+                      onClick={() => handlePage(index)}>{index + 1}</a></li>
               )
             })}
           </div>
-      } 
+      )
     }
+
+  }
 
     return (
         <div className="tour-list-area pd-top-120 viaje-go-top">
@@ -306,18 +373,18 @@ const TourListV2 = () => {
                 <div className="col-xl-4 col-sm-6">
                   <a className="btn btn-yellow" style={{ color: 'white' }}
                     onClick={sortSearchResultsBasedOnPrices}>
-                    <i className={"la la-arrow-" + this.state.price_sort} />
-                    {this.state.price_sort_text}
+                    <i className={"la la-arrow-" + price_sort} />
+                    {price_sort_text}
                   </a>
                 </div>
               </div>
             </div>
-            {flight}
+            {flight()}
             <div className="text-md-center text-left">
               <div className="tp-pagination text-md-center text-left d-inline-block mt-4">
                 <ul>
                   <li><a className="prev page-numbers" onClick={prevPage}><i className="la la-long-arrow-left" /></a></li>
-                  {flightsPageNumbersListing}
+                  {flightsPageNumbersListing()}
                   <li><a className="next page-numbers" onClick={nextPage}><i className="la la-long-arrow-right" /></a></li>
                 </ul>
               </div>

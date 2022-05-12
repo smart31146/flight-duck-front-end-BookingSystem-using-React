@@ -12,6 +12,8 @@ import Stripe from '../global-components/Stripe';
 
 const HotelBooking = (props) => {
 
+  //this is second booking page
+
   let publicUrl = process.env.PUBLIC_URL + '/'
   let imagealt = 'image'
   console.log("hotel booking page=========");

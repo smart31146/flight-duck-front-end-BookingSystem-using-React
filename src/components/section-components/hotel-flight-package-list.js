@@ -453,15 +453,12 @@ const HotelFlightPackageList = () => {
     // })
 
     let arr = [];
-    console.log("flight package is " + hotelFlightPackageList.length)
-    console.log(hotelFlightPackageList)
+
     if(hotelFlightPackageList.length > 0) {
       for (let i = 0; i < hotelFlightPackageList.length; i++) {
         arr.push(<FlightHotelPackageItem
             key={hotelFlightPackageList[i].outbounddate} {...hotelFlightPackageList[i]} />)
       }
-      console.log("JERJEJRE")
-      console.log(arr)
     }
     return (
         <div className="tour-list-area">

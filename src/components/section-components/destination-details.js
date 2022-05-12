@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
+import Button from "@material-ui/core/Button";
+import {makeStyles} from "@material-ui/core/styles";
 
 let hotelDetails = null;
 let roomDetails = null;
@@ -22,13 +24,18 @@ class DestinatioDetails extends Component {
     flightDetails = JSON.parse(localStorage.getItem("flight_details"));
   }
 
+  openUrl() {
+    let flightBookingUrl = localStorage.getItem('flight_booking_url');
+    window.location.href = flightBookingUrl
+  }
+
   render() {
 
     let publicUrl = process.env.PUBLIC_URL+'/'
     let imagealt = 'image'
 
-    let flightDetailsTable;
-    if (onlyHotel=='false') {
+
+    let flightDetailsTable; //need to make this responsive
       flightDetailsTable = (
         <div style={{backgroundColor: 'white', margin: '20px', padding: '20px', borderRadius: '10px'}}>
           <center>
@@ -60,11 +67,25 @@ class DestinatioDetails extends Component {
                   <h3><span>{flightDetails['currencySymbol']}</span>{flightDetails['price']}</h3>
                 </td>
               </tr>
+              {/*<Button*/}
+              {/*    type="submit"*/}
+              {/*    onClick={this.openUrl}*/}
+              {/*    fullWidth*/}
+              {/*    variant="contained"*/}
+              {/*    color="primary"*/}
+              {/*    className="btn btn-yellow"*/}
+              {/*>*/}
+                <a className="btn btn-yellow" style={{ color: 'white' }}
+                   onClick={this.openUrl}>
+                  Book flight
+                </a>
+                {/*  we need an if statement here if return flights or flight*/}
+              {/*</Button>*/}
             </tbody>
           </table>
         </div>
       );
-    }
+
 
     let paymentOption;
     if (onlyHotel == 'false') {
