@@ -90,11 +90,14 @@ const TourListV2 = () => {
     if (user_details) {
       user_id = JSON.parse(user_details)["id"];
     }
+    console.log("BELOW IS DEPARTURE DATE")
+    console.log(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate)
 
     var jsonData = {
       "originplace": localStorage.getItem("origin"),
       "destinationplace": localStorage.getItem("destination"),
-      "outbounddate": "2022-05-15",
+      "outbounddate": JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate,
+      "inbounddate": JSON.parse(localStorage.getItem('hotel_details')).flightDetails.inbounddate,
       "children": Number(localStorage.getItem("children")),
       "adults": Number(localStorage.getItem("adults")),
       "country": localStorage.getItem("country_code"),
@@ -102,9 +105,9 @@ const TourListV2 = () => {
       "locale": "en-US",
       "user_id": user_id
     }
-    if (localStorage.getItem("return_date").toString().trim(' ') != "") {
-      jsonData['return_date'] = localStorage.getItem("return_date").toString()
-    }
+    // if (localStorage.getItem("return_date").toString().trim(' ') != "") {
+    //   jsonData['return_date'] = localStorage.getItem("return_date").toString()
+    // }
 
     return fetch(`${API_URL}flights/live-flight-prices/`, {
       method: "POST",

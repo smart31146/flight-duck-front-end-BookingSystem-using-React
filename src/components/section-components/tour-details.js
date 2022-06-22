@@ -111,7 +111,7 @@ class TourDetails extends Component {
       return `${num} ${type}s`
     }
   };
-
+// FIX THIS. WHOLE FILE NEEDS TO BE REFACTORED SO CAN GRAB FROM STATE RATHER THAN LOCALSTORAGE
   createHotelRoomsRateList() {
 
     return this.props.hotelDetails.rooms.map((room, i) => {

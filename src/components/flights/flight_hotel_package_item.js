@@ -8,6 +8,7 @@ const FlightHotelPackageItem = (flightDetails) => {
   const [handleOpen, setHandleOpen] = useState({ open: false });
   const history = useHistory();
   const handleClick = () => {
+    console.log("BELOW IS FLIGHT DETAILS")
     console.log(flightDetails)
     history.push({
       pathname: "/tour-details",
