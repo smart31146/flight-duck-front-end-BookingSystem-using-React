@@ -330,17 +330,17 @@ const Search = () => {
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
 						<input type="text" className="w-100"
-							list="data1" placeholder="Where To?"
-							   value={destination}
-							   onChange={handleChange("destination")}
+							list="data2" placeholder="Where From?"
+							value={origin}
+							onChange={handleChange("origin")}
 							required
 						/>
-						<datalist id="data1">
+						<datalist id="data2">
 							<select>
 								{
-									destinationList.map(originItem => {
+									originList.map(originItem => {
 										return (
-											<option key={`o${originItem.airport_name}`}>
+											<option key={`o2${originItem.airport_name}`}>
 												{originItem.airport_name}
 											</option>
 										)
@@ -354,17 +354,17 @@ const Search = () => {
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
 						<input type="text" className="w-100"
-							list="data2" placeholder="Where From?"
-							value={origin}
-							onChange={handleChange("origin")}
+							list="data1" placeholder="Where To?"
+							   value={destination}
+							   onChange={handleChange("destination")}
 							required
 						/>
-						<datalist id="data2">
+						<datalist id="data1">
 							<select>
 								{
-									originList.map(originItem => {
+									destinationList.map(originItem => {
 										return (
-											<option key={`o2${originItem.airport_name}`}>
+											<option key={`o${originItem.airport_name}`}>
 												{originItem.airport_name}
 											</option>
 										)
