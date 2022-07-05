@@ -317,8 +317,10 @@ const HotelFlightPackageList = () => {
       //setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
 
 
-      //result0 here is only one part of the whole array
-      setGlobalState("hotelFlightPackageList", (result || []))
+
+      console.log("this is result 0")
+      console.log(result[0])
+      setGlobalState("hotelFlightPackageList", (result[0] || []))
       console.log("after setting global state")
       console.log(hotelFlightPackageList)
       //hotelFlightPackageList = (result[0] || []);
@@ -349,7 +351,7 @@ const HotelFlightPackageList = () => {
     setValues({ ...values, error: false, pageNumber: 0 });
     //setGlobalState("pageNumber", 0);
     // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
-    setGlobalState("hotelFlightPackageList", (result || []))
+    setGlobalState("hotelFlightPackageList", (result[0] || []))
   }
 
   const filterAndSort = () => {
@@ -397,7 +399,7 @@ const HotelFlightPackageList = () => {
       //setGlobalState("pageNumber", 0);
       // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
       //hotelFlightPackageList = (result[0] || [])
-      setGlobalState("hotelFlightPackageList", (result || []))
+      setGlobalState("hotelFlightPackageList", (result[0] || []))
 
 
 
@@ -456,19 +458,17 @@ const HotelFlightPackageList = () => {
     let arr = [];
 
     if(hotelFlightPackageList.length > 0) {
-      for (let hotelArray = 0; hotelArray < hotelFlightPackageList.length; hotelArray++) {
-        for (let i = 0; i < hotelFlightPackageList[hotelArray].length; i++) {
-            arr.push(<FlightHotelPackageItem
-            key={hotelFlightPackageList[hotelArray][i].outbounddate} {...hotelFlightPackageList[hotelArray][i]} />)
-        }
+      for (let i = 0; i < hotelFlightPackageList.length; i++) {
+        arr.push(<FlightHotelPackageItem
+            key={hotelFlightPackageList[i].outbounddate + i} {...hotelFlightPackageList[i]} />)
       }
     }
-    console.log("for loops did this")
+    console.log("below is arr")
     console.log(arr)
     return (
         <div className="tour-list-area">
-          {arr.map((flightDetails) => {
-            return flightDetails
+          {arr.map((packageDetails) => {
+            return packageDetails
           })};
         </div>
 
