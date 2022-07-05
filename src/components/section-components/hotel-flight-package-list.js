@@ -292,6 +292,8 @@ const HotelFlightPackageList = () => {
     setTimeout(() => {
       let price = price_sort;
       const newList = filteredData;
+      console.log("below is list after being updated by price sort")
+      console.log(newList)
       if (price === "down") {
         //setValues({ ...values, error: false, price_sort_text: "Price Low to High", price_sort: "up" });
         setGlobalState("price_sort_text", "Price Low to High")
@@ -315,9 +317,8 @@ const HotelFlightPackageList = () => {
       //setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
 
 
-
-
-      setGlobalState("hotelFlightPackageList", (result[0] || []))
+      //result0 here is only one part of the whole array
+      setGlobalState("hotelFlightPackageList", (result || []))
       console.log("after setting global state")
       console.log(hotelFlightPackageList)
       //hotelFlightPackageList = (result[0] || []);
@@ -348,7 +349,7 @@ const HotelFlightPackageList = () => {
     setValues({ ...values, error: false, pageNumber: 0 });
     //setGlobalState("pageNumber", 0);
     // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
-    setGlobalState("hotelFlightPackageList", (result[0] || []))
+    setGlobalState("hotelFlightPackageList", (result || []))
   }
 
   const filterAndSort = () => {
@@ -396,7 +397,7 @@ const HotelFlightPackageList = () => {
       //setGlobalState("pageNumber", 0);
       // setValues({ ...values, error: false, hotelFlightPackageList: (result[0] || []) });
       //hotelFlightPackageList = (result[0] || [])
-      setGlobalState("hotelFlightPackageList", (result[0] || []))
+      setGlobalState("hotelFlightPackageList", (result || []))
 
 
 
@@ -455,11 +456,15 @@ const HotelFlightPackageList = () => {
     let arr = [];
 
     if(hotelFlightPackageList.length > 0) {
-      for (let i = 0; i < hotelFlightPackageList.length; i++) {
-        arr.push(<FlightHotelPackageItem
-            key={hotelFlightPackageList[i].outbounddate} {...hotelFlightPackageList[i]} />)
+      for (let hotelArray = 0; hotelArray < hotelFlightPackageList.length; hotelArray++) {
+        for (let i = 0; i < hotelFlightPackageList[hotelArray].length; i++) {
+            arr.push(<FlightHotelPackageItem
+            key={hotelFlightPackageList[hotelArray][i].outbounddate} {...hotelFlightPackageList[hotelArray][i]} />)
+        }
       }
     }
+    console.log("for loops did this")
+    console.log(arr)
     return (
         <div className="tour-list-area">
           {arr.map((flightDetails) => {
