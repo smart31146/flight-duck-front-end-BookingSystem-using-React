@@ -1,4 +1,4 @@
-import React , { Component, useState, useEffect, useRef } from 'react';
+import React, { Component, useState, useEffect, useCallback, useRef } from 'react';
 import { Link, Redirect, withRouter, Route, useHistory } from 'react-router-dom';
 import parse from 'html-react-parser';
 import API_URL, { getFlightsDestinationAutoSuggestion, searchHotelBeds } from '../auth/helper';
@@ -22,6 +22,7 @@ import { addMonths } from 'date-fns';
 import Moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { DebounceInput } from 'react-debounce-input';
 import { setGlobalState, useGlobalState } from '../../index'
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +65,7 @@ const Search = () => {
 	const [adults] = useGlobalState("adults")
 	const [children] = useGlobalState("children")
 	const [days] = useGlobalState("days")
+	console.log('globalstate print in SEARCH function')
 	printGlobalState(destination, origin, departureDate, return_date, adults, children, days);
 
 
@@ -76,7 +78,7 @@ const Search = () => {
 	const [returnDate, setReturnDate] = useState(null);
 
 	useEffect(() => {
-		console.log("in here")
+		console.log("in here USEEFFECT")
 		const country_code = localStorage.getItem("country_code")
 		const url = `${API_URL}flights/get-airport-code/?country=${country_code}`
 		fetch(
@@ -110,7 +112,7 @@ const Search = () => {
 		// originList: []
 	});
 
-	const {daysOptions, selectedDayOption,
+	const { daysOptions, selectedDayOption,
 		numberOfRooms, suggestions, keyValue,
 		error, errorMessage, alert
 		// originList
@@ -154,32 +156,35 @@ const Search = () => {
 
 
 	const handleChange = (name) => (event) => {
+		console.log("execution of Handlechange")
 		setGlobalState(name, event.target.value)
 		setValues({ ...values, error: false, [name]: event.target.value });
 		if (name === "destination") {
+			console.log("this is pre destination API req")
 			const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
 			fetch(
 				url, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json'
-					}
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
 				}
+			}	
 			)
 				.then(resp => resp.json()
 				)
 				.then((resp) => {
 					destinationListData(resp['list'])
-				})
+				} )
 		} else if (name === "origin") {
+			console.log("this is origin API fetch")
 			const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
 			fetch(
 				url, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json'
-					}
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
 				}
+			}
 			)
 				.then(resp => resp.json()
 				)
@@ -187,7 +192,25 @@ const Search = () => {
 					originListData(resp['list'])
 				})
 		}
+		console.log("this is post ALL API CALL")
 	};
+
+/*	const debounce = (func) => {
+		let timer;
+		return function (...args) {
+			const context = this;
+			if (timer) clearTimeout(timer);
+			timer = setTimeout(() => {
+				timer = null;
+				func.apply(context, args);
+			}, 500);
+        }
+	}
+
+	const handleChangeDebouncer = useCallback(debounce(handleChange), []);
+
+	console.log("this is handle")
+	console.log(handleChangeDebouncer);*/
 
 	const handleRadioChange = (name) => (event) => {
 		setValues({ ...values, [name]: event.target.value });
@@ -204,18 +227,18 @@ const Search = () => {
 			// 	});
 			// 	return;
 			// } else {
-				const destination_code = destinationList.find((dest) => dest.airport_name === destination).airport_code;
-				const origin_code = originList.find((org) => org.airport_name === origin).airport_code;
-				const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
-				const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
+			const destination_code = destinationList.find((dest) => dest.airport_name === destination).airport_code;
+			const origin_code = originList.find((org) => org.airport_name === origin).airport_code;
+			const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
+			const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
 
-				saveFlightsSearchDataToLocalStorage({
-					destination_code, origin_code, updatedDepartureDate,
-					updatedReturnDate, adults, children
-				});
-				localStorage.removeItem("only_flight");
-				localStorage.setItem("only_flight", "true");
-				history.push("/tour-list-v2");
+			saveFlightsSearchDataToLocalStorage({
+				destination_code, origin_code, updatedDepartureDate,
+				updatedReturnDate, adults, children
+			});
+			localStorage.removeItem("only_flight");
+			localStorage.setItem("only_flight", "true");
+			history.push("/tour-list-v2");
 			// }
 		}
 		else {
@@ -244,18 +267,18 @@ const Search = () => {
 			// 	});
 			// 	return;
 			// } else {
-				const hotelDestinationCode = destinationList.find((dest) => dest.city__city_name === destination).city__city_code;
-				const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
-				const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
+			const hotelDestinationCode = destinationList.find((dest) => dest.city__city_name === destination).city__city_code;
+			const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
+			const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
 
-				saveHotelSearchDataToLocalStorage({
-					hotelDestinationCode,
-					updatedDepartureDate, updatedReturnDate,
-					adults, numberOfRooms
-				});
-				localStorage.removeItem("only_hotel");
-				localStorage.setItem("only_hotel", "true");
-				history.push("/hotel-list");
+			saveHotelSearchDataToLocalStorage({
+				hotelDestinationCode,
+				updatedDepartureDate, updatedReturnDate,
+				adults, numberOfRooms
+			});
+			localStorage.removeItem("only_hotel");
+			localStorage.setItem("only_hotel", "true");
+			history.push("/hotel-list");
 			// }
 		}
 		else {
@@ -291,30 +314,30 @@ const Search = () => {
 		// 	});
 		// 	return;
 		// } else {
-			const destinationCode = destinationList.find((dest) => dest.airport_name === destination).airport_code;
-			const originCode = originList.find((org) => org.airport_name === origin).airport_code;
-			const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
-			const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
-			const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
+		const destinationCode = destinationList.find((dest) => dest.airport_name === destination).airport_code;
+		const originCode = originList.find((org) => org.airport_name === origin).airport_code;
+		const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
+		const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
+		const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
 
-			setGlobalState("destination_code", destinationCode)
-			setGlobalState("origin", originCode)
-			setGlobalState("hotel_destination", hotelDestinationCode)
-			setGlobalState("departure_date", updatedDepartureDate)
-			setGlobalState("return_date", updatedReturnDate)
+		setGlobalState("destination_code", destinationCode)
+		setGlobalState("origin", originCode)
+		setGlobalState("hotel_destination", hotelDestinationCode)
+		setGlobalState("departure_date", updatedDepartureDate)
+		setGlobalState("return_date", updatedReturnDate)
 
 
 		savePackageSearchDataToLocalStorage({
-				destinationCode, originCode,
-				updatedDepartureDate, hotelDestinationCode,
-				updatedReturnDate, adults, children,
-				searchForMonths, days
-			});
-			localStorage.removeItem("only_hotel");
-			localStorage.removeItem("only_flight");
-			localStorage.setItem("only_hotel", "false");
+			destinationCode, originCode,
+			updatedDepartureDate, hotelDestinationCode,
+			updatedReturnDate, adults, children,
+			searchForMonths, days
+		});
+		localStorage.removeItem("only_hotel");
+		localStorage.removeItem("only_flight");
+		localStorage.setItem("only_hotel", "false");
 
-			history.push("/flight-hotel-package");
+		history.push("/flight-hotel-package");
 		// }
 	};
 
@@ -322,15 +345,18 @@ const Search = () => {
 
 	const minDate = new Date(date.getFullYear(), date.getMonth(), 1);
 
-	const maxDate = date.setMonth(date.getMonth()+16);
+	const maxDate = date.setMonth(date.getMonth() + 16);
 
 	const packageHtml =
 		<form onSubmit={onSearchFlightHotelPackageFormSubmit}>
 			<div className="row">
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<input type="text" className="w-100"
-							list="data2" placeholder="Where From?"
+						<DebounceInput
+							minLength={2}
+							debounceTimeout={400}
+							input type="text" className="w-100"
+							list="data2" placeholder="Where Fro?"
 							value={origin}
 							onChange={handleChange("origin")}
 							required
@@ -353,10 +379,13 @@ const Search = () => {
 				</div>
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<input type="text" className="w-100"
+						<DebounceInput
+							minLength={1}
+							debounceTimeout={400}
+							input type="text" className="w-100"
 							list="data1" placeholder="Where To?"
-							   value={destination}
-							   onChange={handleChange("destination")}
+							value={destination}
+							onChange={handleChange("destination")}
 							required
 						/>
 						<datalist id="data1">
@@ -470,7 +499,10 @@ const Search = () => {
 			<div className="row">
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<input type="text" className="w-100"
+						<DebounceInput
+							minLength={1}
+							debounceTimeout={400}
+							input type="text" className="w-100"
 							list="data1" placeholder="Where To?"
 							value={destination}
 							onChange={handleChange("destination")}
@@ -494,7 +526,10 @@ const Search = () => {
 				</div>
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<input type="text" className="w-100"
+						<DebounceInput
+							minLength={1}
+							debounceTimeout={400}
+							input type="text" className="w-100"
 							list="data2" placeholder="Where From?"
 							value={origin}
 							onChange={handleChange("origin")}
@@ -560,7 +595,10 @@ const Search = () => {
 			<div className="row">
 				<div className="col-lg-4 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<input type="text" className="w-100"
+						<DebounceInput
+							minLength={1}
+							debounceTimeout={400}
+							input type="text" className="w-100"
 							list="data1" placeholder="Where To?"
 							value={destination}
 							onChange={handleChange("destination")}
