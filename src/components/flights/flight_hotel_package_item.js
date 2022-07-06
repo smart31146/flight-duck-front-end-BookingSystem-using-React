@@ -19,14 +19,14 @@ const FlightHotelPackageItem = (flightDetails) => {
   return (
     <div className="single-destinations-list style-three">
       <div className="thumb" onClick={handleClick}>
-        <img src={flightDetails.images[0]}
+        <img src={flightDetails.hotel_object.images[0]}
           alt="image" style={{ "objectFit": "scale-down" }} />
       </div>
       <div className="details">
         <div className="row">
           <div className="col-sm-10">
             <h4 className="title"><i className="fa fa-plane" />  {flightDetails.carrier_name}</h4>
-            <h4 className="title"><i className="fa fa-bed" />  {flightDetails.hotel}</h4>
+            <h4 className="title"><i className="fa fa-bed" />  {flightDetails.hotel_object.hotel}</h4>
           </div>
           <div className="col-sm-2">
             <i className="fa fa-map-marker fa-3x" aria-hidden="true"></i>
@@ -60,7 +60,7 @@ const FlightHotelPackageItem = (flightDetails) => {
         autoplay={false}
         style={{ position: "absolute" }}
       >
-        {flightDetails.images.map((image, i) => {
+        {flightDetails.hotel_object.images.map((image, i) => {
           return (<Slide key={`k${i}`}
             media={
               <img src={image} />

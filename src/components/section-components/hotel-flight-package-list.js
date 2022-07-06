@@ -292,6 +292,8 @@ const HotelFlightPackageList = () => {
     setTimeout(() => {
       let price = price_sort;
       const newList = filteredData;
+      console.log("below is list after being updated by price sort")
+      console.log(newList)
       if (price === "down") {
         //setValues({ ...values, error: false, price_sort_text: "Price Low to High", price_sort: "up" });
         setGlobalState("price_sort_text", "Price Low to High")
@@ -316,7 +318,8 @@ const HotelFlightPackageList = () => {
 
 
 
-
+      console.log("this is result 0")
+      console.log(result[0])
       setGlobalState("hotelFlightPackageList", (result[0] || []))
       console.log("after setting global state")
       console.log(hotelFlightPackageList)
@@ -457,13 +460,15 @@ const HotelFlightPackageList = () => {
     if(hotelFlightPackageList.length > 0) {
       for (let i = 0; i < hotelFlightPackageList.length; i++) {
         arr.push(<FlightHotelPackageItem
-            key={hotelFlightPackageList[i].outbounddate} {...hotelFlightPackageList[i]} />)
+            key={hotelFlightPackageList[i].outbounddate + i} {...hotelFlightPackageList[i]} />)
       }
     }
+    console.log("below is arr")
+    console.log(arr)
     return (
         <div className="tour-list-area">
-          {arr.map((flightDetails) => {
-            return flightDetails
+          {arr.map((packageDetails) => {
+            return packageDetails
           })};
         </div>
 
