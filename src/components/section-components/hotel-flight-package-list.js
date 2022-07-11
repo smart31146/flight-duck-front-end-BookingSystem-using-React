@@ -194,6 +194,7 @@ const HotelFlightPackageList = () => {
     // const return_date = localStorage.getItem("flight_return_date");
     getCacheFlightHotelsPackage()
         .then((data) => {
+          console.log("BELOW IS DATA RECIEVED")
           console.log(data.list)
           console.log(data.list.length)
           if (data.list.length > 0) {
