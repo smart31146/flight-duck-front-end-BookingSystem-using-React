@@ -70,7 +70,13 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	flightsCompleteList: [],
 	liveFlightsList: [],
 	flights_price_sort: "down",
-	flights_price_sort_text: "Price High to Low"
+	flights_price_sort_text: "Price High to Low",
+	currencyOptions: [
+		{value: 'AUD'},
+		{value: 'USD'},
+		{value: 'NZD'}
+	],
+	selectedCurrency: {value: 'NZD'}
 });
 
 class Root extends Component {

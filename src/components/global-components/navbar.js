@@ -5,9 +5,8 @@ import { setGlobalState, useGlobalState } from '../../index';
 
 
 
-class Navbar extends Component {
+const Navbar = () => {
 
-    render() {
         let publicUrl = process.env.PUBLIC_URL+'/'
         let imgattr = 'logo'
 		let anchor = '#'
@@ -15,18 +14,22 @@ class Navbar extends Component {
 
 		/*	const selected = useGlobalState.currencyOptions[0].value;*/
 
-		const [currencyOptions] = useGlobalState("currencyOptions")
+	const [currencyOptions] = useGlobalState("currencyOptions")
+	console.log("CURRENCYOPTIONS")
+	console.log(currencyOptions)
 
-		const [selected] = setGlobalState("selectedCurrency")
+	const [selected] = useGlobalState("selectedCurrency")
+	console.log("SELECTEDDDDDEEDDEDDD")
+	console.log(selected)
 
 
 /*		const [selected, setSelected] = [currencyOptions[0]]*/
 
 /*		const setSelected = setGlobalState(currencyOptions[0].value);*/
 
-		const currencyHandleChange = event => {
+		const currencyHandleChange = (e) => {
 			console.log("CAT");
-			setGlobalState("selectedCurrency", (event.target.value))
+			setGlobalState("selectedCurrency", (e.target.value))
 		};
 
         return (
@@ -131,7 +134,7 @@ class Navbar extends Component {
 						<select className="select single-select" value={selected} onChange={currencyHandleChange}>
 							{currencyOptions.map(option => (
 								<option key={option.value} value={option.value}>
-									{option.text}
+									{option.value}
 								</option>
 							))}
 						</select>
@@ -179,7 +182,6 @@ class Navbar extends Component {
 			  </div>
 			</nav>
         )
-    }
 }
 
 
