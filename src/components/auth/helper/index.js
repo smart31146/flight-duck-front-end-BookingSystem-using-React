@@ -96,7 +96,6 @@ export const facebookSignIn = () => {
     .catch((err) => console.log(err));
 };
 
-
 export const authenticate = (data, next) => {
   if (typeof window !== undefined) {
     localStorage.setItem("jwt", JSON.stringify(data));
@@ -138,7 +137,8 @@ export const getLiveHotelPricing = (details) => {
     "rooms": Number(localStorage.getItem("rooms")),
     "adults": localStorage.getItem("adults"),
     "children": "0",
-    "user_id": user_id
+    "user_id": user_id,
+     "currency_format": localStorage.getItem("currency_format").toString(),
   }
 
   if (returnDate !== 'undefined') {
@@ -169,7 +169,8 @@ export const getFlightsDestinationAutoSuggestion = (details) => {
       origin: details.origin,
       destination: details.destination,
       departureDate: departure_date,
-      returnDate: details.return_date
+      returnDate: details.return_date,
+      currency_format: details.currency_format
     })
   })
     .then((response) => {
@@ -192,7 +193,7 @@ export const getLiveFlights = (details) => {
     "children": Number(localStorage.getItem("children")),
     "adults": Number(localStorage.getItem("adults")),
     "country": localStorage.getItem("country_code"),
-    "currency": localStorage.getItem("currency"),
+      "currency_format": localStorage.getItem("currency_format").toString(),
     "locale": "en-US",
     "user_id": user_id
   }
@@ -226,6 +227,7 @@ export const saveFlightsSearchDataToLocalStorage = (details) => {
   localStorage.setItem("destination", details.destination_code);
   localStorage.setItem("origin", details.origin_code);
   localStorage.setItem("departure_date", details.updatedDepartureDate);
+    localStorage.setItem("currency_format", details.currencyFormat).toString();
   if (details.updatedReturnDate) {
     localStorage.setItem("return_date", details.updatedReturnDate);
   } else {
@@ -250,6 +252,7 @@ export const saveHotelSearchDataToLocalStorage = (details) => {
   localStorage.setItem("adults", details.adults);
   localStorage.setItem("children", details.children);
   localStorage.setItem("days", details.days);
+  localStorage.setItem("currency_format", details.currencyFormat);
 };
 
 export const savePackageSearchDataToLocalStorage = (details) => {
@@ -282,7 +285,7 @@ export const getCacheFlightHotelsPackage = () => {
       "adults": zeroIfNull(localStorage.getItem("adults")),
       "children": zeroIfNull(localStorage.getItem("children")),
       "country": localStorage.getItem("country_code"),
-      "currency_format": localStorage.getItem("currency"),
+      "currency_format": localStorage.getItem("currency_format"),
       "locale": "EN",
       "destination_code": localStorage.getItem("hotel_destination"),
       "trip_days":  localStorage.getItem("days"),

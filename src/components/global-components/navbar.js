@@ -1,15 +1,40 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { isAuthenticated, signout } from "../auth/helper/index";
+import { setGlobalState, useGlobalState } from '../../index';
 
-class Navbar extends Component {
 
-    render() {
+
+const Navbar = () => {
+
         let publicUrl = process.env.PUBLIC_URL+'/'
         let imgattr = 'logo'
-        let anchor = '#'
+		let anchor = '#'
+
+
+		/*	const selected = useGlobalState.currencyOptions[0].value;*/
+
+	const [currencyOptions] = useGlobalState("currencyOptions")
+	console.log("CURRENCYOPTIONS")
+	console.log(currencyOptions)
+
+	const [selected] = useGlobalState("selectedCurrency")
+	console.log("SELECTED CURRENCY")
+	console.log(selected)
+
+
+/*		const [selected, setSelected] = [currencyOptions[0]]*/
+
+/*		const setSelected = setGlobalState(currencyOptions[0].value);*/
+
+		const currencyHandleChange = (e) => {
+			console.log("CAT");
+			console.log(selected);
+			setGlobalState("selectedCurrency", (e.target.value))
+		};
+
         return (
-            <nav className="navbar navbar-area navbar-expand-lg nav-style-01 viaje-go-top">
+			<nav className="navbar navbar-area navbar-expand-lg nav-style-01 viaje-go-top navbar-area">
 			  <div className="container nav-container">
 			    <div className="responsive-mobile-menu">
 			      <div className="mobile-logo">
@@ -50,7 +75,8 @@ class Navbar extends Component {
 			          </li>
 			        </ul>
 			      </div>
-			    </div>
+					</div>
+
 			    <div className="collapse navbar-collapse" id="tp_main_menu">
 			      <div className="logo-wrapper desktop-logo">
 			        <Link to="/" className="main-logo">
@@ -103,8 +129,33 @@ class Navbar extends Component {
 			          <Link to="/contact">Contact</Link>
 			        </li>
 			      </ul>
-			    </div>
-			    <div className="nav-right-content">
+					</div>
+					<div className="tp-currency-wrap" >
+{/*						<select className="select single-select" onChange={currencyHandleChange}>*/}
+						<select className="cat" value={selected} onChange={currencyHandleChange}>
+							{currencyOptions.map(option => (
+								<option key={option.value} value={option.value}>
+									{option.value}
+								</option>
+							))}
+						</select>
+
+{/*							<option value="AUD">Option #1</option>
+							<option value="USD">Option #3</option>
+							<option value="NZD">Option #41</option>*/}
+{/*							<option value="NZD" >NZD</option>
+							<option value="USD" >USD</option>
+							<option value="GBP">GBP</option>
+							<option value="EUR">EUR</option>
+							<option value="CAN">CAN</option>
+							<option value="EUR">EUR</option>
+							<option value="JPY">JPY</option>
+							<option value="INR ">INR </option>*/}
+{/*						</select>*/}
+					</div>
+					<div className="nav-right-content">
+
+
 			      <ul>
 				  	{isAuthenticated () && (
 						<li>
@@ -132,7 +183,6 @@ class Navbar extends Component {
 			  </div>
 			</nav>
         )
-    }
 }
 
 

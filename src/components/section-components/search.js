@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const printGlobalState = (destination, origin, departureDate, return_date, adults, children, days) => {
+const printGlobalState = (destination, origin, departureDate, return_date, adults, children, days, ) => {
 
 	console.log("destination is " + destination)
 	console.log("origin is " + origin)
@@ -65,8 +65,9 @@ const Search = () => {
 	const [adults] = useGlobalState("adults")
 	const [children] = useGlobalState("children")
 	const [days] = useGlobalState("days")
+	const [currency_format] = useGlobalState("selectedCurrency")
 	console.log('globalstate print in SEARCH function')
-	printGlobalState(destination, origin, departureDate, return_date, adults, children, days);
+	printGlobalState(destination, origin, departureDate, return_date, adults, children, days, currency_format);
 
 
 	let history = useHistory();
@@ -195,23 +196,6 @@ const Search = () => {
 		console.log("this is post ALL API CALL")
 	};
 
-/*	const debounce = (func) => {
-		let timer;
-		return function (...args) {
-			const context = this;
-			if (timer) clearTimeout(timer);
-			timer = setTimeout(() => {
-				timer = null;
-				func.apply(context, args);
-			}, 500);
-        }
-	}
-
-	const handleChangeDebouncer = useCallback(debounce(handleChange), []);
-
-	console.log("this is handle")
-	console.log(handleChangeDebouncer);*/
-
 	const handleRadioChange = (name) => (event) => {
 		setValues({ ...values, [name]: event.target.value });
 	};
@@ -234,7 +218,7 @@ const Search = () => {
 
 			saveFlightsSearchDataToLocalStorage({
 				destination_code, origin_code, updatedDepartureDate,
-				updatedReturnDate, adults, children
+				updatedReturnDate, adults, children, currency_format
 			});
 			localStorage.removeItem("only_flight");
 			localStorage.setItem("only_flight", "true");
@@ -248,7 +232,7 @@ const Search = () => {
 
 			saveFlightsSearchDataToLocalStorage({
 				destination_code, origin_code,
-				updatedDepartureDate, adults, children
+				updatedDepartureDate, adults, children, currency_format
 			});
 			localStorage.removeItem("only_flight");
 			localStorage.setItem("only_flight", "true");
@@ -274,7 +258,7 @@ const Search = () => {
 			saveHotelSearchDataToLocalStorage({
 				hotelDestinationCode,
 				updatedDepartureDate, updatedReturnDate,
-				adults, numberOfRooms
+				adults, numberOfRooms, currency_format
 			});
 			localStorage.removeItem("only_hotel");
 			localStorage.setItem("only_hotel", "true");
@@ -287,7 +271,7 @@ const Search = () => {
 
 			saveHotelSearchDataToLocalStorage({
 				hotelDestinationCode, updatedDepartureDate, adults,
-				children, numberOfRooms
+				children, numberOfRooms, currency_format
 			});
 			localStorage.removeItem("only_hotel");
 			localStorage.setItem("only_hotel", "true");
@@ -325,13 +309,14 @@ const Search = () => {
 		setGlobalState("hotel_destination", hotelDestinationCode)
 		setGlobalState("departure_date", updatedDepartureDate)
 		setGlobalState("return_date", updatedReturnDate)
-
+		console.log("This is the currecny format")
+		console.log(currency_format)
 
 		savePackageSearchDataToLocalStorage({
 			destinationCode, originCode,
 			updatedDepartureDate, hotelDestinationCode,
 			updatedReturnDate, adults, children,
-			searchForMonths, days
+			searchForMonths, days, currency_format
 		});
 		localStorage.removeItem("only_hotel");
 		localStorage.removeItem("only_flight");
@@ -356,7 +341,7 @@ const Search = () => {
 							minLength={2}
 							debounceTimeout={400}
 							input type="text" className="w-100"
-							list="data2" placeholder="Where Fro?"
+							list="data2" placeholder="Where From?"
 							value={origin}
 							onChange={handleChange("origin")}
 							required
@@ -679,7 +664,7 @@ const Search = () => {
 					<div className="container">
 						<div className="row">
 							<div className="col-xl-4 col-lg-9 offset-xl-4 offset-lg-1" style={{ height: '200px' }}>
-								<Link className="ads-thumb" to="/contact">
+								<Link className="ads-thumb" to="">
 									<img src={logoUrl} alt="ads" />
 								</Link>
 							</div>

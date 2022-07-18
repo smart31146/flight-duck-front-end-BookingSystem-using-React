@@ -102,6 +102,7 @@ const HotelFlightPackageList = () => {
   const [departureDate] = useGlobalState("departure_date");
   const [countryCode] = useGlobalState("country_code");
   const [currency] = useGlobalState("currency");
+  const [selectedCurrency] = useGlobalState("selectedCurrency");
   const [destinationCode] = useGlobalState("destination_code");
   const [hotelCode] = useGlobalState("hotel_destination")
   let [hotelFlightPackageList] = useGlobalState("hotelFlightPackageList")
@@ -147,7 +148,7 @@ const HotelFlightPackageList = () => {
         "adults": zeroIfNull(adults),
         "children": children,
         "country": countryCode,
-        "currency_format": currency,
+        "currency_format": selectedCurrency,
         "locale": "EN",
         "destination_code": hotelCode,
         "trip_days":  zeroIfNull(days),
@@ -169,7 +170,7 @@ const HotelFlightPackageList = () => {
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
         "country": countryCode,
-        "currency_format": currency,
+        "currency_format": selectedCurrency,
         "locale": "EN",
         "destination_code": hotelCode,
         "trip_days":  days,
