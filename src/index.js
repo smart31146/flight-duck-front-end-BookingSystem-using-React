@@ -72,11 +72,18 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	flights_price_sort: "down",
 	flights_price_sort_text: "Price High to Low",
 	currencyOptions: [
-		{value: 'AUD'},
-		{value: 'USD'},
-		{value: 'NZD'}
+		{ value: 'AUD' },
+		{ value: 'USD' },
+		{ value: 'NZD' },
+		{ value: 'EUR' },
+		{ value: 'GPB' },
+		{ value: 'CAN' },
+		{ value: 'JPY' },
+		{ value: 'INR' },
+		{ value: 'CNY' },
+
 	],
-	selectedCurrency: {value: 'NZD'}
+	selectedCurrency: "AUD",
 });
 
 class Root extends Component {

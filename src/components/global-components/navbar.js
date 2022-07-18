@@ -19,7 +19,7 @@ const Navbar = () => {
 	console.log(currencyOptions)
 
 	const [selected] = useGlobalState("selectedCurrency")
-	console.log("SELECTEDDDDDEEDDEDDD")
+	console.log("SELECTED CURRENCY")
 	console.log(selected)
 
 
@@ -29,11 +29,12 @@ const Navbar = () => {
 
 		const currencyHandleChange = (e) => {
 			console.log("CAT");
+			console.log(selected);
 			setGlobalState("selectedCurrency", (e.target.value))
 		};
 
         return (
-			<nav className="navbar navbar-area navbar-expand-lg nav-style-01 viaje-go-top navbar-area-fixed">
+			<nav className="navbar navbar-area navbar-expand-lg nav-style-01 viaje-go-top navbar-area">
 			  <div className="container nav-container">
 			    <div className="responsive-mobile-menu">
 			      <div className="mobile-logo">
@@ -131,7 +132,7 @@ const Navbar = () => {
 					</div>
 					<div className="tp-currency-wrap" >
 {/*						<select className="select single-select" onChange={currencyHandleChange}>*/}
-						<select className="select single-select" value={selected} onChange={currencyHandleChange}>
+						<select className="cat" value={selected} onChange={currencyHandleChange}>
 							{currencyOptions.map(option => (
 								<option key={option.value} value={option.value}>
 									{option.value}
