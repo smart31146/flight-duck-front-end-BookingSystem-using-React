@@ -338,7 +338,7 @@ const Search = () => {
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
 						<DebounceInput
-							minLength={2}
+							minLength={0}
 							debounceTimeout={400}
 							input type="text" className="w-100"
 							list="data2" placeholder="Where From?"
@@ -365,7 +365,7 @@ const Search = () => {
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
 						<DebounceInput
-							minLength={1}
+							minLength={0}
 							debounceTimeout={400}
 							input type="text" className="w-100"
 							list="data1" placeholder="Where To?"
