@@ -126,6 +126,14 @@ const HotelFlightPackageList = () => {
     return result;
   }
 
+  const convertDate = (newDate) => {
+	let today = new Date(newDate);
+
+	// return today.getDate() + "-"+ parseInt(today.getMonth()+1) +"-"+today.getFullYear();
+
+    return today.getFullYear() + "-"+ parseInt(today.getMonth()+1) +"-"+today.getDate();
+}
+
 
   const getCacheFlightHotelsPackage = () => {
     const updatedInbound = addDays(departureDate,days);
@@ -141,8 +149,8 @@ const HotelFlightPackageList = () => {
       body: JSON.stringify({
         "originplace": origin,
         "destinationplace": destination,
-        "outbounddate": departureDate,
-        "inbounddate": '2022-04-17',
+        "outbounddate": convertDate(departureDate),
+        "inbounddate": convertDate(departureDate),
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": children,
@@ -163,8 +171,8 @@ const HotelFlightPackageList = () => {
         "originplace": origin,
         "destinationplace": destination,
         // "outbounddate": departureDate,
-        "outbounddate": "2022-07-25",
-        "inbounddate": "2022-07-27",
+        "outbounddate": convertDate(departureDate),
+        "inbounddate": convertDate(departureDate),
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),
@@ -390,6 +398,8 @@ const HotelFlightPackageList = () => {
         && (r.hotel_object.rating || '').toString().includes(`${star}`)
         && (r.hotel_object.hotel || '').toLowerCase().includes((name || '').toLocaleLowerCase())
       )
+      //TODO BELOW IS A VERY DIRTY FIX TO GET the cheapest prices showing for hotels
+      alist.sort((first, second) => (first.deal_price > second.deal_price ? 1 : -1));
       filteredData = alist;
       console.log("filter list is now")
       console.log(alist)
