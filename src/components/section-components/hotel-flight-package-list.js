@@ -130,9 +130,10 @@ const HotelFlightPackageList = () => {
   const convertDate = (newDate) => {
 	let today = new Date(newDate);
 
-	// return today.getDate() + "-"+ parseInt(today.getMonth()+1) +"-"+today.getFullYear();
 
-    return today.getFullYear() + "-"+ parseInt(today.getMonth()+1) +"-"+today.getDate();
+    let MyDateString = today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+
+    return MyDateString
 }
 
 
