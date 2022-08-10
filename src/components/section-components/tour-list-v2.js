@@ -24,10 +24,11 @@ const TourListV2 = () => {
     maxStopage: 1,
     carriers: '',
     price: [1, 100000],
-    booking: {}
+    booking: {},
+    tries: 0,
   });
 
-  const {price_sort, price_sort_text, loading, pageNumber, paginated_data, filteredData, completeList, cachedFlightsList, maxStopage, carriers, price, booking
+  const {price_sort, price_sort_text, loading, pageNumber, paginated_data, filteredData, completeList, cachedFlightsList, maxStopage, carriers, price, booking, tries
   } = values;
 
   const [destination] = useGlobalState("destination_code")
@@ -47,6 +48,8 @@ const TourListV2 = () => {
     // const departure_date = localStorage.getItem("flight_departure_date");
     // const return_date = localStorage.getItem("flight_return_date");
     // this.searchCachedFlights();
+    console.log("WE are searching for flights now")
+    console.log()
     searchLiveFlights();
   },[])
 
@@ -105,6 +108,8 @@ const TourListV2 = () => {
       "locale": "en-US",
       "user_id": user_id
     }
+    console.log("jsonData")
+    console.log(jsonData)
     // if (localStorage.getItem("return_date").toString().trim(' ') != "") {
     //   jsonData['return_date'] = localStorage.getItem("return_date").toString()
     // }
@@ -181,7 +186,14 @@ const TourListV2 = () => {
       })
       .catch((e) => {
         console.log("flights data error=======", e);
-        setValues({ ...values, loading: false });
+        if(tries < 3) {
+          console.log("we trying again fam")
+          console.log("tries is " + tries)
+            searchLiveFlights();
+            setValues({ ...values, tries: tries + 1 });
+        } else {
+          setValues({...values, loading: false});
+        }
       });
   }
 
