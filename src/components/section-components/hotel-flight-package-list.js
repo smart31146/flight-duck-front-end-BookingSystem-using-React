@@ -113,6 +113,7 @@ const HotelFlightPackageList = () => {
   let [price_sort_text] = useGlobalState("price_sort_text")
   let [departure_time_sort] = useGlobalState("departure_time_sort")
   let [departure_time_sort_text] = useGlobalState("departure_time_sort_text");
+  const [isReturn] = useGlobalState("isReturn")
   //let [pageNumber] = useGlobalState("pageNumber");
   //let [priceRange] = useGlobalState("priceRange");
   //let [starRating] = useGlobalState("starRating");
@@ -152,7 +153,7 @@ const HotelFlightPackageList = () => {
         "originplace": origin,
         "destinationplace": destination,
         "outbounddate": convertDate(departureDate),
-        "inbounddate": convertDate(departureDate),
+        ...(isReturn && { "inbounddate": convertDate(departureDate) }),
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": children,
@@ -174,7 +175,7 @@ const HotelFlightPackageList = () => {
         "destinationplace": destination,
         // "outbounddate": departureDate,
         "outbounddate": convertDate(departureDate),
-        "inbounddate": convertDate(departureDate),
+        ...(isReturn && { "inbounddate": convertDate(departureDate) }),
         "rooms": 1,
         "adults": zeroIfNull(adults),
         "children": zeroIfNull(children),

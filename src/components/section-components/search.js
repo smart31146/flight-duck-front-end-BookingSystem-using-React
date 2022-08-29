@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const printGlobalState = (destination, origin, departureDate, return_date, adults, children, days, ) => {
+const printGlobalState = (destination, origin, departureDate, return_date, adults, children, days ) => {
 
 	console.log("destination is " + destination)
 	console.log("origin is " + origin)
@@ -54,6 +54,10 @@ const printGlobalState = (destination, origin, departureDate, return_date, adult
 	console.log("chuldren is " + children)
 	console.log("departureDate is " + departureDate)
 	console.log("days is " + days)
+}
+
+const printGlobalState2 = (isReturn) => {
+	console.log("return is " + isReturn)
 }
 
 
@@ -66,8 +70,10 @@ const Search = () => {
 	const [children] = useGlobalState("children")
 	const [days] = useGlobalState("days")
 	const [currency_format] = useGlobalState("selectedCurrency")
+	const [isReturn] = useGlobalState("isReturn")
 	console.log('globalstate print in SEARCH function')
-	printGlobalState(destination, origin, departureDate, return_date, adults, children, days, currency_format);
+	printGlobalState(destination, origin, departureDate, return_date, adults, children, days, currency_format)
+	printGlobalState2(isReturn)
 
 
 	let history = useHistory();
@@ -462,11 +468,10 @@ const Search = () => {
 					<input
 						className="form-check-input" type="checkbox"
 						name="inlineRadioOptions"
-						onChange={(event) => setSearchForMonths(event.currentTarget.checked)}
-						checked={searchForMonths} />
+						onChange={() => setGlobalState("isReturn", !isReturn)}
+						checked={isReturn} />
 					<label className="form-check-label" htmlFor="inlineRadio1">
-						Check if you want to search for complete month as well.
-						(Flight and hotel package for upto 3 months only will be shown)
+						get fucked dog cunt
 					</label>
 				</div>
 				<div className="col-xl-4 col-lg-9 offset-xl-4 offset-lg-1 mt-3">

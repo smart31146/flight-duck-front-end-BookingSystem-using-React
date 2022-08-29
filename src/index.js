@@ -52,6 +52,7 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	// errorMessage: "Check all fields again",
 	// alert: null,
 	days: null,
+	isReturn: true,
 	paginated_data: [],
 	completeList: [],
 	filteredData: [],

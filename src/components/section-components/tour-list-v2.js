@@ -35,6 +35,7 @@ const TourListV2 = () => {
   const [origin] = useGlobalState("origin")
   const [return_date] = useGlobalState("return_date")
   const [departureDate] = useGlobalState("departure_date");
+  const [isReturn] = useGlobalState("isReturn")
 
   let [flightsPaginated_data] = useGlobalState("flightsPaginated_data")
   let [flightsFilteredData] = useGlobalState("flightsFilteredData")
@@ -87,6 +88,15 @@ const TourListV2 = () => {
   //   this.toggleLoading();
   // }
 
+    const convertDate = (newDate) => {
+	let today = new Date(newDate);
+
+
+    let MyDateString = today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+
+    return MyDateString
+    }
+
  const getLiveFlights = () => {
     let user_details = localStorage.getItem("jwt");
     let user_id = 1;
@@ -100,7 +110,7 @@ const TourListV2 = () => {
       "originplace": localStorage.getItem("origin"),
       "destinationplace": localStorage.getItem("destination"),
       "outbounddate": JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate,
-      "inbounddate": JSON.parse(localStorage.getItem('hotel_details')).flightDetails.inbounddate,
+      ...(isReturn && { "inbounddate": convertDate(departureDate) }),
       "children": Number(localStorage.getItem("children")),
       "adults": Number(localStorage.getItem("adults")),
       "country": localStorage.getItem("country_code"),
