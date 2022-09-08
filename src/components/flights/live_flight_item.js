@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
+import {useGlobalState} from "../../index";
 
 const LiveFlightItem = (flightDetails) => {
+  const [return_date] = useGlobalState("return_date")
+  const [departureDate] = useGlobalState("departure_date");
   const openInNewTab = (url) => {
     if (localStorage.getItem('only_flight') == 'true') {
       const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
@@ -40,7 +43,7 @@ const LiveFlightItem = (flightDetails) => {
             <i className="fa fa-map-marker fa-4x" aria-hidden="true"></i>
           </div>
         </div>
-        <p className="content">Depature Date - {flightDetails.departure.date} | Arrival Date - {flightDetails.arrival.date} </p>
+        <p className="content">Depature Date - {departureDate} | Return Date - {return_date} </p>
 
         <div className="row">
           <div className="col-sm-6">

@@ -36,12 +36,18 @@ const TourListV2 = () => {
   const [return_date] = useGlobalState("return_date")
   const [departureDate] = useGlobalState("departure_date");
   const [isReturn] = useGlobalState("isReturn")
+  const [children] = useGlobalState("children")
+  const [adults] = useGlobalState("adults")
+  const [country_code] = useGlobalState("country_code")
+  const [currency] = useGlobalState("currency")
 
   let [flightsPaginated_data] = useGlobalState("flightsPaginated_data")
   let [flightsFilteredData] = useGlobalState("flightsFilteredData")
   let [liveFlightsList] = useGlobalState("liveFlightsList");
   let [flightsCompleteList] = useGlobalState("flightsCompleteList");
   let [currencySymbol] = useGlobalState("currencySymbol");
+  let [liveFlightAttempts] = useGlobalState("liveFlightAttempts");
+
 
   useEffect(() => {
     // const destination = localStorage.getItem("flight_destination");
@@ -49,8 +55,13 @@ const TourListV2 = () => {
     // const departure_date = localStorage.getItem("flight_departure_date");
     // const return_date = localStorage.getItem("flight_return_date");
     // this.searchCachedFlights();
+    setGlobalState("return_date", convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.inbounddate))
     console.log("WE are searching for flights now")
-    console.log()
+    console.log("here are values")
+    console.log("return date is")
+    console.log(return_date)
+    console.log("return date is")
+    console.log(return_date)
     searchLiveFlights();
   },[])
 
@@ -106,18 +117,34 @@ const TourListV2 = () => {
     console.log("BELOW IS DEPARTURE DATE")
     console.log(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate)
 
-    var jsonData = {
-      "originplace": localStorage.getItem("origin"),
-      "destinationplace": localStorage.getItem("destination"),
-      "outbounddate": JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate,
-      ...(isReturn && { "inbounddate": convertDate(departureDate) }),
-      "children": Number(localStorage.getItem("children")),
-      "adults": Number(localStorage.getItem("adults")),
-      "country": localStorage.getItem("country_code"),
-      "currency": localStorage.getItem("currency"),
+     console.log("below is flightDetails")
+     console.log(JSON.parse(localStorage.getItem('hotel_details')).flightDetails)
+
+       var jsonData = {
+      "originplace": origin,
+      "destinationplace": destination,
+      "outbounddate": convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate),
+      ...(isReturn && { "inbounddate": convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.inbounddate) }),
+      "children": Number(children),
+      "adults": Number(adults),
+      "country": country_code,
+      "currency": currency,
       "locale": "en-US",
       "user_id": user_id
     }
+
+    // var jsonDataOLD = {
+    //   "originplace": localStorage.getItem("origin"),
+    //   "destinationplace": localStorage.getItem("destination"),
+    //   "outbounddate": JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate,
+    //   ...(isReturn && { "inbounddate": convertDate(departureDate) }),
+    //   "children": Number(localStorage.getItem("children")),
+    //   "adults": Number(localStorage.getItem("adults")),
+    //   "country": localStorage.getItem("country_code"),
+    //   "currency": localStorage.getItem("currency"),
+    //   "locale": "en-US",
+    //   "user_id": user_id
+    // }
     console.log("jsonData")
     console.log(jsonData)
     // if (localStorage.getItem("return_date").toString().trim(' ') != "") {
@@ -130,7 +157,7 @@ const TourListV2 = () => {
       body: JSON.stringify(jsonData)
     })
         .then((response) => {
-          return response.json();;
+          return response.json();
         })
         .catch((err) => { return err });
   };
@@ -196,11 +223,11 @@ const TourListV2 = () => {
       })
       .catch((e) => {
         console.log("flights data error=======", e);
-        if(tries < 3) {
+        if(liveFlightAttempts < 3) {
           console.log("we trying again fam")
-          console.log("tries is " + tries)
+          console.log("tries is " + liveFlightAttempts)
             searchLiveFlights();
-            setValues({ ...values, tries: tries + 1 });
+            setGlobalState("liveFlightAttempts", liveFlightAttempts++)
         } else {
           setValues({...values, loading: false});
         }
@@ -329,9 +356,8 @@ const TourListV2 = () => {
     let flight;
     let flightsPageNumbersListing;
 
-
-
-
+    console.log("below is flight object")
+    console.log(liveFlightsList[0])
     if (liveFlightsList.length == 0 ) {
       return (
           <div className="tour-list-area">
@@ -349,7 +375,10 @@ const TourListV2 = () => {
               if (flightDetails.cheapest != null) {
                 return <LiveFlightItemCheapest key={flightDetails.id} {...flightDetails} />
               } else {
-                return <LiveFlightItem key={flightDetails.id} {...flightDetails} />
+                  const outbound = convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate)
+                  console.log("This be is outbound date")
+                  console.log(outbound)
+                return <LiveFlightItem key={flightDetails.id} {...flightDetails} {...outbound}/> //need to throw in inbound and return date in here
               }
 
             })}
