@@ -22,13 +22,15 @@ const HotelFlightPackageList = () => {
   const { loading, starRating, accommodationType, hotelName, pageNumber, priceRange
   } = values;
 
+    const [isLocal] = useGlobalState("isLocal")
+
 
   useEffect(() => {
     // setValues({ ...values, error: false, destination: destination, origin: origin,
     //   departure_date: departureDate, return_date: return_date })
 
-
-      searchCacheFlightHotelsPackage()
+      console.log(isLocal)
+      searchCacheFlightHotelsPackage(isLocal)
 
 
     console.log("inside useEffect paginated")
@@ -137,6 +139,21 @@ const HotelFlightPackageList = () => {
     return MyDateString
 }
 
+  const getCacheFlightHotelsPackageLocal=()=>{
+    return fetch('cachePackageResponse.json'
+    ,{
+      headers : {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+    }
+      )
+        .then(function(response){
+          return response.json();
+        })
+        .catch((err) => { return err });
+  }
+
 
   const getCacheFlightHotelsPackage = () => {
     const updatedInbound = addDays(departureDate,days);
@@ -194,8 +211,16 @@ const HotelFlightPackageList = () => {
         .catch((err) => { return err });
   };
 
+  const getCacheFlightHotelsPackageSwitch = () => {
+    if (isLocal)
+      return getCacheFlightHotelsPackageLocal()
+    else {
+      return getCacheFlightHotelsPackage()
+    }
+  }
 
-  const searchCacheFlightHotelsPackage = () => {
+
+  const searchCacheFlightHotelsPackage = (isLocal) => {
     setValues({ ...values, loading: true });
     let result = null;
     console.log("loading at start is" + loading)
@@ -203,7 +228,7 @@ const HotelFlightPackageList = () => {
     // const origin = localStorage.getItem("flight_origin");
     // const departure_date = localStorage.getItem("flight_departure_date");
     // const return_date = localStorage.getItem("flight_return_date");
-    getCacheFlightHotelsPackage()
+    getCacheFlightHotelsPackageSwitch()
         .then((data) => {
           console.log("BELOW IS DATA RECIEVED")
           console.log(data.list)

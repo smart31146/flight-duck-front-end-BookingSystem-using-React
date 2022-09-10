@@ -28,8 +28,11 @@ const TourListV2 = () => {
     tries: 0,
   });
 
+
   const {price_sort, price_sort_text, loading, pageNumber, paginated_data, filteredData, completeList, cachedFlightsList, maxStopage, carriers, price, booking, tries
   } = values;
+
+  const [isLocal] = useGlobalState("isLocal")
 
   const [destination] = useGlobalState("destination_code")
   const [origin] = useGlobalState("origin")
@@ -162,11 +165,35 @@ const TourListV2 = () => {
         .catch((err) => { return err });
   };
 
+    const getLiveFlightsLocal=()=>{
+    return fetch('liveFlightsResponse.json'
+    ,{
+      headers : {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+    }
+      )
+        .then(function(response){
+          return response.json();
+        })
+        .catch((err) => { return err });
+  }
+
+    const getLiveFlightsSwitch = () => {
+    if (isLocal)
+      return getLiveFlightsLocal()
+    else {
+      return getLiveFlights()
+    }
+  }
+
+
   const searchLiveFlights = () => {
     //toggleLoading();
     setValues({ ...values, loading: true });
     console.log("loading first is" + loading)
-    getLiveFlights()
+    getLiveFlightsSwitch()
       .then((data) => {
         // console.log("data=========", data)
         if (data.list.length > 0) {
