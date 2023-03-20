@@ -3,6 +3,8 @@ import { Link, Redirect, withRouter, Route, useHistory } from 'react-router-dom'
 import parse from 'html-react-parser';
 import API_URL, { getFlightsDestinationAutoSuggestion, searchHotelBeds } from '../auth/helper';
 import Button from '@material-ui/core/Button';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import TourListV2 from '../../components/tour-list-v2';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -13,7 +15,6 @@ import {
 import 'react-dropdown/style.css';
 // import DatePicker from 'react-date-picker';
 //import DatePicker from "react-datepicker";
-import TextField from '@mui/material/TextField';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
@@ -83,22 +84,24 @@ const Search = () => {
 	const [destinationList, destinationListData] = useState([]);
 	//const [departureDate, setDepartureDate] = useState(null);
 	const [returnDate, setReturnDate] = useState(null);
+	const [isLocal] = useGlobalState("isLocal")
 
 	useEffect(() => {
-		console.log("in here USEEFFECT")
-		const country_code = localStorage.getItem("country_code")
-		const url = `${API_URL}flights/get-airport-code/?country=${country_code}`
-		fetch(
-			url, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-			}
+		if(!isLocal) {
+			const country_code = localStorage.getItem("country_code")
+			const url = `${API_URL}flights/get-airport-code/?country=${country_code}`
+			fetch(
+				url, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				}
+			).then(resp => resp.json()).then((resp) => {
+				originListData(resp['list'])
+				destinationListData(resp['list'])
+			})
 		}
-		).then(resp => resp.json()).then((resp) => {
-			originListData(resp['list'])
-			destinationListData(resp['list'])
-		})
 	}, [])
 
 
@@ -164,42 +167,45 @@ const Search = () => {
 
 	const handleChange = (name) => (event) => {
 		console.log("execution of Handlechange")
+		console.log(name, event.target.value)
 		setGlobalState(name, event.target.value)
 		setValues({ ...values, error: false, [name]: event.target.value });
-		if (name === "destination") {
-			console.log("this is pre destination API req")
-			const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
-			fetch(
-				url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			}	
-			)
-				.then(resp => resp.json()
+		if(!isLocal) {
+			if (name === "destination") {
+				console.log("this is pre destination API req")
+				const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
+				fetch(
+					url, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					}
 				)
-				.then((resp) => {
-					destinationListData(resp['list'])
-				} )
-		} else if (name === "origin") {
-			console.log("this is origin API fetch")
-			const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
-			fetch(
-				url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
+					.then(resp => resp.json()
+					)
+					.then((resp) => {
+						destinationListData(resp['list'])
+					})
+			} else if (name === "origin") {
+				console.log("this is origin API fetch")
+				const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
+				fetch(
+					url, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					}
+				)
+					.then(resp => resp.json()
+					)
+					.then((resp) => {
+						originListData(resp['list'])
+					})
 			}
-			)
-				.then(resp => resp.json()
-				)
-				.then((resp) => {
-					originListData(resp['list'])
-				})
+			console.log("this is post ALL API CALL")
 		}
-		console.log("this is post ALL API CALL")
 	};
 
 	const handleRadioChange = (name) => (event) => {
@@ -338,61 +344,74 @@ const Search = () => {
 
 	const maxDate = date.setMonth(date.getMonth() + 16);
 
+	const handleSearch = (field, value) => {
+		console.log("ran once")
+		setValues({ ...values, error: false, [field]: value });
+		handleChange(field)({ target: { value } });
+		// Add the search function here that updates the originList or destinationList based on the input
+	};
+
+	function debounce(func, wait) {
+		let timeout;
+		return function executedFunction(...args) {
+			const later = () => {
+				clearTimeout(timeout);
+				func(...args);
+			};
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+		};
+	}
+
+	const debouncedHandleSearch = debounce(handleSearch, 300);
+
 	const packageHtml =
 		<form onSubmit={onSearchFlightHotelPackageFormSubmit}>
 			<div className="row">
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<DebounceInput
-							minLength={0}
-							debounceTimeout={400}
-							input type="text" className="w-100"
-							list="data2" placeholder="Where From?"
-							value={origin}
-							onChange={handleChange("origin")}
-							required
-						/>
-						<datalist id="data2">
-							<select>
-								{
-									originList.map(originItem => {
-										return (
-											<option key={`o2${originItem.airport_name}`}>
-												{originItem.airport_name}
-											</option>
-										)
-									})
+						<Autocomplete
+							id="origin"
+							options={originList}
+							getOptionLabel={(option) => option.airport_name}
+							value={originList.find((option) => option.airport_name === origin) || null}
+							onInputChange={(event, value, reason) => {
+								if (reason === "input") {
+									debouncedHandleSearch("origin", value);
+								} else if (reason === "clear" || reason === "reset") {
+									setValues({ ...values, error: false, origin: "" });
 								}
-							</select>
-						</datalist>
-						<i className="ti-location-pin" />
+							}}
+							renderInput={(params) => (
+								<TextField {...params} label="Where From?" variant="outlined" size="small" />
+							)}
+						/>
+
+
+
 					</div>
 				</div>
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<DebounceInput
-							minLength={0}
-							debounceTimeout={400}
-							input type="text" className="w-100"
-							list="data1" placeholder="Where To?"
-							value={destination}
-							onChange={handleChange("destination")}
-							required
-						/>
-						<datalist id="data1">
-							<select>
-								{
-									destinationList.map(originItem => {
-										return (
-											<option key={`o${originItem.airport_name}`}>
-												{originItem.airport_name}
-											</option>
-										)
-									})
+						<Autocomplete
+							id="destination"
+							options={destinationList}
+							getOptionLabel={(option) => option.airport_name}
+							value={
+								destinationList.find((option) => option.airport_name === destination) ||
+								null
+							}
+							onInputChange={(event, value, reason) => {
+								if (reason === "input") {
+									debouncedHandleSearch("destination", value);
+								} else if (reason === "clear" || reason === "reset") {
+									setValues({ ...values, error: false, destination: "" });
 								}
-							</select>
-						</datalist>
-						<i className="ti-location-pin" />
+							}}
+							renderInput={(params) => (
+								<TextField {...params} label="Where To?" variant="outlined" size="small" />
+							)}
+						/>
 					</div>
 				</div>
 				<div className="col-lg-1 col-md-4">
@@ -471,7 +490,7 @@ const Search = () => {
 						onChange={() => setGlobalState("isReturn", !isReturn)}
 						checked={isReturn} />
 					<label className="form-check-label" htmlFor="inlineRadio1">
-						get fucked dog cunt
+						Return
 					</label>
 				</div>
 				<div className="col-xl-4 col-lg-9 offset-xl-4 offset-lg-1 mt-3">
