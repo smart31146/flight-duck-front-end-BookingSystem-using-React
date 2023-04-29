@@ -205,77 +205,94 @@ const HotelFlightPackageList = () => {
         "user_id": user_id
       })
     })
-        .then(function(response){
-          return response.json();
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Network response was not ok.');
+          }
         })
         .catch((err) => { return err });
   };
 
   const getCacheFlightHotelsPackageSwitch = () => {
-    if (isLocal)
-      return getCacheFlightHotelsPackageLocal()
-    else {
-      return getCacheFlightHotelsPackage()
+    if (isLocal) {
+      return getCacheFlightHotelsPackageLocal();
+    } else {
+      const cachedDataString = localStorage.getItem("cachedHotelFlightPackageList");
+      let cachedData = null;
+      try {
+        cachedData = cachedDataString ? JSON.parse(cachedDataString) : null;
+      } catch (error) {
+        console.error("Invalid JSON in localStorage:", error);
+      }
+
+      if (cachedData && cachedData.length > 0) {
+        setGlobalState("hotelFlightPackageList", cachedData)
+        console.log("below is hotelFlightPackageList")
+        console.log(hotelFlightPackageList)
+        return Promise.resolve({ list: cachedData }); // Return a resolved promise with the cached data
+      } else {
+        return getCacheFlightHotelsPackage().then((data) => {
+          return data;
+        }).catch((err) => {
+          return Promise.reject(err);
+        });
+      }
     }
-  }
+  };
 
 
-  const searchCacheFlightHotelsPackage = (isLocal) => {
+  const searchCacheFlightHotelsPackage = () => {
     setValues({ ...values, loading: true });
     let result = null;
-    console.log("loading at start is" + loading)
-    // const destination = localStorage.getItem("flight_destination");
-    // const origin = localStorage.getItem("flight_origin");
-    // const departure_date = localStorage.getItem("flight_departure_date");
-    // const return_date = localStorage.getItem("flight_return_date");
+    console.log("loading at start is" + loading);
+
+
     getCacheFlightHotelsPackageSwitch()
         .then((data) => {
-          console.log("BELOW IS DATA RECIEVED")
-          console.log(data.list)
-          console.log(data.list.length)
-          if (data.list.length > 0) {
+          if (data && data.list && data.list.length > 0) {
             result = paginate(data.list);
 
-            console.log("first is pagenuymber second is result")
-            console.log(result[pageNumber])
-            console.log(result)
-
-
             for (let i = 0; i < data.list.length; i++) {
-              completeList.push(data.list[i])
-              filteredData.push(data.list[i])
+              completeList.push(data.list[i]);
+              filteredData.push(data.list[i]);
             }
 
             for (let i = 0; i < result[pageNumber].length; i++) {
-              hotelFlightPackageList.push(result[pageNumber][i])
+              hotelFlightPackageList.push(result[pageNumber][i]);
             }
 
             for (let i = 0; i < result.length; i++) {
-              paginated_data.push(result[i])
+              paginated_data.push(result[i]);
             }
 
-            console.log("BELOW IS PAGINATED AFTER FLAT")
-            console.log(paginated_data)
-            console.log("loading before set is" + loading)
+            // Save the processed data to localStorage
+            localStorage.setItem("cachedHotelFlightPackageList", JSON.stringify(hotelFlightPackageList));
           } else {
             console.log("sorry no packages found========");
           }
-          console.log(hotelFlightPackageList)
-          console.log("loading before set 2 is" + loading)
+
           setValues({ ...values, loading: false });
-          console.log("loading after set is" + loading)
         })
         .catch((e) => {
-          console.log("packages data error=======", e);
-          setValues({ ...values, loading: false });
+          if (e === "No cached data available") {
+            getCacheFlightHotelsPackage()
+                .then((data) => {
+                  // Process the data similar to the code in the .then() block above
+                })
+                .catch((error) => {
+                  console.log("packages data error=======", error);
+                  setValues({ ...values, loading: false });
+                });
+          } else {
+            console.log("packages data error=======", e);
+            setValues({ ...values, loading: false });
+          }
         });
+  };
 
 
-    console.log("outside of fetch", hotelFlightPackageList)
-    console.log("this is result")
-    console.log(result)
-
-  }
 
 
     // setState({
@@ -496,10 +513,14 @@ const HotelFlightPackageList = () => {
 
     let arr = [];
 
-    if(hotelFlightPackageList.length > 0) {
+    if (hotelFlightPackageList && hotelFlightPackageList.length > 0) {
       for (let i = 0; i < hotelFlightPackageList.length; i++) {
-        arr.push(<FlightHotelPackageItem
-            key={hotelFlightPackageList[i].outbounddate + i} {...hotelFlightPackageList[i]} />)
+        arr.push(
+            <FlightHotelPackageItem
+                key={hotelFlightPackageList[i].outbounddate + i}
+                {...hotelFlightPackageList[i]}
+            />
+        );
       }
     }
     console.log("below is arr")

@@ -377,54 +377,46 @@ const TourListV2 = () => {
    filterAndSort();
   }
 
-  const flight = () => {
-    let publicUrl = process.env.PUBLIC_URL + '/'
-    let imagealt = 'image'
-    let flight;
-    let flightsPageNumbersListing;
+    const flight = () => {
+        let publicUrl = process.env.PUBLIC_URL + '/'
+        let imagealt = 'image'
+        let flight;
+        let flightsPageNumbersListing;
 
-    console.log("below is flight object")
-    console.log(liveFlightsList[0])
-    if (liveFlightsList.length == 0 ) {
-      return (
-          <div className="tour-list-area">
-            {cachedFlightsList.map((flightDetails) => {
-              return <FlightOfflineItem key={flightDetails.id} {...flightDetails} />
-            })}
-          </div>
-      )
-    } else {
-      return (
-          <div className="tour-list-area">
-            {liveFlightsList.map((flightDetails) => {
-              // console.log("flightsDetails========", flightDetails)
-              flightDetails.currencySymbol = currencySymbol
-              if (flightDetails.cheapest != null) {
-                return <LiveFlightItemCheapest key={flightDetails.id} {...flightDetails} />
-              } else {
-                  const outbound = convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate)
-                  console.log("This be is outbound date")
-                  console.log(outbound)
-                return <LiveFlightItem key={flightDetails.id} {...flightDetails} {...outbound}/> //need to throw in inbound and return date in here
-              }
+        const formatPrice = (price) => {
+            return (price / 1000).toFixed(2);
+        }
 
-            })}
-          </div>
-      )
-      // if (completeList.length > 10) {
-      //   flightsPageNumbersListing =
-      //       <div>
-      //         {liveFlightsList.map((item, index) => {
-      //           return (
-      //               <li key={`item_${index}`}><a
-      //                   className={"page-numbers " + (this.state.pageNumber == index ? "current" : "")}
-      //                   onClick={() => handlePage(index)}>{index + 1}</a></li>
-      //           )
-      //         })}
-      //       </div>
-      // }
+        console.log("below is flight object")
+        console.log(liveFlightsList[0])
+        if (liveFlightsList.length == 0 ) {
+            return (
+                <div className="tour-list-area">
+                    {cachedFlightsList.map((flightDetails) => {
+                        return <FlightOfflineItem key={flightDetails.id} {...flightDetails} />
+                    })}
+                </div>
+            )
+        } else {
+            return (
+                <div className="tour-list-area">
+                    {liveFlightsList.map((flightDetails) => {
+                        flightDetails.currencySymbol = currencySymbol
+                        flightDetails.price = formatPrice(flightDetails.price) // Format the price here
+                        if (flightDetails.cheapest != null) {
+                            return <LiveFlightItemCheapest key={flightDetails.id} {...flightDetails} />
+                        } else {
+                            const outbound = convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate)
+                            console.log("This be is outbound date")
+                            console.log(outbound)
+                            return <LiveFlightItem key={flightDetails.id} {...flightDetails} {...outbound}/> //need to throw in inbound and return date in here
+                        }
+
+                    })}
+                </div>
+            )
+        }
     }
-  }
 
   const flightsPageNumbersListing = () => {
     if (flightsCompleteList.length > 10) {

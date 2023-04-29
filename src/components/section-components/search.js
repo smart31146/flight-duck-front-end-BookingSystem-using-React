@@ -63,6 +63,8 @@ const printGlobalState2 = (isReturn) => {
 
 
 const Search = () => {
+	localStorage.setItem("cachedHotelFlightPackageList", null);
+	setGlobalState("hotelFlightPackageList", [])
 	const [destination] = useGlobalState("destination")
 	const [origin] = useGlobalState("origin")
 	const [departureDate] = useGlobalState("departure_date")
@@ -370,48 +372,56 @@ const Search = () => {
 			<div className="row">
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<Autocomplete
-							id="origin"
-							options={originList}
-							getOptionLabel={(option) => option.airport_name}
-							value={originList.find((option) => option.airport_name === origin) || null}
-							onInputChange={(event, value, reason) => {
-								if (reason === "input") {
-									debouncedHandleSearch("origin", value);
-								} else if (reason === "clear" || reason === "reset") {
-									setValues({ ...values, error: false, origin: "" });
-								}
-							}}
-							renderInput={(params) => (
-								<TextField {...params} label="Where From?" variant="outlined" size="small" />
-							)}
+						<DebounceInput
+							minLength={0}
+							debounceTimeout={400}
+							input type="text" className="w-100"
+							list="data2" placeholder="Where From?"
+							value={origin}
+							onChange={handleChange("origin")}
+							required
 						/>
-
-
-
+						<datalist id="data2">
+							<select>
+								{
+									originList.map(originItem => {
+										return (
+											<option key={`o2${originItem.airport_name}`}>
+												{originItem.airport_name}
+											</option>
+										)
+									})
+								}
+							</select>
+						</datalist>
+						<i className="ti-location-pin" />
 					</div>
 				</div>
 				<div className="col-lg-3 col-md-4">
 					<div className="tp-search-single-wrap" style={{ background: 'white' }}>
-						<Autocomplete
-							id="destination"
-							options={destinationList}
-							getOptionLabel={(option) => option.airport_name}
-							value={
-								destinationList.find((option) => option.airport_name === destination) ||
-								null
-							}
-							onInputChange={(event, value, reason) => {
-								if (reason === "input") {
-									debouncedHandleSearch("destination", value);
-								} else if (reason === "clear" || reason === "reset") {
-									setValues({ ...values, error: false, destination: "" });
-								}
-							}}
-							renderInput={(params) => (
-								<TextField {...params} label="Where To?" variant="outlined" size="small" />
-							)}
+						<DebounceInput
+							minLength={0}
+							debounceTimeout={400}
+							input type="text" className="w-100"
+							list="data1" placeholder="Where To?"
+							value={destination}
+							onChange={handleChange("destination")}
+							required
 						/>
+						<datalist id="data1">
+							<select>
+								{
+									destinationList.map(originItem => {
+										return (
+											<option key={`o${originItem.airport_name}`}>
+												{originItem.airport_name}
+											</option>
+										)
+									})
+								}
+							</select>
+						</datalist>
+						<i className="ti-location-pin" />
 					</div>
 				</div>
 				<div className="col-lg-1 col-md-4">
@@ -490,13 +500,13 @@ const Search = () => {
 						onChange={() => setGlobalState("isReturn", !isReturn)}
 						checked={isReturn} />
 					<label className="form-check-label" htmlFor="inlineRadio1">
-						Return
+						Return?
 					</label>
 				</div>
 				<div className="col-xl-4 col-lg-9 offset-xl-4 offset-lg-1 mt-3">
 					<input className="btn btn-yellow"
-						type="submit" value="Find Hotels"
-					// onClick={onSearchFlightHotelPackageFormSubmit}
+						   type="submit" value="Find Hotels"
+						// onClick={onSearchFlightHotelPackageFormSubmit}
 					/>
 				</div>
 			</div>
