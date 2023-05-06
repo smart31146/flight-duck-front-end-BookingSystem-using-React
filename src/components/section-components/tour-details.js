@@ -3,6 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import parse from 'html-react-parser';
 import Popup from 'reactjs-popup';
 import { bookableRateList } from '../auth/helper';
+import {setGlobalState} from "../../index";
 
 let history = null;
 let nextlink;
@@ -41,6 +42,7 @@ class TourDetails extends Component {
   }
 
   componentDidMount() {
+    setGlobalState("liveFlightsList", [])
     document.addEventListener('mousedown', this.handleClick, false)
   }
 
@@ -114,7 +116,10 @@ class TourDetails extends Component {
 // FIX THIS. WHOLE FILE NEEDS TO BE REFACTORED SO CAN GRAB FROM STATE RATHER THAN LOCALSTORAGE
   createHotelRoomsRateList() {
 
-    return this.props.hotelDetails.rooms.map((room, i) => {
+    const localStorageData = localStorage.getItem("packageDetails");
+    const packageDetails = localStorageData ? JSON.parse(localStorageData) : null;
+
+    return packageDetails.hotel_object.rooms.map((room, i) => {
       return (
         <div className="col-xl-12 col-sm-12" key={`a${i}`}>
           <div className="single-package-included-heading">
@@ -131,7 +136,7 @@ class TourDetails extends Component {
                     onClick={
                       () => {
                         localStorage.setItem("hotel_room_details", JSON.stringify(details));
-                        localStorage.setItem("hotel_details", JSON.stringify(this.props.hotelDetails));
+                        localStorage.setItem("hotel_details", JSON.stringify(packageDetails.hotel_object));
                         localStorage.setItem("hotel_room_name", room.name);
                       }
                     }
@@ -150,7 +155,7 @@ class TourDetails extends Component {
                     onClick={
                       () => {
                         localStorage.setItem("hotel_room_details", JSON.stringify(details));
-                        localStorage.setItem("hotel_details", JSON.stringify(this.props.hotelDetails));
+                        localStorage.setItem("hotel_details", JSON.stringify(packageDetails.hotel_object));
                         localStorage.setItem("hotel_room_name", room.name);
                       }
                     }
@@ -160,7 +165,7 @@ class TourDetails extends Component {
                         hotelDetails: this.props.hotelDetails,
                         room: details,
                         roomName: room.name,
-                        carrier_name: this.props.hotelDetails.carrier_name
+                        carrier_name: packageDetails.hotel_object.carrier_name
                       }
                       // pathname: "/tour-list-v2",
                     }}
@@ -221,6 +226,8 @@ class TourDetails extends Component {
   }
 
   hotelData() {
+    const localStorageData = localStorage.getItem("packageDetails");
+    const packageDetails = localStorageData ? JSON.parse(localStorageData) : null;
     return <div>
       <div className="tour-details-gallery">
         <div className="container-bg bg-dark-blue">
@@ -231,7 +238,7 @@ class TourDetails extends Component {
               <div className="tp-gallery-item col-md-5 col-sm-6 mb-10">
                 <div className="tp-gallery-item-img">
                   <div className="thumbnails">
-                    <img src={this.props.hotelDetails.images[0]} alt="image" />
+                    <img src={packageDetails.hotel_object.images[0]} alt="image" />
                   </div>
                 </div>
               </div>
@@ -239,7 +246,7 @@ class TourDetails extends Component {
               <div className="tp-gallery-item col-md-3 col-sm-6">
                 <div className="tp-gallery-item-img">
                   <a href="#" data-effect="mfp-zoom-in">
-                    <img src={this.props.hotelDetails.images[1]} alt="image" />
+                    <img src={packageDetails.hotel_object.images[1]} alt="image" />
                   </a>
                 </div>
               </div>
@@ -247,7 +254,7 @@ class TourDetails extends Component {
               <div className="tp-gallery-item col-lg-2 col-md-4 col-sm-6">
                 <div className="tp-gallery-item-img">
                   <a href="#" data-effect="mfp-zoom-in">
-                    <img src={this.props.hotelDetails.images[2]} alt="image" />
+                    <img src={packageDetails.hotel_object.images[2]} alt="image" />
                   </a>
                 </div>
               </div>
@@ -255,7 +262,7 @@ class TourDetails extends Component {
               <div className="tp-gallery-item col-lg-2 col-md-4 col-sm-6">
                 <div className="tp-gallery-item-img">
                   <a href="#" data-effect="mfp-zoom-in">
-                    <img src={this.props.hotelDetails.images[3]} alt="image" />
+                    <img src={packageDetails.hotel_object.images[3]} alt="image" />
                   </a>
                 </div>
               </div>
@@ -263,7 +270,7 @@ class TourDetails extends Component {
               <div className="tp-gallery-item col-lg-2 col-md-4 col-sm-6">
                 <div className="tp-gallery-item-img">
                   <a href="#" data-effect="mfp-zoom-in">
-                    <img src={this.props.hotelDetails.images[4]} alt="image" />
+                    <img src={packageDetails.hotel_object.images[4]} alt="image" />
                   </a>
                 </div>
               </div>
@@ -271,7 +278,7 @@ class TourDetails extends Component {
               <div className="tp-gallery-item col-lg-2 col-md-4 col-sm-6">
                 <div className="tp-gallery-item-img">
                   <a href="#" data-effect="mfp-zoom-in">
-                    <img src={this.props.hotelDetails.images[5]} alt="image" />
+                    <img src={packageDetails.hotel_object.images[5]} alt="image" />
                   </a>
                 </div>
               </div>
@@ -279,14 +286,14 @@ class TourDetails extends Component {
             <div className="row">
               <div className="col-xl-3 col-lg-4">
                 <div className="details">
-                  <p className="location mb-0"><i className="fa fa-map-marker" />{this.props.hotelDetails.city}</p>
-                  <h4 className="title">{this.props.hotelDetails.hotel}</h4>
+                  <p className="location mb-0"><i className="fa fa-map-marker" />{packageDetails.hotel_object.city}</p>
+                  <h4 className="title">{packageDetails.hotel_object.hotel}</h4>
                   <div className="tp-review-meta">
                     <i className="ic-yellow fa fa-star" />
-                    <span>{this.props.hotelDetails.rating}</span>
+                    <span>{packageDetails.hotel_object.rating}</span>
                   </div>
                   <div className="all-tags">
-                    <a>{this.props.hotelDetails.type}</a>
+                    <a>{packageDetails.hotel_object.type}</a>
                   </div>
                 </div>
               </div>
@@ -295,14 +302,14 @@ class TourDetails extends Component {
                   <p className="book-list-content">Get your spot before it's too late.</p>
                   <div className="tp-price-meta">
                     <p>Min. Price</p>
-                    <h2><small>$</small> {this.props.hotelDetails.rate}</h2>
+                    <h2><small>$</small> {packageDetails.hotel_object.rate}</h2>
                   </div>
                 </div>
                 <ul className="tp-list-meta border-tp-solid">
                   <li className="ml-0"><i className="fa fa-calendar-o" /> 8 Oct</li>
                   <li><i className="fa fa-clock-o" /> 4 Days</li>
                   <li><i className="fa fa-users" />2 Person</li>
-                  <li><i className="fa fa-medkit" /> {this.props.hotelDetails.health_safety_code}</li>
+                  <li><i className="fa fa-medkit" /> {packageDetails.hotel_object.health_safety_code}</li>
                 </ul>
               </div>
             </div>
@@ -314,7 +321,7 @@ class TourDetails extends Component {
           <div className="col-lg-12">
             <div className="tour-details-wrap">
               <h4 className="single-page-small-title">Description</h4>
-              <p>{this.props.hotelDetails.description}</p>
+              <p>{packageDetails.hotel_object.description}</p>
               <div className="package-included-area">
                 <h4 className="single-page-small-title">Rooms</h4>
                 <div className="row">
@@ -410,11 +417,11 @@ class TourDetails extends Component {
       </div>
     )
 
-    let dropdownComponent = this.state.dropdownOpen ? dropdownMenu : <></>;
-
-    let publicUrl = process.env.PUBLIC_URL + '/'
-    let imagealt = 'image'
-    let mapUrl = "https://maps.google.com/maps?q=" + this.props.hotelDetails.latitude + "," + this.props.hotelDetails.longitude + "&z=15&output=embed"
+    // let dropdownComponent = this.state.dropdownOpen ? dropdownMenu : <></>;
+    //
+    // let publicUrl = process.env.PUBLIC_URL + '/'
+    // let imagealt = 'image'
+    // let mapUrl = "https://maps.google.com/maps?q=" + this.props.hotelDetails.latitude + "," + this.props.hotelDetails.longitude + "&z=15&output=embed"
 
     return <div className="tour-details-area mg-top--70">
       {this.loadingMessage()}

@@ -40,7 +40,8 @@ const HotelFlightPackageList = () => {
   }, [])
 
   useEffect(() => {
-
+    setGlobalState("liveFlightsList", [])
+    localStorage.setItem("packageDetails", null);
 
     if(starRating !== "default") {
       filterAndSort()

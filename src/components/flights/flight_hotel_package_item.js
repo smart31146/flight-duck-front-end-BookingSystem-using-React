@@ -10,6 +10,7 @@ const FlightHotelPackageItem = (flightDetails) => {
   const handleClick = () => {
     console.log("BELOW IS FLIGHT DETAILS")
     console.log(flightDetails)
+    localStorage.setItem("packageDetails", JSON.stringify(flightDetails));
     history.push({
       pathname: "/tour-details",
       hotelDetails: { ...flightDetails.hotel_object, carrier_name: flightDetails.carrier_name, flightDetails: flightDetails }

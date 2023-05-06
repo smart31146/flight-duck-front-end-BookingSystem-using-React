@@ -64,6 +64,8 @@ const printGlobalState2 = (isReturn) => {
 
 const Search = () => {
 	localStorage.setItem("cachedHotelFlightPackageList", null);
+	localStorage.setItem("packageDetails", null);
+	setGlobalState("liveFlightsList", [])
 	setGlobalState("hotelFlightPackageList", [])
 	const [destination] = useGlobalState("destination")
 	const [origin] = useGlobalState("origin")

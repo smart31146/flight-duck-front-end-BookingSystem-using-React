@@ -58,7 +58,8 @@ const TourListV2 = () => {
     // const departure_date = localStorage.getItem("flight_departure_date");
     // const return_date = localStorage.getItem("flight_return_date");
     // this.searchCachedFlights();
-    setGlobalState("return_date", convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.inbounddate))
+      // console.log(liveFlightsList)
+    setGlobalState("return_date", convertDate(JSON.parse(localStorage.getItem('packageDetails')).inbounddate))
     console.log("WE are searching for flights now")
     console.log("here are values")
     console.log("return date is")
@@ -118,20 +119,17 @@ const TourListV2 = () => {
       user_id = JSON.parse(user_details)["id"];
     }
     console.log("BELOW IS DEPARTURE DATE")
-    console.log(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate)
-
-     console.log("below is flightDetails")
-     console.log(JSON.parse(localStorage.getItem('hotel_details')).flightDetails)
+    console.log(JSON.parse(localStorage.getItem('packageDetails')).outbounddate)
 
        var jsonData = {
-      "originplace": origin,
-      "destinationplace": destination,
-      "outbounddate": convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate),
-      ...(isReturn && { "inbounddate": convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.inbounddate) }),
-      "children": Number(children),
-      "adults": Number(adults),
-      "country": country_code,
-      "currency": currency,
+      "originplace": localStorage.getItem("origin"),
+      "destinationplace": localStorage.getItem("destination"),
+      "outbounddate": convertDate(JSON.parse(localStorage.getItem('packageDetails')).outbounddate),
+      ...(isReturn && { "inbounddate": convertDate(JSON.parse(localStorage.getItem('packageDetails')).inbounddate) }),
+      "children": Number(localStorage.getItem("children")),
+      "adults": Number(localStorage.getItem("adults")),
+      "country": localStorage.getItem("country_code"),
+      "currency": localStorage.getItem("currency"),
       "locale": "en-US",
       "user_id": user_id
     }
@@ -406,7 +404,7 @@ const TourListV2 = () => {
                         if (flightDetails.cheapest != null) {
                             return <LiveFlightItemCheapest key={flightDetails.id} {...flightDetails} />
                         } else {
-                            const outbound = convertDate(JSON.parse(localStorage.getItem('hotel_details')).flightDetails.outbounddate)
+                            const outbound = convertDate(JSON.parse(localStorage.getItem('packageDetails')).outbounddate)
                             console.log("This be is outbound date")
                             console.log(outbound)
                             return <LiveFlightItem key={flightDetails.id} {...flightDetails} {...outbound}/> //need to throw in inbound and return date in here
