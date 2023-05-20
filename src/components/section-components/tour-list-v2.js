@@ -288,9 +288,12 @@ const TourListV2 = () => {
     setValues({ ...values, pageNumber: index});
     //liveFlightsList = paginated_data[pageNumber] || []
     // this.setState({});
+      console.log("below is list after handlePage")
+      console.log(paginated_data)
   }
 
   const nextPage = () => {
+      console.log("this button was pressed nextPage")
     let nextPage = pageNumber + 1
     if (nextPage > paginated_data.length - 1) {
       nextPage = 0
@@ -301,9 +304,13 @@ const TourListV2 = () => {
     // })
     setValues({ ...values, error: false, pageNumber: nextPage});
     setGlobalState("liveFlightsList", paginated_data[nextPage])
+      console.log("below is list after pagenext")
+      // console.log(liveFlightsList)
+      console.log(paginated_data)
   }
 
   const prevPage = () => {
+      console.log("this button was pressed prevPage")
     let prevPage = pageNumber - 1
     if (prevPage < 0) {
       prevPage = paginated_data.length - 1
@@ -381,9 +388,13 @@ const TourListV2 = () => {
         let flight;
         let flightsPageNumbersListing;
 
-        const formatPrice = (price) => {
-            return (price / 1000).toFixed(2);
+        const formatPrice = (flightDetails) => {
+            if (!flightDetails.formattedPrice) {
+                flightDetails.formattedPrice = (flightDetails.price / 1000).toFixed(2);
+            }
+            return flightDetails.formattedPrice;
         }
+
 
         console.log("below is flight object")
         console.log(liveFlightsList[0])
@@ -399,17 +410,17 @@ const TourListV2 = () => {
             return (
                 <div className="tour-list-area">
                     {liveFlightsList.map((flightDetails) => {
-                        flightDetails.currencySymbol = currencySymbol
-                        flightDetails.price = formatPrice(flightDetails.price) // Format the price here
+                        flightDetails.currencySymbol = currencySymbol;
+                        const formattedPrice = formatPrice(flightDetails); // Format the price here
+
                         if (flightDetails.cheapest != null) {
                             return <LiveFlightItemCheapest key={flightDetails.id} {...flightDetails} />
                         } else {
-                            const outbound = convertDate(JSON.parse(localStorage.getItem('packageDetails')).outbounddate)
-                            console.log("This be is outbound date")
-                            console.log(outbound)
+                            const outbound = convertDate(JSON.parse(localStorage.getItem('packageDetails')).outbounddate);
+                            console.log("This be is outbound date");
+                            console.log(outbound);
                             return <LiveFlightItem key={flightDetails.id} {...flightDetails} {...outbound}/> //need to throw in inbound and return date in here
                         }
-
                     })}
                 </div>
             )

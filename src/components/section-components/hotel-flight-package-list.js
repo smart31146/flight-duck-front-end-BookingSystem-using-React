@@ -40,6 +40,12 @@ const HotelFlightPackageList = () => {
   }, [])
 
   useEffect(() => {
+    setGlobalState("destination", null)
+    setGlobalState("origin", null)
+    setGlobalState("adults", null)
+    setGlobalState("children", null)
+    setGlobalState("days", null)
+    setGlobalState("departure_date", null)
     setGlobalState("liveFlightsList", [])
     localStorage.setItem("packageDetails", null);
 
@@ -516,12 +522,14 @@ const HotelFlightPackageList = () => {
 
     if (hotelFlightPackageList && hotelFlightPackageList.length > 0) {
       for (let i = 0; i < hotelFlightPackageList.length; i++) {
-        arr.push(
-            <FlightHotelPackageItem
-                key={hotelFlightPackageList[i].outbounddate + i}
-                {...hotelFlightPackageList[i]}
-            />
-        );
+        if (hotelFlightPackageList[i].hotel_object) {  // check if hotel_object exists
+          arr.push(
+              <FlightHotelPackageItem
+                  key={hotelFlightPackageList[i].outbounddate + i}
+                  {...hotelFlightPackageList[i]}
+              />
+          );
+        }
       }
     }
     console.log("below is arr")

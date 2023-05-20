@@ -3,10 +3,16 @@ import { Link, useHistory } from 'react-router-dom';
 import parse from 'html-react-parser';
 import { red, blue, green } from "@material-ui/core/colors";
 import { AutoRotatingCarousel, Slide } from "material-auto-rotating-carousel";
+import defaultImage from './default.jpg';  // Import your default image
 
 const FlightHotelPackageItem = (flightDetails) => {
   const [handleOpen, setHandleOpen] = useState({ open: false });
   const history = useHistory();
+
+  const addDefaultSrc = ev => {
+    ev.target.src = defaultImage;
+  };
+
   const handleClick = () => {
     console.log("BELOW IS FLIGHT DETAILS")
     console.log(flightDetails)
@@ -17,12 +23,20 @@ const FlightHotelPackageItem = (flightDetails) => {
     });
   };
 
+  const imageUrl = (flightDetails.hotel_object && flightDetails.hotel_object.images && flightDetails.hotel_object.images.length > 0)
+      ? flightDetails.hotel_object.images[0]
+      : defaultImage;
+
   return (
-    <div className="single-destinations-list style-three">
-      <div className="thumb" onClick={handleClick}>
-        <img src={flightDetails.hotel_object.images[0]}
-          alt="image" style={{ "objectFit": "scale-down" }} />
-      </div>
+      <div className="single-destinations-list style-three">
+        <div className="thumb" onClick={handleClick}>
+          <img
+              src={imageUrl}
+              onError={addDefaultSrc}
+              alt="image"
+              style={{ "objectFit": "scale-down" }}
+          />
+        </div>
       <div className="details">
         <div className="row">
           <div className="col-sm-10">

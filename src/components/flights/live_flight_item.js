@@ -58,7 +58,7 @@ const LiveFlightItem = (flightDetails) => {
             <div className="list-price-meta">
               <div className="tp-list-meta d-inline-block">
                 <h3>Total Price</h3>
-                <h5><span>{flightDetails.currencySymbol}</span> {flightDetails.price}</h5>
+                <h5><span>{flightDetails.currencySymbol}</span> {flightDetails.formattedPrice}</h5>
               </div>
             </div>
           </div>

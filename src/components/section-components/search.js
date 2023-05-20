@@ -65,8 +65,6 @@ const printGlobalState2 = (isReturn) => {
 const Search = () => {
 	localStorage.setItem("cachedHotelFlightPackageList", null);
 	localStorage.setItem("packageDetails", null);
-	setGlobalState("liveFlightsList", [])
-	setGlobalState("hotelFlightPackageList", [])
 	const [destination] = useGlobalState("destination")
 	const [origin] = useGlobalState("origin")
 	const [departureDate] = useGlobalState("departure_date")
@@ -91,6 +89,7 @@ const Search = () => {
 	const [isLocal] = useGlobalState("isLocal")
 
 	useEffect(() => {
+		setGlobalState("liveFlightsList", [])
 		if(!isLocal) {
 			const country_code = localStorage.getItem("country_code")
 			const url = `${API_URL}flights/get-airport-code/?country=${country_code}`
