@@ -6,6 +6,7 @@ import { CardElement, Elements, ElementsConsumer } from '@stripe/react-stripe-js
 import { hotelBookingAPI } from '../auth/helper';
 import { withRouter } from "react-router-dom";
 import './stripe.css';
+import { sendEmailAPI } from './api';
 
 
 //this is the third
@@ -46,19 +47,26 @@ class CheckoutForm extends React.Component {
       }
       this.setState({ loading: true });
       hotelBookingAPI(data)
-        .then((res) => {
-          this.setState({ loading: false });
-          if (localStorage.getItem("only_hotel") == 'false') {
-            let flightBookingUrl = localStorage.getItem('flight_booking_url');
-            //window.location.href = flightBookingUrl;
-          }
-          window.location.href = '#destination-details'
-        })
-        .catch((e) => {
-          this.setState({ loading: false });
-        });
+          .then((res) => {
+            this.setState({ loading: false });
+            if (localStorage.getItem("only_hotel") == 'false') {
+              let flightBookingUrl = localStorage.getItem('flight_booking_url');
+              //window.location.href = flightBookingUrl;
+            }
+            window.location.href = '#destination-details'
+
+            // Sending an email after a successful booking
+              sendEmailAPI("bishop.alexander@gmail.com", {})
+                  .then((res) => console.log('Email sent successfully'))
+                  .catch((err) => console.error('Failed to send email:', err));
+
+          })
+          .catch((e) => {
+            this.setState({ loading: false });
+          });
     }
   };
+
   handleAddress = async (event) => {
     event.preventDefault();
     let addr = this.state.address;
