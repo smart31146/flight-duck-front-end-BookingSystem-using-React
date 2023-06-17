@@ -86,7 +86,7 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	],
 	selectedCurrency: "AUD",
 	liveFlightAttempts: 0,
-	isLocal: false,
+	isLocal: true,
 });
 
 class Root extends Component {
