@@ -9,10 +9,10 @@ let roomDetails = null;
 let roomName = null;
 let flightDetails = null;
 let onlyHotel = null;
+let packageDetails = null;
+const DestinatioDetails = () => {
 
-class DestinatioDetails extends Component {
-
-  componentWillMount() {
+  
     onlyHotel = JSON.parse(localStorage.getItem("only_hotel"));
     console.log("onlyHotel=======", onlyHotel);
     hotelDetails = JSON.parse(localStorage.getItem("hotel_details"));
@@ -22,14 +22,26 @@ class DestinatioDetails extends Component {
     roomDetails = JSON.parse(localStorage.getItem("hotel_room_details"));
     roomName = localStorage.getItem("hotel_room_name");
     flightDetails = JSON.parse(localStorage.getItem("flight_details"));
-  }
+    packageDetails = JSON.parse(localStorage.getItem("packageDetails"));
+  
 
-  openUrl() {
+  const openUrl=() => {
     let flightBookingUrl = localStorage.getItem('flight_booking_url');
     window.location.href = flightBookingUrl
   }
+ const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { day: 'numeric', month: 'short' };
+    return date.toLocaleDateString('en-US', options);
+  }
 
-  render() {
+ const formatPrice = (price) => {
+    
+      let formattedPrice = (price / 1000).toFixed(2)
+    
+    return formattedPrice
+  }
+
 
     let publicUrl = process.env.PUBLIC_URL+'/'
     let imagealt = 'image'
@@ -37,7 +49,7 @@ class DestinatioDetails extends Component {
 
     let flightDetailsTable; //need to make this responsive
       flightDetailsTable = (
-        <div style={{backgroundColor: 'white', margin: '20px', padding: '20px', borderRadius: '10px'}}>
+        <div className="flightDetails-content" style={{backgroundColor: 'white', margin: '20px', padding: '20px', borderRadius: '10px'}}>
           <center>
             <b>Flight Details - </b>
           </center>
@@ -61,10 +73,10 @@ class DestinatioDetails extends Component {
                 </td>
                 <td>
                   <h4>Layover</h4>
-                  <p>{flightDetails['number_of_stops']}</p>
+                  <p>{flightDetails['total_duration']['hours']} hours and {flightDetails['total_duration']['minutes']} minutes</p>
                 </td>
                 <td>
-                  <h3><span>{flightDetails['currencySymbol']}</span>{flightDetails['price']}</h3>
+                  <h3><span>$</span>{formatPrice(flightDetails['price'])}</h3>
                 </td>
               </tr>
               {/*<Button*/}
@@ -75,14 +87,15 @@ class DestinatioDetails extends Component {
               {/*    color="primary"*/}
               {/*    className="btn btn-yellow"*/}
               {/*>*/}
-                <a className="btn btn-yellow" style={{ color: 'white' }}
-                   onClick={this.openUrl}>
-                  Book flight
-                </a>
+                
                 {/*  we need an if statement here if return flights or flight*/}
               {/*</Button>*/}
             </tbody>
           </table>
+          <a className="btn btn-yellow" style={{ color: 'white' }}
+                   onClick={openUrl}>
+                  Book flight
+                </a>
         </div>
       );
 
@@ -114,11 +127,11 @@ class DestinatioDetails extends Component {
       <div className="destinations-details-page mt-5">
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-xl-10">
+            <div className="destination-content col-xl-10">
               <div className="destinations-details-main-slider-wrap">
                 <div className="destinations-details-main-slider" style={{backgroundColor: '#efefef'}}>
                   <div className="d-details-main-slider-item" style={{padding: '18px'}}>
-                    <center><img src={publicUrl+"assets/img/others/checkbox.png"} alt="img" style={{marginTop: '20px'}}/></center>
+                    {/* <center><img src={publicUrl+"assets/img/others/checkbox.png"} alt="img" style={{marginTop: '20px'}}/></center> */}
                     <center><h3>Congratulations</h3></center>
                     <center>
                       <p>
@@ -143,12 +156,12 @@ class DestinatioDetails extends Component {
                             <h4 className="mt-2">{hotelDetails['hotel']}</h4>
                           </td>
                           <td>
-                            <p>3 days 2 person</p>
+                          <p>{packageDetails['tripDays']} days {roomDetails['adults']+roomDetails['children']} person</p>
                             <h4>{roomName}</h4>
                           </td>
                           <td>
-                            <p>8 Oct to 10 Oct</p>
-                            <h4>3 Days</h4>
+                            <p>{formatDate(packageDetails['inbounddate'])} to {formatDate(packageDetails['outbounddate'])}</p>
+                            <h4>{packageDetails['tripDays']} Days</h4>
                           </td>
                           <td>
                             <h3><span>$</span>{roomDetails['net']}</h3>
@@ -169,7 +182,7 @@ class DestinatioDetails extends Component {
       </div>
       
     </div>
-  }
+
 }
 
 export default DestinatioDetails

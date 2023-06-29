@@ -10,7 +10,7 @@ class Intro extends Component {
 
     return  <div className="intro-area pd-top-112">
 				  <div className="container">
-				    <div className="row">
+				    <div className="row footer-container">
 				      <div className="col-md-4">
 				        <div className="single-intro wow animated fadeInUp" data-wow-duration="0.6s" data-wow-delay="0.1s">
 				          <h4 className="intro-title">

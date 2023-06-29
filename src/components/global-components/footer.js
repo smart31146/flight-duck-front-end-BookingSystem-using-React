@@ -14,17 +14,17 @@ class Footer_v1 extends Component {
 
     render() {
 
-        let publicUrl = process.env.PUBLIC_URL+'/'
-        let imgattr = "Footer logo"
+        // let publicUrl = process.env.PUBLIC_URL+'/';
+        // let imgattr = "Footer logo";
 		// let logoUrl = process.env.PUBLIC_URL+'/'+"assets/img/others/Small_logo.png"
 		// let logoUrl = process.env.PUBLIC_URL+'/'+"assets/img/others/small-logo.png"
-		let logoUrl = process.env.PUBLIC_URL+'/'+"assets/img/others/new.png"
+		let logoUrl = process.env.PUBLIC_URL + '/' + "assets/img/others/new.png"
 
 
         return (
   				<footer className="footer-area style-two">
-				  <div className="container">
-				    <div className="row">
+				  <div style={{width: '100%'}}>
+				    <div className="row footer-wrap">
 				      <div className="col-lg-6 col-md-6">
 				        <div className="footer-widget widget">
 				          <div className="about_us_widget">
@@ -34,13 +34,13 @@ class Footer_v1 extends Component {
 				            <p>We believe brand interaction is key in commu- nication. Real innovations and a positive customer experience are the heart of successful communication.</p>
 				            <ul className="social-icon">
 				              <li>
-				                <a className="facebook" href="https://www.facebook.com/codingeek.net/" target="_blank"><i className="fa fa-facebook  " /></a>
+				                <a className="facebook" href="https://www.facebook.com/codingeek.net/" target="_blank"><i className="fa-brands fa-facebook-f" /></a>
 				              </li>
 				              <li>
-				                <a className="twitter" href="https://twitter.com/codingeeknet" target="_blank"><i className="fa fa-twitter  " /></a>
+				                <a className="twitter" href="https://twitter.com/codingeeknet" target="_blank"><i className="fa-brands fa-twitter" /></a>
 				              </li>
 				              <li>
-				                <a className="pinterest" href="https://www.instagram.com/codingeeknet/" target="_blank"><i className="fa fa-instagram" /></a>
+				                <a className="pinterest" href="https://www.instagram.com/codingeeknet/" target="_blank"><i className="fa-brands fa-instagram" /></a>
 				              </li>
 				            </ul>
 				          </div>
@@ -70,7 +70,7 @@ class Footer_v1 extends Component {
 				      <div className="col-lg-3 col-md-6">
 				        <div className="footer-widget widget">
 				          <h4 className="widget-title">Quick Link</h4>
-				          <ul className="widget_nav_menu  viaje-go-top">
+				          <ul className="widget_nav_menu  viaje-go-top" style={{height: 200}}>
 				            <li><Link to="/home-v2">Home</Link></li>
 				            <li><Link to="/about">About Us</Link></li>
 				            <li><Link to="/contact">Support</Link></li>

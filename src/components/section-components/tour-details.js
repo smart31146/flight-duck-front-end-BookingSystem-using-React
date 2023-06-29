@@ -1,12 +1,14 @@
-import React, { Component, setState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import parse from 'html-react-parser';
-import Popup from 'reactjs-popup';
-import { bookableRateList } from '../auth/helper';
-import {setGlobalState} from "../../index";
+import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import { setGlobalState } from "../../index";
 
-let history = null;
-let nextlink;
+import Box from '@mui/material/Box'
+import Rating from '@mui/material/Rating'
+import StarIcon from '@mui/icons-material/Star'
+import { Slide } from 'react-slideshow-image';
+import 'react-slideshow-image/dist/styles.css';
+import HotelMap from './tour-details-map';
+import LoadingBox from './loading-box';
 
 class TourDetails extends Component {
 
@@ -22,13 +24,11 @@ class TourDetails extends Component {
       focusedInput: null,
       guestsInputBorderFocused: false,
       redirectToSearchIdx: false,
-      loading: true,
+      loading: false,
       roomsList: [],
-      checkedRoomKey: ""
+      checkedRoomKey: "",
+      currentPage: 0
     };
-    // console.log(props)
-    // this.history = useHistory();
-    // history = props.history;
 
     this.inputNode = React.createRef();
     this.dropdownNode = React.createRef();
@@ -39,6 +39,9 @@ class TourDetails extends Component {
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
     this.makeSingleGuestsInputString = this.makeSingleGuestsInputString.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.slideShow = this.slideShow.bind(this);
+    this.mobileMode = this.mobileMode.bind(this)
+    this.desktopMode = this.desktopMode.bind(this);
   }
 
   componentDidMount() {
@@ -104,6 +107,26 @@ class TourDetails extends Component {
     }
   }
 
+  slideShow(step) {
+    const localStorageData = localStorage.getItem("packageDetails");
+    const packageDetails = localStorageData ? JSON.parse(localStorageData) : null;
+
+    if (packageDetails === null) {
+      this.setState({ currentPage: 0 });
+      return;
+    }
+
+    const images = packageDetails.hotel_object.images;
+    let curPage = this.state.currentPage;
+    let totalPage = Math.ceil(images.length / 5.0);
+    curPage += step;
+
+    if (curPage >= totalPage || curPage < 0)
+      return;
+
+    this.setState({ currentPage: curPage });
+  }
+
   makeSingleGuestsInputString(type, stateName) {
     let num = this.state[stateName];
     if (num === 0) return null;
@@ -113,105 +136,52 @@ class TourDetails extends Component {
       return `${num} ${type}s`
     }
   };
-// FIX THIS. WHOLE FILE NEEDS TO BE REFACTORED SO CAN GRAB FROM STATE RATHER THAN LOCALSTORAGE
+  // FIX THIS. WHOLE FILE NEEDS TO BE REFACTORED SO CAN GRAB FROM STATE RATHER THAN LOCALSTORAGE
   createHotelRoomsRateList() {
-
-    const localStorageData = localStorage.getItem("packageDetails");
-    const packageDetails = localStorageData ? JSON.parse(localStorageData) : null;
+    const packageDetails = JSON.parse(localStorage.getItem("packageDetails"));
 
     return packageDetails.hotel_object.rooms.map((room, i) => {
       return (
-        <div className="col-xl-12 col-sm-12" key={`a${i}`}>
+        <div className="col-xl-12 col-md-12" key={`a${i}`} style={{ padding: '0px 0px 0px 0px' }}>
           <div className="single-package-included-heading">
             <p className="title">{room.name}</p>
-            <br></br>
           </div>
           <div className="single-package-included">
             {room.rates.map((details, j) => {
-
-              if (localStorage.getItem("only_hotel") == 'false') {
-                nextlink = (
-                  <Link
-                    className="btn btn-aqua"
-                    onClick={
-                      () => {
-                        localStorage.setItem("hotel_room_details", JSON.stringify(details));
-                        localStorage.setItem("hotel_details", JSON.stringify(packageDetails.hotel_object));
-                        localStorage.setItem("hotel_room_name", room.name);
-                      }
-                    }
-                    to={{
-                      pathname: '/tour-list-v2'
-                    }}
-                  >
-                    Select
-                  </Link>
-                );
-              }
-              else {
-                nextlink = (
-                  <Link
-                    className="btn btn-aqua"
-                    onClick={
-                      () => {
-                        localStorage.setItem("hotel_room_details", JSON.stringify(details));
-                        localStorage.setItem("hotel_details", JSON.stringify(packageDetails.hotel_object));
-                        localStorage.setItem("hotel_room_name", room.name);
-                      }
-                    }
-                    to={{
-                      pathname: "/hotel-booking",
-                      state: {
-                        hotelDetails: this.props.hotelDetails,
-                        room: details,
-                        roomName: room.name,
-                        carrier_name: packageDetails.hotel_object.carrier_name
-                      }
-                      // pathname: "/tour-list-v2",
-                    }}
-                  >
-                    Select
-                  </Link>
-                );
-              }
-              
-
               return (
-                <div key={`j${j}`}>
-                  <div className="row">
-                    <div className="col-xl-6">
-                      <div className="list-price-meta">
-                        <div className="tp-list-meta d-inline-block">
-                          <p>Code - {details.boardCode}</p>
-                          <p>Name - {details.boardName}</p>
-                        </div>
-                      </div>
+                <div className='row single-package-included-item' key={`j${j}`}>
+                  <div className='col-md-2 col-sm-4' style={{ margin: 'auto', textAlign: 'center' }}>
+                    <h5>{details.boardCode}</h5>
+                  </div>
+                  <div className='col-md-5 col-sm-8' style={{ margin: 'auto' }}>
+                    <div style={{ width: '100%' }}>
+                      <i className='fa fa-check' />
+                      &nbsp;&nbsp;33% Cancellation fees
                     </div>
-                    <div className="col-xl-6">
-                      <div className="row">
-                        <div className="col-xl-8">
-                          <div className="list-price-meta">
-                            <div className="tp-list-meta d-inline-block">
-                              <div className="text-lg-center text-left">
-                                <h5>Booking Charges - <span>$</span> {details.net}</h5>
-                              </div>
-                              {/*<p>Cancellation Charges - <span>$</span> {details.cancellationPolicies[0].amount}</p>*/}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-xl-4">
-                          <div className="list-price-meta">
-                            <div className="tp-list-meta d-inline-block">
-                              <div className="text-lg-center text-left">
-                                {nextlink}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    <div style={{ width: '100%' }}>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Product for Packaging<br />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i className='fa fa-plane-up' style={{ transform: 'rotate(-45deg)' }} />
                     </div>
                   </div>
-                  <hr></hr>
+                  <div className='col-md-2 col-sm-4' style={{ margin: 'auto' }}>
+                    <p className='price'>
+                      ${details.net}
+                    </p>
+                  </div>
+                  <div className='col-md-3 col-sm-8' style={{ margin: 'auto' }}>
+                    <button className="btn-select"
+                      onClick={
+                        () => {
+                          localStorage.setItem("hotel_room_details", JSON.stringify(details));
+                          localStorage.setItem("hotel_details", JSON.stringify(packageDetails.hotel_object));
+                          localStorage.setItem("hotel_room_name", room.name);
+                          this.setState({ loading: true });
+                        }
+                      }
+                    >
+                      Select
+                    </button>
+                  </div>
                 </div>
               )
             })}
@@ -222,121 +192,188 @@ class TourDetails extends Component {
   }
 
   fetchBookableRateKey(rooms) {
-    
+  }
+
+  desktopMode() {
+    const packageDetails = localStorage.getItem("packageDetails") ? JSON.parse(localStorage.getItem("packageDetails")) : null;
+
+    if (packageDetails === null || packageDetails === undefined) {
+      withRouter("/*");
+      return;
+    }
+
+    const images = packageDetails.hotel_object.images;
+
+    return (
+      <div className='row'>
+        <div className='col-md-4 image-wrap'>
+          <div className='image-item' style={{ backgroundImage: `url('${packageDetails.hotel_object.images[0]}')` }} />
+        </div>
+        <div className='col-md-3 image-wrap'>
+          <div className='image-item' style={{ backgroundImage: `url('${images[this.state.currentPage * 5 + 1]}')` }} />
+        </div>
+        <div className='col-md-5' style={{ padding: '0px 0px 0px 0px' }}>
+          <div className='row'>
+            <div className='image-wrap col-md-6'>
+              <div className='image-item' style={{ backgroundImage: `url('${images[this.state.currentPage * 5 + 2]}')` }} />
+            </div>
+            <div className='image-wrap col-md-6'>
+              <div className='image-item' style={{ backgroundImage: `url('${images[this.state.currentPage * 5 + 3]}')` }} />
+            </div>
+            <div className='image-wrap col-md-6'>
+              <div className='image-item' style={{ backgroundImage: `url('${images[this.state.currentPage * 5 + 4]}')` }} />
+            </div>
+            <div className='image-wrap col-md-6'>
+              <div className='image-item' style={{ backgroundImage: `url('${images[this.state.currentPage * 5 + 5]}')` }} />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  mobileMode() {
+    const packageDetails = localStorage.getItem("packageDetails") ? JSON.parse(localStorage.getItem("packageDetails")) : null;
+    const images = packageDetails.hotel_object.images;
+
+    return (
+      <div className='row'>
+        <div className='col-sm-12'>
+          <Slide>
+            {
+              images.map((img, index) => {
+                return (
+                  <div className="each-slide-effect">
+                    <div style={{ 'backgroundImage': `url(${img})` }} key={index} />
+                  </div>
+                )
+              })
+            }
+          </Slide>
+        </div>
+      </div>
+    )
   }
 
   hotelData() {
-    const localStorageData = localStorage.getItem("packageDetails");
-    const packageDetails = localStorageData ? JSON.parse(localStorageData) : null;
+    const packageDetails = localStorage.getItem("packageDetails") ? JSON.parse(localStorage.getItem("packageDetails")) : null;
+    const adults = JSON.parse(localStorage.getItem("adults"));
+    const children = JSON.parse(localStorage.getItem("children"));
+    const days = JSON.parse(localStorage.getItem("days"));
+
+    const labels = {
+      '0 STARS AND A HALF': '0.5',
+      '1 STARS': '1',
+      '1 STARS AND A HALF': '1.5',
+      '2 STARS': '2',
+      '2 STARS AND A HALF': '2.5',
+      '3 STARS': '3',
+      '3 STARS AND A HALF': '3.5',
+      '4 STARS': '4',
+      '4 STARS AND A HALF': '4.5',
+      '5 STARS': '5',
+    }
+
+    const dateFormat = (date) => {
+      const dateObj = new Date(date);
+
+      const formattedDate = dateObj.toLocaleString('default', {
+        day: 'numeric',
+        month: 'short',
+      }).toUpperCase();
+
+      return formattedDate;
+    }
+
     return <div>
-      <div className="tour-details-gallery">
-        <div className="container-bg bg-dark-blue">
+      <div className="tour-details-container">
+        <div className="container-bg-tour-details bg-gray">
           <div className="container">
-            <div className="gallery-filter-area row">
-              <div className="gallery-sizer col-1" />
-              {/* gallery-item */}
-              <div className="tp-gallery-item col-md-5 col-sm-6 mb-10">
-                <div className="tp-gallery-item-img">
-                  <div className="thumbnails">
-                    <img src={packageDetails.hotel_object.images[0]} alt="image" />
-                  </div>
-                </div>
-              </div>
-              {/* gallery-item */}
-              <div className="tp-gallery-item col-md-3 col-sm-6">
-                <div className="tp-gallery-item-img">
-                  <a href="#" data-effect="mfp-zoom-in">
-                    <img src={packageDetails.hotel_object.images[1]} alt="image" />
-                  </a>
-                </div>
-              </div>
-              {/* gallery-item */}
-              <div className="tp-gallery-item col-lg-2 col-md-4 col-sm-6">
-                <div className="tp-gallery-item-img">
-                  <a href="#" data-effect="mfp-zoom-in">
-                    <img src={packageDetails.hotel_object.images[2]} alt="image" />
-                  </a>
-                </div>
-              </div>
-              {/* gallery-item */}
-              <div className="tp-gallery-item col-lg-2 col-md-4 col-sm-6">
-                <div className="tp-gallery-item-img">
-                  <a href="#" data-effect="mfp-zoom-in">
-                    <img src={packageDetails.hotel_object.images[3]} alt="image" />
-                  </a>
-                </div>
-              </div>
-              {/* gallery-item */}
-              <div className="tp-gallery-item col-lg-2 col-md-4 col-sm-6">
-                <div className="tp-gallery-item-img">
-                  <a href="#" data-effect="mfp-zoom-in">
-                    <img src={packageDetails.hotel_object.images[4]} alt="image" />
-                  </a>
-                </div>
-              </div>
-              {/* gallery-item */}
-              <div className="tp-gallery-item col-lg-2 col-md-4 col-sm-6">
-                <div className="tp-gallery-item-img">
-                  <a href="#" data-effect="mfp-zoom-in">
-                    <img src={packageDetails.hotel_object.images[5]} alt="image" />
-                  </a>
-                </div>
-              </div>
+            <div className='desktop-mode'>
+              {this.desktopMode()}
+            </div>
+            <div className='mobile-mode'>
+              {this.mobileMode()}
             </div>
             <div className="row">
-              <div className="col-xl-3 col-lg-4">
+              <div className='col-md-1' style={{ paddingTop: 50 }}>
+                <button className='round-button' onClick={() => this.slideShow(-1)}><i className='fa-solid fa-chevron-left' /></button>
+              </div>
+              <div className="col-md-6">
                 <div className="details">
-                  <p className="location mb-0"><i className="fa fa-map-marker" />{packageDetails.hotel_object.city}</p>
+                  <p className="location mb-0" style={{ color: '#26A9DE' }}><i className="fa fa-map-marker" style={{ color: '#26A9DE' }} />&nbsp;&nbsp;{packageDetails.hotel_object.city}</p>
                   <h4 className="title">{packageDetails.hotel_object.hotel}</h4>
                   <div className="tp-review-meta">
-                    <i className="ic-yellow fa fa-star" />
-                    <span>{packageDetails.hotel_object.rating}</span>
-                  </div>
-                  <div className="all-tags">
-                    <a>{packageDetails.hotel_object.type}</a>
+                    <span>{`${days} days ${adults + children} persons`}</span>
+                    <Box
+                      sx={{
+                        width: 200,
+                        display: 'flex',
+                        alignItems: 'left',
+                      }}>
+                      <Rating
+                        name='text-feedback'
+                        value={labels[packageDetails.hotel_object.rating]}
+                        readOnly
+                        precision={0.5}
+                        emptyIcon={<StarIcon style={{ opacity: 0.2 }} fontSize='inherit' />}
+                      />
+                      <Box sx={{ ml: 2 }}>{labels[packageDetails.hotel_object.rating]}</Box>
+                    </Box>
                   </div>
                 </div>
               </div>
-              <div className="col-xl-9 col-lg-8">
-                <div className="book-list-warp">
-                  <p className="book-list-content">Get your spot before it's too late.</p>
-                  <div className="tp-price-meta">
-                    <p>Min. Price</p>
-                    <h2><small>$</small> {packageDetails.hotel_object.rate}</h2>
+              <div className="col-md-4">
+                <div className='tp-details-book-wrap'>
+                  <h4>Price</h4>
+                </div>
+                <div className='tp-details-book-wrap' style={{ display: 'flex', textAlign: 'right' }}>
+                  <div className='col-md-5 col-sm-7'>
+                    Flights ${packageDetails.flight_price}, Hotel ${packageDetails.hotel_price}
+                  </div>
+                  <div className='col-md-7 col-sm-5'>
+                    <span style={{ verticalAlign: 'top' }}>Total:&nbsp;&nbsp;</span>
+                    <span className='total-price'>{packageDetails.flight_price + packageDetails.hotel_price}</span>$
                   </div>
                 </div>
-                <ul className="tp-list-meta border-tp-solid">
-                  <li className="ml-0"><i className="fa fa-calendar-o" /> 8 Oct</li>
-                  <li><i className="fa fa-clock-o" /> 4 Days</li>
-                  <li><i className="fa fa-users" />2 Person</li>
-                  <li><i className="fa fa-medkit" /> {packageDetails.hotel_object.health_safety_code}</li>
-                </ul>
+                <div className='tp-details-book-wrap border-tp-solid' style={{ marginTop: 20 }}>
+                  <i className='fa-regular fa-calendar-range' />&nbsp;&nbsp;
+                  {dateFormat(packageDetails.outbounddate)} to {dateFormat(packageDetails.inbounddate)}
+                </div>
+              </div>
+              <div className='col-md-1' style={{ paddingTop: 50 }}>
+                <button className='round-button' onClick={() => this.slideShow(1)} style={{ marginLeft: 'auto' }}><i className='fa-solid fa-chevron-right' /></button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="container">
+      <div className="container" style={{padding: 0}}>
         <div className="row">
-          <div className="col-lg-12">
-            <div className="tour-details-wrap">
+          <div className="col-lg-8 col-md-12 room-details-wrap">
+            <div className="tour-details-wrap bordered description-wrap">
               <h4 className="single-page-small-title">Description</h4>
               <p>{packageDetails.hotel_object.description}</p>
+            </div>
+            <div className="tour-details-wrap">
               <div className="package-included-area">
-                <h4 className="single-page-small-title">Rooms</h4>
                 <div className="row">
                   {this.createHotelRoomsRateList()}
                 </div>
               </div>
-              <div className="service-location-map">
-                <h4 className="single-page-small-title">Service Location</h4>
-                <div className="service-location-map">
-                  {/* <iframe src={mapUrl}/> */}
-                </div>
-              </div>
             </div>
           </div>
-
+          <div className='col-lg-4 col-md-12 map-wrap'>
+            <HotelMap center={{ lat: packageDetails.hotel_object.latitude, lng: packageDetails.hotel_object.longitude }} />
+          </div>
+        </div>
+      </div>
+      <div className='row'>
+        <div className='container' style={{padding: 0}}>
+          <div className='back-button'>
+            <i className='fa-solid fa-chevron-left' style={{marginRight: 15}} />
+            <Link to="/flight-hotel-package">Back</Link>
+          </div>
         </div>
       </div>
     </div>
@@ -362,72 +399,11 @@ class TourDetails extends Component {
 
   render() {
 
-    // Conditional to toggle color of minus sign on Guests dropdown
-    let kidsMinusSignColorClass = (this.state.kidsCount === 0) ? "search-box-minus-circle" : "search-box-plus-circle";
-    let adultsMinusSignColorClass = (this.state.adultsCount === 0) ? "search-box-minus-circle" : "search-box-plus-circle";
-
-    // Create Guests input string
-    let guestsInputContent = [
-      this.makeSingleGuestsInputString("kid", "kidsCount"),
-      this.makeSingleGuestsInputString("adult", "adultsCount")
-    ].filter(type => type).join(", ");
-
-    // Conditional for the Guests input chevron
-    let chevronDirection;
-    if (this.state.dropdownOpen) {
-      chevronDirection = "fa fa-arrow-up";
-    } else {
-      chevronDirection = "fa fa-arrow-down";
-    }
-
-    const dropdownMenu = (
-      <div className="search-box-dropdown-container">
-        <ul>
-          <li>
-            <div className="search-box-dropdown-label">
-              <div>Kids</div>
-            </div>
-            <div className="search-box-counter-container">
-              <div
-                className={`${kidsMinusSignColorClass}`}
-                onClick={() => this.decreaseCount("kidsCount")}>–</div>
-              <div className="search-box-dropdown-counter-num">{this.state.kidsCount}+</div>
-              <div
-                className="search-box-plus-circle"
-                onClick={() => {
-                  this.increaseCount("kidsCount");
-                }} >+</div>
-            </div>
-          </li>
-          <li>
-            <div className="search-box-dropdown-label">
-              <div>Adults</div>
-            </div>
-            <div className="search-box-counter-container">
-              <div
-                className={`${adultsMinusSignColorClass}`}
-                onClick={() => this.decreaseCount("adultsCount")}>–</div>
-              <div className="search-box-dropdown-counter-num">{this.state.adultsCount}+</div>
-              <div
-                className="search-box-plus-circle"
-                onClick={() => this.increaseCount("adultsCount")}>+</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    )
-
-    // let dropdownComponent = this.state.dropdownOpen ? dropdownMenu : <></>;
-    //
-    // let publicUrl = process.env.PUBLIC_URL + '/'
-    // let imagealt = 'image'
-    // let mapUrl = "https://maps.google.com/maps?q=" + this.props.hotelDetails.latitude + "," + this.props.hotelDetails.longitude + "&z=15&output=embed"
-
-    return <div className="tour-details-area mg-top--70">
+    return <div className="tour-details-area mg-top-70">
       {this.loadingMessage()}
       {this.hotelData()}
+      <LoadingBox open={this.state.loading} onClose={() => { this.setState({ loading: false }) }} timeout={5000} url={'/tour-list-v2'} />
     </div>
-
   }
 }
 

@@ -236,12 +236,14 @@ export const saveFlightsSearchDataToLocalStorage = (details) => {
 };
 
 export const saveHotelSearchDataToLocalStorage = (details) => {
-  if (details.originCode != "") {
+  if (details.originCode !== "") {
     localStorage.setItem("origin", details.originCode);
   }
+
   localStorage.setItem("destination", details.destinationCode);
   localStorage.setItem("hotel_destination", details.hotelDestinationCode);
   localStorage.setItem("departure_date", details.updatedDepartureDate);
+  localStorage.setItem("departure_date", details.updatedReturnDate);
   localStorage.setItem("adults", details.adults);
   localStorage.setItem("children", details.children);
   localStorage.setItem("days", details.days);

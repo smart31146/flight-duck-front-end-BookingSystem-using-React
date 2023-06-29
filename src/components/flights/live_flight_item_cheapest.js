@@ -26,7 +26,7 @@ const LiveFlightItemCheapest = (flightDetails) => {
 
   return (
     <div className="single-destinations-list style-three cheapest" style={{ position: 'relative' }}>
-      <span style={{ position: 'absolute', background: "#04c50d", color: "white", padding: "4px 8px", top: "-36px", "borderRadius": "4px" }}>Cheapest Deal</span>
+      <span style={{ position: 'absolute', background: "#04c50d", color: "white", padding: "4px 8px", top: "-48px", "borderRadius": "4px" }}>Cheapest Deal</span>
 
       <div className="thumb">
         <img src={flightDetails.agent.image} alt={flightDetails.agent.name} style={{ "objectFit": "scale-down" }} />
@@ -38,7 +38,7 @@ const LiveFlightItemCheapest = (flightDetails) => {
             <p>Total Travel Time - {flightDetails.total_duration.hours} hours, {flightDetails.total_duration.minutes} minutes, </p>
           </div>
           <div className="col-sm-2 mt-4">
-            <i className="fa fa-map-marker fa-4x" aria-hidden="true"></i>
+            <i className="fa-sharp fa-solid fa-location-dot fa-2x" aria-hidden="true"></i>
           </div>
         </div>
         <p className="content">Depature Date - {flightDetails.departure.date} | Arrival Date - {flightDetails.arrival.date} </p>
@@ -56,7 +56,7 @@ const LiveFlightItemCheapest = (flightDetails) => {
             <div className="list-price-meta">
               <div className="tp-list-meta d-inline-block">
                 <h3>Total Price</h3>
-                <h5><span>{flightDetails.currencySymbol}</span> {flightDetails.price}</h5>
+                <h5><span>{flightDetails.currencySymbol}</span> {flightDetails.formattedPrice}</h5>
               </div>
             </div>
           </div>

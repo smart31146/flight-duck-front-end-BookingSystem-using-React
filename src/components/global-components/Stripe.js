@@ -160,7 +160,7 @@ class CheckoutForm extends React.Component {
 
             <div className="row">
               <button type="submit" disabled={!stripe} >
-                Book Now
+                Pay Now
               </button>
             </div>
             :

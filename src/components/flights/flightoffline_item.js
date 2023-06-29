@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
 
 const FlightOfflineItem = (flightDetails) => {
-  // console.log("flights details=====", flightDetails);
+  console.log("flights details=====", flightDetails);
 
   return (
     <div className="single-destinations-list style-three">

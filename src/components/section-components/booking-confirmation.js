@@ -12,10 +12,11 @@ const BookingConfirmation = () => {
     roomDetails: 'default',
     roomName: 'default',
     flightDetails: 'default',
+    packageDetails: 'default'
   });
 
 
-  let { hotelDetails, roomDetails, roomName, flightDetails,
+  let { hotelDetails, roomDetails, roomName, flightDetails, packageDetails
   } = values;
 
 
@@ -36,9 +37,21 @@ const BookingConfirmation = () => {
   roomDetails = JSON.parse(localStorage.getItem("hotel_room_details"));
   roomName = localStorage.getItem("hotel_room_name");
   flightDetails = JSON.parse(localStorage.getItem("flight_details"));
+  packageDetails = JSON.parse(localStorage.getItem("packageDetails"));
   console.log( JSON.parse(localStorage.getItem("flight_details")))
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = { day: 'numeric', month: 'short' };
+    return date.toLocaleDateString('en-US', options);
+  }
 
+  const formatPrice = (price) => {
+    
+      let formattedPrice = (price / 1000).toFixed(2)
+    
+    return formattedPrice
+  }
 
   let publicUrl = process.env.PUBLIC_URL+'/'
     let imagealt = 'image'
@@ -50,12 +63,12 @@ const BookingConfirmation = () => {
           <div className="row justify-content-center">
             <div className="col-xl-10">
               <center>
-                <b>Hotel Details - </b>
+                <b>Hotel Details</b>
               </center>
               <table className="table">
                 <tbody>
                 <tr>
-                  <td className="title">City</td>
+                  <td className="title">Hotel Name</td>
                   <td className="title">Room</td>
                   <td className="title">Duration</td>
                   <td className="title">Price</td>
@@ -68,16 +81,18 @@ const BookingConfirmation = () => {
                     <h4 className="mt-2">{hotelDetails['hotel']}</h4>
                   </td>
                   <td>
-                    <p>3 days 2 person</p>
-                    {/* <h4>Studio Queen</h4> */}
                     <h4>{roomName}</h4>
+                    <p>{packageDetails['tripDays']} days {roomDetails['adults']+roomDetails['children']} person</p>
+                    {/* <h4>Studio Queen</h4> */}
+                    
                   </td>
                   <td>
-                    <p>8 Oct to 10 Oct</p>
-                    <h4>3 Days</h4>
+                    <p>{formatDate(packageDetails['inbounddate'])} to {formatDate(packageDetails['outbounddate'])}</p>
+                    <h4>{packageDetails['tripDays']} Days</h4>
+                    
+                    
                   </td>
                   <td>
-                    {/* <h3><span>$</span>320</h3> */}
                     <h3><span>$</span>{roomDetails['net']}</h3>
                   </td>
                 </tr>
@@ -86,7 +101,7 @@ const BookingConfirmation = () => {
               <br/>
               <div style={{backgroundColor: 'white'}}>
                 <center>
-                  <b>Flight Details - </b>
+                  <b>Flight Details</b>
                 </center>
                 <br></br>
                 <table className="table">
@@ -98,11 +113,13 @@ const BookingConfirmation = () => {
                     <td className="title">Price</td>
                   </tr>
                   <tr>
-                    <td>
+                    <td className='flightOrigin'>
                       {/* <h4>New York(JKF)</h4> */}
-                      <h4>{flightDetails['origin_station']}</h4>
-                      {/* <p>17:30</p> */}
-                      <p>{flightDetails['departure']['time']}</p>
+                      <div >
+                        <h4>{flightDetails['origin_station']}</h4>
+                        {/* <p>17:30</p> */}
+                        <p>{flightDetails['departure']['time']}</p>
+                      </div>
                     </td>
                     <td>
                       {/* <h4>Tel Aviv(TLV)</h4> */}
@@ -112,11 +129,11 @@ const BookingConfirmation = () => {
                     <td>
                       <h4>Layover</h4>
                       {/* <p>(2 hours and 15 minutes) Moscow</p> */}
-                      <p>{flightDetails['number_of_stops']}</p>
+                      <p>{flightDetails['total_duration']['hours']} hours and {flightDetails['total_duration']['minutes']} minutes</p>
                     </td>
                     <td>
                       {/* <h3><span>$</span>320</h3> */}
-                      <h3><span>{flightDetails['currencySymbol']}</span>{flightDetails['price']}</h3>
+                      <h3><span>{flightDetails['currencySymbol']}</span>${formatPrice(flightDetails['price'])}</h3>
                     </td>
                   </tr>
                   </tbody>

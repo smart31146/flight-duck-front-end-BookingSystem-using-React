@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 const BasicContext = React.createContext();
-class BasicProvider extends Component{
-    constructor(props){
+class BasicProvider extends Component {
+    constructor(props) {
         super(props);
         this.state = {
             currencyCode: '',
@@ -10,32 +10,33 @@ class BasicProvider extends Component{
             loading: false,
         };
     }
-    componentWillMount(){
+    componentWillMount() {
         this.setState({ loading: false });
         fetch(
             'https://ipapi.co/json/', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
             }
+        }
         )
-            .then(resp => resp.json())
-            .then((resp) => {
-                localStorage.setItem("country_code", resp.country_code);
-                localStorage.setItem("currency", resp.currency);
-                this.setState({
-                    loading: false,
-                    currencyCode: resp.currency,
-                    countryCode: resp.country_code, });
-            })
+        .then(resp => resp.json())
+        .then((resp) => {
+            localStorage.setItem("country_code", resp.country_code);
+            localStorage.setItem("currency", resp.currency);
+            this.setState({
+                loading: false,
+                currencyCode: resp.currency,
+                countryCode: resp.country_code,
+            });
+        })
     }
-    render(){
+    render() {
         const { loading } = this.state
         console.log(loading)
-        return(
+        return (
             loading === false ?
-                <BasicContext.Provider value={ this.state }>
+                <BasicContext.Provider value={this.state}>
                     {this.props.children}
                 </BasicContext.Provider>
                 : <h1>Loading</h1>
