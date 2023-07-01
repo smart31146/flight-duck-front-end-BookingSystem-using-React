@@ -250,6 +250,11 @@ select option {
     scale: 1.2;
 }
 
+.search-form-item path:hover {
+    padding: none;
+    scale: 1.2;
+}
+
 .adults-dlg {
     padding: 0px;
     width: 100%;
@@ -259,7 +264,8 @@ select option {
     padding: 0 22px !important;
 }
 
-.adults-dlg .row, .adults-dlg .col {
+.adults-dlg .row,
+.adults-dlg .col {
     padding: 0;
     margin: 15px auto !important;
 }
@@ -276,6 +282,21 @@ select option {
     line-height: 0;
 }
 
+.btn-adult {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background-color: #FC9401;
+}
+
+.btn-adult:hover, .btn-adult:focus {
+    border: none;
+    outline: none;
+    transform: none;
+}
+
 .MuiInputBase-input:hover {
     border: none;
 }
@@ -290,9 +311,7 @@ select option {
     bottom: 0;
     content: "";
     display: none;
-
     border: none;
-
 }
 
 .MuiInput-underline {
@@ -303,7 +322,6 @@ select option {
     display: none;
 
     border: none;
-
 }
 
 .MuiInputBase-inputAdornedEnd:focus .MuiInput-underline:before {
@@ -319,7 +337,6 @@ select option {
     border: none;
 }
 
-
 .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root:focus {
     border: none;
     outline: none;
@@ -331,4 +348,14 @@ select option {
 
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper {
     margin: 0 !important;
+}
+
+.MuiInput-underline:after,
+.MuiInput-underline .Mui-focused:after {
+    border: none !important;
+}
+
+.css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root:hover {
+   transform: none;
+   text-transform: none;
 }

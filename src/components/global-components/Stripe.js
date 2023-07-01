@@ -46,9 +46,10 @@ class CheckoutForm extends React.Component {
         address: this.state.address || null
       }
       this.setState({ loading: true });
+
       hotelBookingAPI(data)
           .then((res) => {
-            this.setState({ loading: false });
+            this.setState({ loading: true });
             if (localStorage.getItem("only_hotel") == 'false') {
               let flightBookingUrl = localStorage.getItem('flight_booking_url');
               //window.location.href = flightBookingUrl;
@@ -134,7 +135,7 @@ class CheckoutForm extends React.Component {
           <input className="form-control" name="line1" onChange={this.handleAddress} />
         </div>
         <div className="row">
-          <div className="form-grou col-md-3" >
+          <div className="form-group col-md-3" >
             <label>City</label>
             <input className="form-control" name="city" onChange={this.handleAddress} />
           </div>

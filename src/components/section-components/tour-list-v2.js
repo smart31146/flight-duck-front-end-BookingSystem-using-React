@@ -11,7 +11,10 @@ import Slider from '@mui/material/Slider'
 import { setGlobalState, useGlobalState } from '../../index'
 import CustomPagination from '../flights/pagination'
 import Box from '@mui/material/Box'
-
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
 const TourListV2 = () => {
   const [values, setValues] = useState({
     price_sort: 'down',
@@ -311,19 +314,20 @@ const TourListV2 = () => {
     console.log(flightsPaginated_data)
   }
 
-  const sortSearchResultsBasedOnPrices = (event) => {
+  const sortSearchResultsBasedOnPrices = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let price = event.target.value
     setTimeout(() => {
-      let price = price_sort
+      
       const newList = flightsFilteredData
       console.log('below is newlist')
       console.log(newList)
-      if (price === 'down') {
+      if (price === 'high') {
         setGlobalState('flights_price_sort_text', 'Price Low to High')
         setGlobalState('flights_price_sort', 'up')
 
         newList.sort((f, second) => (f.rate > second.rate ? 1 : -1))
       }
-      if (price === 'up') {
+      if (price === 'low') {
         setGlobalState('flights_price_sort', 'down')
         setGlobalState('flights_price_sort_text', 'Price High to Low')
         newList.sort((f, second) => (f.rate < second.rate ? 1 : -1))
@@ -333,8 +337,8 @@ const TourListV2 = () => {
       console.log('below is result')
       console.log(result)
 
-      setValues({ ...values, error: false, pageNumber: 0 })
-      setValues({ ...values, error: false, price_sort_text: !price_sort_text })
+      // setValues({ ...values, error: false, pageNumber: 0 })
+      // setValues({ ...values, error: false, price_sort_text: !price_sort_text })
       setGlobalState('flightsPaginated_data', result)
       setGlobalState('liveFlightsList', result[0])
       flight()
@@ -435,13 +439,32 @@ const TourListV2 = () => {
         <div className='row'>
           <div className='col-xl-9 col-lg-8 order-lg-12'>
             <div className='tp-tour-list-search-area'>
-              <div className='row'>
-                <div className='col-xl-4 col-sm-6'>
-                  <a className='btn btn-warning' style={{ color: 'white' }} onClick={sortSearchResultsBasedOnPrices}>
+              <div className="row d-flex justify-content-end">
+              <FormControl>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                    
+                    onChange={sortSearchResultsBasedOnPrices}
+                  >
+                    
+                    <div className="col-xl-6 col-sm-12 text-right">
+                      <FormControlLabel value="low" control={<Radio />} label="Price Low to High" />
+                    </div>
+                    <div className="col-xl-6 col-sm-12 text-right">
+                      <FormControlLabel value="high" control={<Radio />} label="Price High to Low" />
+                    </div>
+                   
+                    
+                  </RadioGroup>
+                </FormControl>
+                {/* <div className='col-xl-4 col-sm-6'> */}
+                  {/* <a className='btn btn-warning' style={{ color: 'white' }} onClick={sortSearchResultsBasedOnPrices}>
                     <i className={'la la-arrow-' + price_sort} />
                     {price_sort_text == true ? 'Price High to Low' : 'Price Low to High'}
-                  </a>
-                </div>
+                  </a> */}
+                {/* </div> */}
               </div>
             </div>
             {flight()}

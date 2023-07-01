@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from './global-components/navbar';
-import PageHeader from './global-components/page-header';
+import PageHeader from './global-components/page-header1';
 import HotelFlightPackageList from './section-components/hotel-flight-package-list';
 import Subscribe from './section-components/subscribe';
 import Footer from './global-components/footer';

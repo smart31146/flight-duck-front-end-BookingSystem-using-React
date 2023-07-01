@@ -103,6 +103,10 @@ class Root extends Component {
 			setGlobalState("country_code", resp.country_code)
 			setGlobalState("currency", resp.currency)
 		})
+		.catch(()=>{
+			
+			console.log("index failed")
+		})
 	}
 
 	render() {

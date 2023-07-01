@@ -234,6 +234,7 @@
     /****** home 1 responsive ******/
     .navbar-area .nav-container .desktop-logo {
         margin-right: 100px;
+        display: none
     }
 
     .navbar-area .nav-container .navbar-collapse .navbar-nav li {
@@ -3177,6 +3178,10 @@
     .search-form-group1 .search-form-item {
         margin-top: 10px !important;
         margin-bottom: 10px !important;
+    }
+    h5 {
+        font-size: 17px;
+        line-height: 1.2380952380952381;
     }
 }
 

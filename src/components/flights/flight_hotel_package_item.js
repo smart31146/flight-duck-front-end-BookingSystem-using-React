@@ -101,7 +101,7 @@ const FlightHotelPackageItem = (flightDetails) => {
          
         </div>
         <div className='row'>
-          <div className='col-xl-3 col-sm-6'>
+          <div className='col-xl-3 col-sm-5'>
             <div className='list-price-meta'>
               <div className='tp-list-meta d-inline-block'>
                 <p>
@@ -111,15 +111,15 @@ const FlightHotelPackageItem = (flightDetails) => {
             </div>
           </div>
 
-          <div className='col-xl-6 col-sm-5'style={{paddingLeft:0}}>
+          <div className='col-xl-6 col-sm-6'style={{paddingLeft:0}}>
             <div className='row list-price-meta'>
-              <div className='col-xl-4 col-sm-6 tp-list-meta d-inline-block'>
+              <div className='col-xl-4 col-sm-5 tp-list-meta d-inline-block'>
                 <p>Price</p>
                 <h5>
                    {flightDetails.deal_price}<span>$</span>
                 </h5>
               </div>
-              <div className='col-xl-8 col-sm-6 tp-list-meta d-inline-block'>
+              <div className='col-xl-8 col-sm-5 tp-list-meta d-inline-block'>
                 <p>(Including flights
                   + accommodation)</p>
                 

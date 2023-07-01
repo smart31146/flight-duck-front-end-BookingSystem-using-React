@@ -64,6 +64,7 @@ const Search2 = () => {
   const [destinationList, destinationListData] = useState([])
   const [isLocal] = useGlobalState('isLocal')
   const [open, setOpen] = useState(false)
+  const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false)
 
   const [values, setValues] = useState({
@@ -431,15 +432,15 @@ const Search2 = () => {
               </div>
               <div className='item-wrapper' style={{ width: '60%' }}>
                 <div className='adult-dig-item'>
-                  <button className='btn minus' onClick={() => handleAdultsNum(-1)}>
+                  <button className='btn-adult' onClick={() => handleAdultsNum(-1)}>
                     -
                   </button>
                 </div>
-                <div className='adult-dig-item' style={{ paddingTop: 30 }}>
+                <div className='adult-dig-item' style={{ paddingTop: 20 }}>
                   {adults}
                 </div>
                 <div className='adult-dig-item'>
-                  <button className='btn plus' onClick={() => handleAdultsNum(1)}>
+                  <button className='btn-adult' onClick={() => handleAdultsNum(1)}>
                     +
                   </button>
                 </div>
@@ -452,15 +453,15 @@ const Search2 = () => {
               </div>
               <div className='item-wrapper' style={{ width: '60%' }}>
                 <div className='adult-dig-item'>
-                  <button className='btn minus' onClick={() => handleChildrenNum(-1)}>
+                  <button className='btn-adult' onClick={() => handleChildrenNum(-1)}>
                     -
                   </button>
                 </div>
-                <div className='adult-dig-item' style={{ paddingTop: 30 }}>
+                <div className='adult-dig-item' style={{ paddingTop: 20 }}>
                   {children}
                 </div>
                 <div className='adult-dig-item'>
-                  <button className='btn plus' onClick={() => handleChildrenNum(1)}>
+                  <button className='btn-adult' onClick={() => handleChildrenNum(1)}>
                     +
                   </button>
                 </div>
@@ -481,7 +482,7 @@ const Search2 = () => {
           <button
             className='btn btn-primary btnAccept'
             onClick={handleAccept}
-            style={{ padding: 'auto', margin: '0 auto 10px auto', height: 50, width: '95%' }}>
+            style={{ padding: 'auto', margin: '0 auto 10px auto', height: 50, width: '90%' }}>
             Apply
           </button>
         </DialogActions>
@@ -503,7 +504,7 @@ const Search2 = () => {
             <LoadingBox
               open={loading}
               onClose={() => {
-                setOpen(false)
+                setLoading(false)
               }}
               timeout={5000}
               url={'/flight-hotel-package'}
@@ -576,13 +577,16 @@ const Search2 = () => {
                 <div className='search-form-item'>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker
+                      open={show}
+                      onOpen={() => setShow(true)}
+                      onClose={() => setShow(false)}
                       views={['year', 'month']}
                       openTo='month'
                       minDate={minDate}
                       maxDate={maxDate}
                       value={departure_date}
                       onChange={handleDate}
-                      renderInput={(params) => <TextField {...params} helperText={null} />}
+                      renderInput={(params) => <TextField {...params} helperText={null} onClick={(e) => setShow(true)} />}
                     />
                   </LocalizationProvider>
                 </div>

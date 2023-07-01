@@ -138,12 +138,8 @@ const CustomDatePicker = () => {
   return (
     <DatePicker
       selected={selectedDate}
-      onChange={handleDateChange}
-      
-      
-      
+      // onChange={handleDateChange}
       showPopperArrow={false}
-
       showDayMonthPicker
       inline
       

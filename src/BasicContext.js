@@ -30,6 +30,9 @@ class BasicProvider extends Component {
                 countryCode: resp.country_code,
             });
         })
+        .catch((err) =>{
+            console.log("failed")
+        })
     }
     render() {
         const { loading } = this.state

@@ -27,7 +27,8 @@ const DestinatioDetails = () => {
 
   const openUrl=() => {
     let flightBookingUrl = localStorage.getItem('flight_booking_url');
-    window.location.href = flightBookingUrl
+    window.open(flightBookingUrl, '_blank');
+    // window.location.href = flightBookingUrl
   }
  const formatDate = (dateString) => {
     const date = new Date(dateString);

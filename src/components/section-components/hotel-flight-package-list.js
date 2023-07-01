@@ -46,7 +46,8 @@ const HotelFlightPackageList = () => {
     //   departure_date: departureDate, return_date: return_date })
 
       console.log(isLocal)
-      searchCacheFlightHotelsPackage(isLocal)
+      if(hotelFlightPackageList.length==0)
+        searchCacheFlightHotelsPackage(isLocal)
 
 
     console.log("inside useEffect paginated")
@@ -269,7 +270,7 @@ const HotelFlightPackageList = () => {
     let result = null;
     console.log("loading at start is" + loading);
 
-
+    if(hotelFlightPackageList.length==0)
     getCacheFlightHotelsPackageSwitch()
         .then((data) => {
           if (data && data.list && data.list.length > 0) {
@@ -482,18 +483,19 @@ const HotelFlightPackageList = () => {
   const flight = () => {
  
     const list = getCacheFlightHotelsPackageLocal()
-  
+    console.log("list", list)
     let arr = [];
     let topArr = []
     
     let pan=0
+    console.log("testbest",hotelFlightPackageList.length, " arr", arr)
     if (hotelFlightPackageList && hotelFlightPackageList.length > 0) {
       // setTopState(()=> 'a'  )
       for (let i = 0; i < hotelFlightPackageList.length; i++) {
         let tempState = [] 
         if (hotelFlightPackageList[i].hotel_object) {  // check if hotel_object exists
           
-          if(hotelFlightPackageList[i].bestDeal) {
+          if(pan!=2 && hotelFlightPackageList[i].bestDeal) {
               tempState.push(hotelFlightPackageList[i])
               console.log("tempstate",tempState)
               
@@ -503,7 +505,7 @@ const HotelFlightPackageList = () => {
                     name='single-destinations-list style-three best'
                 />)
            
-              pan=1
+              pan=2
             }
           else if(hotelFlightPackageList[i].cheapest) {
               

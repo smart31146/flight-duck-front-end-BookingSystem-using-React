@@ -3,25 +3,19 @@ import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
 
 const LiveFlightItemCheapest = (flightDetails) => {
+ 
   const openInNewTab = (url) => {
-    if (localStorage.getItem('only_flight') == 'true') {
-      const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-      if (newWindow) newWindow.opener = null
-    }
-    
-    else if (localStorage.getItem('only_hotel') == 'true') {
-      const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-      if (newWindow) newWindow.opener = null
-    }
+   
     
     // console.log("save flight urls=======", url);
-    else if (localStorage.getItem('only_hotel') == 'false') {
+    
       localStorage.setItem('flight_booking_url', url);
       window.location.href = `#booking-confirmation`
-    }  
-    // console.log("save flight urls=======", url);
-    // localStorage.setItem('flight_booking_url', url);
-    // console.log("create new page that only shows hotel and flight booking===")
+   
+    console.log(flightDetails)
+    localStorage.setItem('flight_details', JSON.stringify(flightDetails));
+    console.log("create new page that only shows hotel and flight booking===")
+    // window.location.href = `#destination-details`
   }
 
   return (
@@ -44,7 +38,7 @@ const LiveFlightItemCheapest = (flightDetails) => {
         <p className="content">Depature Date - {flightDetails.departure.date} | Arrival Date - {flightDetails.arrival.date} </p>
 
         <div className="row">
-          <div className="col-sm-6">
+          <div className="col-sm-4">
             <div className="list-price-meta">
               <div className="tp-list-meta d-inline-block">
                 <p><i className="fa fa-clock-o" /> Departure Time - {flightDetails.departure.time}</p>
@@ -52,13 +46,19 @@ const LiveFlightItemCheapest = (flightDetails) => {
               </div>
             </div>
           </div>
-          <div className="col-sm-6">
+          <div className="col-sm-5">
             <div className="list-price-meta">
               <div className="tp-list-meta d-inline-block">
                 <h3>Total Price</h3>
                 <h5><span>{flightDetails.currencySymbol}</span> {flightDetails.formattedPrice}</h5>
               </div>
             </div>
+            
+          </div>
+          <div className='col col-sm-3' onClick={() => openInNewTab(flightDetails.booking_deep_link)}>
+            <a className='btn btn-yellow' style={{ color: 'white' }}>
+              Select
+            </a>
           </div>
         </div>
       </div>

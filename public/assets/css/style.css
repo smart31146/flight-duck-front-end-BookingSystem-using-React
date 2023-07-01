@@ -2688,9 +2688,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 /* -----------------------------------------------------
     tp-tour-list-search-area style
 ----------------------------------------------------- */
-.tp-tour-list-search-area {
-  margin-bottom: 40px;
-}
+
 
 .tp-tour-list-search-area .single-input-wrap {
   position: relative;
@@ -9194,8 +9192,7 @@ span {
   width: 336px;
   height: 551px;
   display: flex;
-  margin-right: 5px;
-  justify-content: flex-end;
+  margin-right: -50px;
 }
 .cheast {
   border-radius: 10px;
@@ -9254,18 +9251,7 @@ border-radius: 10px;
   width: 90%;
   margin: auto;
 }
-.speech {
-  margin-top: -106px;
-  /* margin-right: -90px; */
-  padding-top: 106px;
-  height: 328px;
-  width: 352px;
-  background-image: url(../img/Ducks/speech.png);
-  background-size: initial;
-  background-repeat: no-repeat;
-  background-position: center;
-  z-index: 5;
-}
+
 .speech-content {
   line-height: 2;
   z-index: 20;
@@ -9324,9 +9310,17 @@ border-radius: 10px;
 }
 /* rgba(171, 36, 235, 1), rgba(113, 0, 166, 1) */
 
-.speech{
-  width:320px;
-  margin-top:-105px !important;
+.speech {
+  margin-top: -86px;
+  margin-right: 12px;
+  padding-top: 106px;
+  height: 328px;
+  width: 352px;
+  background-image: url(../img/Ducks/speech.png);
+  background-size: initial;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 5;
 }
 .react-datepicker{
   margin-left: 35px;
@@ -9556,4 +9550,36 @@ border-radius: 10px;
   display: flex !important;
   justify-content: center;
   align-items: center;
+}
+
+.MuiInputBase-root:focus {
+  border: none;
+  outline: none;
+}
+
+.calandar .react-datepicker__day--keyboard-selected, .react-datepicker__month-text--keyboard-selected, .react-datepicker__quarter-text--keyboard-selected, .react-datepicker__year-text--keyboard-selected {
+  border-radius: 0.3rem;
+  background-color: transparent !important;
+  color: #fff;
+}
+.calandar .react-datepicker__day--keyboard-selected:hover, 
+.react-datepicker__month-text--keyboard-selected:hover, 
+.react-datepicker__quarter-text--keyboard-selected:hover, 
+.react-datepicker__year-text--keyboard-selected:hover {
+  background-color: transparent !important;
+}
+.calandar .react-datepicker__day--keyboard-selected, 
+.react-datepicker__month-text--keyboard-selected, 
+.react-datepicker__quarter-text--keyboard-selected, 
+.react-datepicker__year-text--keyboard-selected {
+  border-radius: 0.3rem;
+  background-color: #2a87d0;
+  color: #000 !important;
+}
+.tour-details-header {
+    background-image: linear-gradient(to top right, #470073, #15056D);
+    padding: 170px 0 200px !important;
+}
+.stripe .form-group {
+  padding: 0;
 }
