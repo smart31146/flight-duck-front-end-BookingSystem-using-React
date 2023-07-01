@@ -68,26 +68,22 @@ const CustomDatePicker = () => {
   //            {day === 21 ? <span className="event">{day}</span> : <span>{day}</span>}
   //          </>);
   // };
+  const [startDate, setStartDate] = useState(new Date());
+
+  const today = new Date();
+  const startOfMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+  const endOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
+  const handleMonthChange = (date) => {
+    
+    setStartDate(date);
+  };
   const renderDay = (day, date) => {
     // console.log("currentMonth",date.getMonth())
     // lastValue.map((item)=>{
     //   console.log("lastitem",item.date)
     // })
     // const eventDates = [new Date(lastValue[0].date), new Date(lastValue[1].date)]; // Example specific dates
-    const eventDates = [
-      {
-          date: new Date(2023, 6, 15),
-          price: 901.89,
-          "color": "red"
-      },
-      {
-          date: new Date(2023, 6, 20),
-          price: 772.1,
-          color: "blue"
-      }]
-      // console.log("testevent",eventDates[0].date)
    
-    
       var pan=0
       for(var i=0;i<lastValue.length;i++){
         const eventDate = new Date(lastValue[i].date)
@@ -137,12 +133,18 @@ const CustomDatePicker = () => {
   };
   return (
     <DatePicker
-      selected={selectedDate}
-      // onChange={handleDateChange}
+      selected={startDate}
+      // onChange={(date) => setStartDate(date)}
+      
       showPopperArrow={false}
       showDayMonthPicker
+      // showMonthYearPicker
+      // showFullMonthYearPicker
       inline
-      
+      // fixedHeight
+      // shouldCloseOnSelect={false}
+      onMonthChange={handleMonthChange}
+      // disabled={true}
       renderDayContents={renderDay} // you can use this prop
       // filterDate={filterDate}
     />
