@@ -232,6 +232,7 @@ const Search2 = () => {
   const handleDays = (event) => {
     var d = event.target.value
     var period = d
+    setGlobalState("days", d)
 
     if (daysUnit === 'weeks') {
       period = d * 7
@@ -261,59 +262,65 @@ const Search2 = () => {
     setGlobalState(name, event.target.value)
     setValues({ ...values, error: false, [name]: event.target.value })
 
-    // if (!isLocal) {
-    // 	if (name === "destination") {
-    // 		console.log("this is pre destination API req")
-    // 		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
-    // 		fetch(
-    // 			url, {
-    // 			method: 'GET',
-    // 			headers: {
-    // 				'Content-Type': 'application/json'
-    // 			}
-    // 		}).then(resp => resp.json())
-    // 			.then((resp) => {
-    // 				destinationListData(resp['list'])
-    // 			})
-    // 	}
-    // 	else if (name === "origin") {
-    // 		console.log("this is origin API fetch")
-    // 		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
-    // 		fetch(
-    // 			url, {
-    // 			method: 'GET',
-    // 			headers: {
-    // 				'Content-Type': 'application/json'
-    // 			}
-    // 		}
-    // 		)
-    // 			.then(resp => resp.json()
-    // 			)
-    // 			.then((resp) => {
-    // 				originListData(resp['list'])
-    // 			})
-    // 	}
-    // 	console.log("this is post ALL API CALL")
-    // }
+    if (!isLocal) {
+    	if (name === "destination") {
+    		console.log("this is pre destination API req")
+    		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
+    		fetch(
+    			url, {
+    			method: 'GET',
+    			headers: {
+    				'Content-Type': 'application/json'
+    			}
+    		}).then(resp => resp.json())
+    			.then((resp) => {
+    				destinationListData(resp['list'])
+    			})
+    	}
+    	else if (name === "origin") {
+    		console.log("this is origin API fetch")
+    		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
+    		fetch(
+    			url, {
+    			method: 'GET',
+    			headers: {
+    				'Content-Type': 'application/json'
+    			}
+    		}
+    		)
+    			.then(resp => resp.json()
+    			)
+    			.then((resp) => {
+    				originListData(resp['list'])
+    			})
+    	}
+    	console.log("this is post ALL API CALL")
+    }
   }
 
   const onSearchInfoSubmit = (event) => {
-    // event.preventDefault();
+    console.log("onSearchInfoSubmit is called");
+    event.preventDefault();
+    console.log("onSearchInfoSubmit is called2");
 
-    // if (destination === origin) {
-    // 	setValues({
-    // 		...values,
-    // 		error: true,
-    // 		errorMessage: "Destination and Origin cannot be same"
-    // 	});
-    // 	return;
-    // }
+    if (destination === origin) {
+    	setValues({
+    		...values,
+    		error: true,
+    		errorMessage: "Destination and Origin cannot be same"
+    	});
+    	return;
+    }
 
-    // const destinationCode = destinationList.find((dest) => dest.airport_name === destination).airport_code;
-    // const originCode = originList.find((org) => org.airport_name === origin).airport_code;
-    // const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
-    // const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
-    // let updatedReturnDate = null;
+    console.log("onSearchInfoSubmit is called3");
+
+    const destinationCode = destinationList.find((dest) => dest.airport_name === destination).airport_code;
+    const originCode = originList.find((org) => org.airport_name === origin).airport_code;
+    const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
+    const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
+    const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
+
+    console.log("onSearchInfoSubmit is called4");
 
     // if (returnDate !== null) {
     // 	if (returnDate < departureDate) {
@@ -322,30 +329,32 @@ const Search2 = () => {
     // 			error: true,
     // 			errorMessage: "Return Date should be greater than Departure Date"
     // 		});
-
+    //
     // 		return;
     // 	}
 
-    // 	updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
+    	// updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
     // }
 
-    // setGlobalState("destination_code", destinationCode);
-    // setGlobalState("origin", originCode);
-    // setGlobalState("hotel_destination", hotelDestinationCode);
-    // setGlobalState("departure_date", updatedDepartureDate);
-    // setGlobalState("return_date", updatedReturnDate);
+    console.log("onSearchInfoSubmit is called5");
 
-    // console.log("This is the currecny format")
-    // console.log(currency_format)
+    setGlobalState("destination_code", destinationCode);
+    setGlobalState("origin", originCode);
+    setGlobalState("hotel_destination", hotelDestinationCode);
+    setGlobalState("departure_date", updatedDepartureDate);
+    setGlobalState("return_date", updatedReturnDate);
 
-    // savePackageSearchDataToLocalStorage({
-    // 	destinationCode, originCode,
-    // 	updatedDepartureDate, hotelDestinationCode,
-    // 	updatedReturnDate, adults, children,
-    // 	searchForMonths, days, currency_format
-    // });
+    console.log("This is the currecny format")
+    console.log(currency_format)
 
-    event.preventDefault()
+    savePackageSearchDataToLocalStorage({
+    	destinationCode, originCode,
+    	updatedDepartureDate, hotelDestinationCode,
+    	updatedReturnDate, adults, children,
+    	searchForMonths, days, currency_format
+    });
+
+    // event.preventDefault()
 
     // if (destination === origin) {
     // 	setValues({
@@ -368,11 +377,11 @@ const Search2 = () => {
     // const originCode = originList.find((org) => org.airport_name === origin).airport_code;
     // const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
 
-    const destinationCode = ''
-    const originCode = ''
-    const hotelDestinationCode = ''
-    const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE)
-    const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE)
+    // const destinationCode = ''
+    // const originCode = ''
+    // const hotelDestinationCode = ''
+    // const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE)
+    // const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE)
 
     // setGlobalState("destination_code", destinationCode)
     // setGlobalState("origin", originCode)
@@ -403,6 +412,8 @@ const Search2 = () => {
     // history.push("/flight-hotel-package");
 
     setLoading(true)
+    console.log("loading is")
+    console.log(loading)
   }
 
   const customerDialogHtml = (
@@ -534,17 +545,23 @@ const Search2 = () => {
                     debounceTimeout={400}
                     input
                     type='text'
-                    list='data1'
+                    list='data2'
                     placeholder='From'
                     value={origin}
                     onChange={handleChange('origin')}
                     required
                   />
-                  <datalist id='data1'>
+                  <datalist id="data2">
                     <select>
-                      {destinationList.map((destItem) => {
-                        return <option key={`o3${destItem.airport_name}`}>{destItem.airport_name}</option>
-                      })}
+                      {
+                        originList.map(originItem => {
+                          return (
+                              <option key={`o2${originItem.airport_name}`}>
+                                {originItem.airport_name}
+                              </option>
+                          )
+                        })
+                      }
                     </select>
                   </datalist>
                   <i className='fa-sharp fa-solid fa-location-dot' />
@@ -558,16 +575,22 @@ const Search2 = () => {
                     input
                     type='text'
                     list='data1'
-                    placeholder='To'
+                    placeholder='Where To?'
                     value={destination}
                     onChange={handleChange('destination')}
                     required
                   />
-                  <datalist id='data1'>
+                  <datalist id="data1">
                     <select>
-                      {originList.map((originItem) => {
-                        return <option key={`o3${originItem.airport_name}`}>{originItem.airport_name}</option>
-                      })}
+                      {
+                        destinationList.map(originItem => {
+                          return (
+                              <option key={`o${originItem.airport_name}`}>
+                                {originItem.airport_name}
+                              </option>
+                          )
+                        })
+                      }
                     </select>
                   </datalist>
                   <i className='fa-regular fa-circle-dot' />
@@ -597,7 +620,7 @@ const Search2 = () => {
                     <div className='search-form-adult-sub-wrap' style={{ width: '55%' }}>
                       <i className='fa fa-suitcase-rolling icon-suitcase' style={{ marginLeft: -15 }} />
                       <span className='text'>
-                        {adults !== null ? adults : '0'} Adults {children !== null ? children : '0'} Children
+                        {adults !== null ? adults : adults} Adults {children !== null ? children : children} Children
                       </span>
                     </div>
                     <span className='vertical-line'></span>
