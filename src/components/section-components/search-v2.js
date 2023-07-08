@@ -233,6 +233,8 @@ const Search2 = () => {
     var d = event.target.value
     var period = d
     setGlobalState("days", d)
+    console.log("days is")
+    console.log(days_num)
 
     if (daysUnit === 'weeks') {
       period = d * 7
@@ -347,12 +349,22 @@ const Search2 = () => {
     console.log("This is the currecny format")
     console.log(currency_format)
 
+    console.log("This is the days")
+    console.log(days_num)
+
     savePackageSearchDataToLocalStorage({
-    	destinationCode, originCode,
-    	updatedDepartureDate, hotelDestinationCode,
-    	updatedReturnDate, adults, children,
-    	searchForMonths, days, currency_format
+      destinationCode: destinationCode,
+      originCode: originCode,
+      updatedDepartureDate: updatedDepartureDate,
+      hotelDestinationCode: hotelDestinationCode,
+      updatedReturnDate: updatedReturnDate,
+      adults: adults,
+      children: children,
+      searchForMonths: searchForMonths,
+      days: days_num,
+      currency_format: currency_format
     });
+
 
     // event.preventDefault()
 
@@ -388,7 +400,6 @@ const Search2 = () => {
     setGlobalState('hotel_destination', hotelDestinationCode)
     setGlobalState('departure_date', updatedDepartureDate)
     setGlobalState('return_date', updatedReturnDate)
-    setGlobalState('days', days)
 
     console.log('This is the currecny format')
     console.log(currency_format)
