@@ -61,6 +61,7 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	accommodationType: '',
 	currencySymbol: "",
 	flightsPaginated_data: [],
+	calendarPrices: [],
 	flightsFilteredData: [],
 	flightsCompleteList: [],
 	liveFlightsList: [],
@@ -82,7 +83,8 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	liveFlightAttempts: 0,
 	isLocal: false,
 	topState:[],
-	starRating:''
+	starRating:'',
+	hasLoaded: false
 });
 
 class Root extends Component {

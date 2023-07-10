@@ -28,6 +28,7 @@ import { setGlobalState, useGlobalState } from '../../index'
 import LoadingBox from './loading-box'
 import './search-option.css'
 
+
 const printGlobalState = (destination, origin, departureDate, returnDate, adults, children, days) => {
   console.log('destination is ' + destination)
   console.log('origin is ' + origin)
@@ -43,9 +44,14 @@ const printGlobalState2 = (isReturn) => {
 }
 
 const Search2 = () => {
+  const history = useHistory();
+
   localStorage.setItem('cachedHotelFlightPackageList', null)
   localStorage.setItem('packageDetails', null)
+  localStorage.setItem('calendarPrices', [] )
+
   setGlobalState('hotelFlightPackageList', [])
+  setGlobalState('calendarPrices', [])
 
   const [destination] = useGlobalState('destination')
   const [origin] = useGlobalState('origin')
@@ -420,9 +426,10 @@ const Search2 = () => {
     // localStorage.removeItem("only_flight");
     // localStorage.setItem("only_hotel", "false");
 
-    // history.push("/flight-hotel-package");
 
-    setLoading(true)
+    history.push("/flight-hotel-package");
+
+    // setLoading(true)
     console.log("loading is")
     console.log(loading)
   }
