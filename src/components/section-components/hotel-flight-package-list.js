@@ -621,9 +621,20 @@ const HotelFlightPackageList = () => {
   
   return(
   <div className={`App ${loading ? 'blur-effect' : ''}`}>
-    <PageHeader1 headertitle={1}
-                 duckUrl='assets/img/Ducks/duck_for_calender.png'
-                 calendar={true}  />
+    {/*{loading ? (*/}
+    {/*    <PageHeader1*/}
+    {/*        headertitle={1}*/}
+    {/*        duckUrl='assets/img/Ducks/duck_for_calender.png'*/}
+    {/*        calendar={true}*/}
+    {/*    />*/}
+    {/*) : null}*/}
+    {/*{!loading ? (*/}
+        <PageHeader1
+            headertitle={1}
+            duckUrl='assets/img/Ducks/duck_for_calender.png'
+            calendar={true}
+        />
+    {/*) : null}*/}
     <div className="tour-list-area pd-top-120 viaje-go-top">
       <div className="container">
         {loadingMessage()}

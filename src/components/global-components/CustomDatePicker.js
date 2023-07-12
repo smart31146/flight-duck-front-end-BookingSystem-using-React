@@ -58,7 +58,7 @@ const CustomDatePicker = () => {
 
 
 
-  },[calendarUpdate])
+  },[calendarPrices])
   // useEffect(()=>{
   //   console.log("testlast", lastValue)
   // })
