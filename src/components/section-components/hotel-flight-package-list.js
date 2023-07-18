@@ -36,6 +36,8 @@ const HotelFlightPackageList = () => {
     pageNumber: 0,
     priceRange: [10, 5001],
   });
+
+  const [selectedValue, setSelectedValue] = useState('low');
   
   const { loading, starRating, accommodationType, hotelName, pageNumber, priceRange
   } = values;
@@ -227,7 +229,7 @@ const HotelFlightPackageList = () => {
         "trip_days":  days,
         "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
         "user_id": user_id,
-        // 'bestDeal': bestDeal
+        "destinationName": localStorage.getItem("destinationName")
       })
     })
         .then((response) => {
@@ -310,6 +312,7 @@ const HotelFlightPackageList = () => {
             }
 
             setValues({ ...values, loading: false });
+            handleOptionChange({ target: { value: 'low' } });
           })
           .catch((e) => {
             if (e === "No cached data available") {
@@ -602,6 +605,7 @@ const HotelFlightPackageList = () => {
 
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedValue(event.target.value);
     console.log("handle low top", event.target.value)
     if(event.target.value=='low') 
     { console.log('low')
@@ -621,20 +625,11 @@ const HotelFlightPackageList = () => {
   
   return(
   <div className={`App ${loading ? 'blur-effect' : ''}`}>
-    {/*{loading ? (*/}
-    {/*    <PageHeader1*/}
-    {/*        headertitle={1}*/}
-    {/*        duckUrl='assets/img/Ducks/duck_for_calender.png'*/}
-    {/*        calendar={true}*/}
-    {/*    />*/}
-    {/*) : null}*/}
-    {/*{!loading ? (*/}
         <PageHeader1
             headertitle={1}
             duckUrl='assets/img/Ducks/duck_for_calender.png'
             calendar={true}
         />
-    {/*) : null}*/}
     <div className="tour-list-area pd-top-120 viaje-go-top">
       <div className="container">
         {loadingMessage()}
@@ -648,6 +643,7 @@ const HotelFlightPackageList = () => {
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
                     name="row-radio-buttons-group"
+                    value={selectedValue}
                     
                     onChange={handleOptionChange}
                   >

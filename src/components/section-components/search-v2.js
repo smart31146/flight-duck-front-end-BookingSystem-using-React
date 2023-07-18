@@ -358,6 +358,9 @@ const Search2 = () => {
     console.log("This is the days")
     console.log(days_num)
 
+    console.log("This is the destination")
+    console.log(destination)
+
     savePackageSearchDataToLocalStorage({
       destinationCode: destinationCode,
       originCode: originCode,
@@ -368,7 +371,8 @@ const Search2 = () => {
       children: children,
       searchForMonths: searchForMonths,
       days: days_num,
-      currency_format: currency_format
+      currency_format: currency_format,
+      destinationName: destination,
     });
 
 
@@ -409,22 +413,6 @@ const Search2 = () => {
 
     console.log('This is the currecny format')
     console.log(currency_format)
-
-    savePackageSearchDataToLocalStorage({
-      destinationCode,
-      originCode,
-      updatedDepartureDate,
-      hotelDestinationCode,
-      updatedReturnDate,
-      adults,
-      children,
-      searchForMonths,
-      days,
-      currency_format,
-    })
-    // localStorage.removeItem("only_hotel");
-    // localStorage.removeItem("only_flight");
-    // localStorage.setItem("only_hotel", "false");
 
 
     history.push("/flight-hotel-package");

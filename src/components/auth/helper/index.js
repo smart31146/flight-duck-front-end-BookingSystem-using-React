@@ -236,8 +236,9 @@ export const saveFlightsSearchDataToLocalStorage = (details) => {
 };
 
 export const saveHotelSearchDataToLocalStorage = (details) => {
-  console.log("this is inside saveHotelSearchDataToLocalStorage")
-  console.log(details)
+  console.log("this is inside saveHotelSearchDataToLocalStorage", details)
+
+  console.log("this is destinationName", details.destinationName)
 
   if (details.originCode !== "") {
     localStorage.setItem("origin", details.originCode);
@@ -256,6 +257,8 @@ export const saveHotelSearchDataToLocalStorage = (details) => {
 export const savePackageSearchDataToLocalStorage = (details) => {
   console.log(details)
   console.log("below is being saved for days to storage")
+  localStorage.setItem("destinationName", details.destinationName);
+  console.log("savePackageSearchDataToLocalStorage",details.destinationName)
   console.log(details.days)
   saveHotelSearchDataToLocalStorage(details);
   localStorage.setItem("searchForMonths", details.searchForMonths);
