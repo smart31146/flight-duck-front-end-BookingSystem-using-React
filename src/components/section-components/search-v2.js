@@ -27,6 +27,8 @@ import { savePackageSearchDataToLocalStorage } from '../auth/helper/index'
 import { setGlobalState, useGlobalState } from '../../index'
 import LoadingBox from './loading-box'
 import './search-option.css'
+import { Fighter_List } from './fighter-list'
+import { useRef } from 'react'
 
 const printGlobalState = (destination, origin, departureDate, returnDate, adults, children, days) => {
   console.log('destination is ' + destination)
@@ -47,8 +49,8 @@ const Search2 = () => {
   localStorage.setItem('packageDetails', null)
   setGlobalState('hotelFlightPackageList', [])
 
-  const [destination] = useGlobalState('destination')
-  const [origin] = useGlobalState('origin')
+  const [destination, setDestination] = useState('')
+  const [origin, setOrigin] = useState('')
   const [departure_date] = useGlobalState('departure_date')
   const [return_date] = useGlobalState('return_date')
   const [adults_num] = useGlobalState('adults')
@@ -56,16 +58,20 @@ const Search2 = () => {
   const [days_num] = useGlobalState('days')
   const [currency_format] = useGlobalState('selectedCurrency')
   const [isReturn] = useGlobalState('isReturn')
-
+  
   // const classes = useStyles();
 
   const [searchForMonths, setSearchForMonths] = useState(false)
-  const [originList, originListData] = useState([])
-  const [destinationList, destinationListData] = useState([])
+  const [originList, setOriginList] = useState([])
+  const [destinationList, setDestinationList] = useState([])
   const [isLocal] = useGlobalState('isLocal')
   const [open, setOpen] = useState(false)
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [hoverItem, setHoverItem] = useState(-1)
+
+  const originRef = useRef(null);
+  const destinationRef = useRef(null);
 
   const [values, setValues] = useState({
     origin: '',
@@ -133,8 +139,8 @@ const Search2 = () => {
       })
         .then((resp) => resp.json())
         .then((resp) => {
-          originListData(resp['list'])
-          destinationListData(resp['list'])
+          setOriginList(resp['list'])
+          setDestinationList(resp['list'])
         })
     }
   }, [])
@@ -254,96 +260,75 @@ const Search2 = () => {
 
   const debouncedHandleSearch = debounce(handleSearch, 300)
 
-  const handleChange = (name) => (event) => {
-    console.log('execution of Handlechange')
-    console.log(name, event.target.value)
 
+  const handleChange = (name) => (event) => {
+    setOriginList([]);
+    setDestinationList([]);
     setGlobalState(name, event.target.value)
     setValues({ ...values, error: false, [name]: event.target.value })
 
-    // if (!isLocal) {
-    // 	if (name === "destination") {
-    // 		console.log("this is pre destination API req")
-    // 		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
-    // 		fetch(
-    // 			url, {
-    // 			method: 'GET',
-    // 			headers: {
-    // 				'Content-Type': 'application/json'
-    // 			}
-    // 		}).then(resp => resp.json())
-    // 			.then((resp) => {
-    // 				destinationListData(resp['list'])
-    // 			})
-    // 	}
-    // 	else if (name === "origin") {
-    // 		console.log("this is origin API fetch")
-    // 		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
-    // 		fetch(
-    // 			url, {
-    // 			method: 'GET',
-    // 			headers: {
-    // 				'Content-Type': 'application/json'
-    // 			}
-    // 		}
-    // 		)
-    // 			.then(resp => resp.json()
-    // 			)
-    // 			.then((resp) => {
-    // 				originListData(resp['list'])
-    // 			})
-    // 	}
-    // 	console.log("this is post ALL API CALL")
-    // }
+    if (name === "destination") {
+      setDestination(event.target.value);
+      console.log("this is pre destination API req")
+      const url = `https://www.skyscanner.com/g/autosuggest-search/api/v1/search-flight/US/en-GB/${event.target.value}?isDestination=true&enable_general_search_v2=true&autosuggestExp=ranking_v2`
+      fetch(
+        url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(resp => resp.json())
+        .then((resp) => {
+          setDestinationList(resp);
+          console.log(resp);
+          // setDestinationList(resp['list'])
+        })
+    }
+    else if (name === "origin") {
+      setOrigin(event.target.value);
+      const url = `https://www.skyscanner.com/g/autosuggest-search/api/v1/search-flight/US/en-GB/${event.target.value}?isDestination=false&enable_general_search_v2=true&autosuggestExp=ranking_v2`
+      fetch(
+        url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+      )
+
+        .then(resp => resp.json()
+        )
+        .then((resp) => {
+          setOriginList(resp);
+          console.log(resp);
+          // setOriginList(resp['list'])
+        })
+    }
   }
 
+  const selectFighter = (name, item) => {
+    console.log(name, item);
+    if (name === 'origin') {
+      setOrigin(`${item.PlaceName} (${item.PlaceId})`);
+      setOriginList([])
+    }
+    else {
+      setDestination(`${item.PlaceName} (${item.PlaceId})`);
+      setDestinationList([]);
+    }
+  }
+  const clearFighter = (name) => {
+    if(name === 'origin'){
+      setOrigin('');
+      originRef.current.focus();
+    }
+    else{
+      setDestination('');
+      destinationRef.current.focus();
+    }
+  }
   const onSearchInfoSubmit = (event) => {
-    // event.preventDefault();
-
-    // if (destination === origin) {
-    // 	setValues({
-    // 		...values,
-    // 		error: true,
-    // 		errorMessage: "Destination and Origin cannot be same"
-    // 	});
-    // 	return;
-    // }
-
-    // const destinationCode = destinationList.find((dest) => dest.airport_name === destination).airport_code;
-    // const originCode = originList.find((org) => org.airport_name === origin).airport_code;
-    // const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
-    // const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
-    // let updatedReturnDate = null;
-
-    // if (returnDate !== null) {
-    // 	if (returnDate < departureDate) {
-    // 		setValues({
-    // 			...values,
-    // 			error: true,
-    // 			errorMessage: "Return Date should be greater than Departure Date"
-    // 		});
-
-    // 		return;
-    // 	}
-
-    // 	updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
-    // }
-
-    // setGlobalState("destination_code", destinationCode);
-    // setGlobalState("origin", originCode);
-    // setGlobalState("hotel_destination", hotelDestinationCode);
-    // setGlobalState("departure_date", updatedDepartureDate);
-    // setGlobalState("return_date", updatedReturnDate);
-
-    // console.log("This is the currecny format")
-    // console.log(currency_format)
-
-    // savePackageSearchDataToLocalStorage({
-    // 	destinationCode, originCode,
-    // 	updatedDepartureDate, hotelDestinationCode,
-    // 	updatedReturnDate, adults, children,
-    // 	searchForMonths, days, currency_format
-    // });
+    // /
 
     event.preventDefault()
 
@@ -414,7 +399,7 @@ const Search2 = () => {
             <div className='row'>
               <div className='col-sm-12' style={{ padding: '0px', margin: '15px auto' }}>
                 <label for='starRating'>Hotel Rating</label>
-                <select className='form-control' name='starRating' onChange={handleStar}>
+                <select clssName='form-control' name='starRating' onChange={handleStar}>
                   <option value='Any'>Any</option>
                   <option value='Un stared'>Un stared</option>
                   <option value='1 Star'>1 Star</option>
@@ -529,47 +514,71 @@ const Search2 = () => {
             <div className='row'>
               <div className='col-lg-3 col-md-6 col-sm-12 search-form-item-wrap'>
                 <div className='search-form-item'>
-                  <DebounceInput
-                    minLength={1}
-                    debounceTimeout={400}
-                    input
-                    type='text'
-                    list='data1'
-                    placeholder='From'
-                    value={origin}
-                    onChange={handleChange('origin')}
-                    required
-                  />
-                  <datalist id='data1'>
-                    <select>
-                      {destinationList.map((destItem) => {
-                        return <option key={`o3${destItem.airport_name}`}>{destItem.airport_name}</option>
-                      })}
-                    </select>
-                  </datalist>
+                  <div style={{ height: '50px', display: 'flex', flexDirection: 'row' }}>
+                    <input
+                      minLength={1}
+                      debounceTimeout={400}
+                      input
+                      type='text'
+                      list='data1'
+                      placeholder='From'
+                      value={origin}
+                      ref={originRef}
+                      onChange={handleChange('origin')}
+                      required
+                    />
+
+                    {origin && <svg onClick={() => clearFighter('origin')} style={{ height: '15px', marginTop: '20px', marginRight: '15px' }} className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>}
+                  </div>
+
+                  <div>
+                    <div style={{ width: '300px', backgroundColor: 'white', borderRadius: '6px', cursor: 
+                    'pointer', position: 'relative', zIndex: '10' }}>
+                      {
+                        originList.map((item, key) => (
+                          <div key={key} onMouseEnter =  {()=>setHoverItem(key)} 
+                          style={{ padding: '5px', display: 'flex', justifyContent: 'center', fontSize: '15px', borderBottom: '1px dashed grey', backgroundColor:hoverItem===key?'#f0f5f5':'white' }} onClick={() => selectFighter('origin', item)}>{`${item.PlaceName} (${item.PlaceId})`}</div>
+                        ))
+                      }
+                    </div>
+                  </div>
                   <i className='fa-sharp fa-solid fa-location-dot' />
                 </div>
               </div>
               <div className='col-lg-3 col-md-6 col-sm-12 search-form-item-wrap'>
                 <div className='search-form-item'>
-                  <DebounceInput
-                    minLength={1}
-                    debounceTimeout={400}
-                    input
-                    type='text'
-                    list='data1'
-                    placeholder='To'
-                    value={destination}
-                    onChange={handleChange('destination')}
-                    required
-                  />
-                  <datalist id='data1'>
-                    <select>
-                      {originList.map((originItem) => {
-                        return <option key={`o3${originItem.airport_name}`}>{originItem.airport_name}</option>
-                      })}
-                    </select>
-                  </datalist>
+                  <div style={{ height: '50px', display: 'flex', flexDirection: 'row' }}>
+                    <input
+                      minLength={1}
+                      debounceTimeout={400}
+                      input
+                      type='text'
+                      list='data1'
+                      placeholder='To'
+                      ref={destinationRef}
+                      value={destination}
+                      onChange={handleChange('destination')}
+                      required
+                    />
+
+                    {destination && <svg onClick={() => clearFighter('destination')} style={{ height: '15px', marginTop: '20px', marginRight: '15px' }} className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>}
+                  </div>
+
+                  <div>
+                    <div style={{ width: '300px', backgroundColor: 'white', borderRadius: '6px', cursor: 'pointer', zIndex:'10', position: 'relative' }}>
+                      {
+                        destinationList.map((item, key) => (
+                          <div key={key} onMouseEnter =  {()=>setHoverItem(key)} 
+                          style={{ padding: '5px', display: 'flex', justifyContent: 'center', fontSize: '15px', borderBottom: '1px dashed grey', backgroundColor:hoverItem===key?'#f0f5f5':'white' }} 
+                          onClick={() => selectFighter('destination', item)}>{`${item.PlaceName} (${item.PlaceId})`}</div>
+                        ))
+                      }
+                    </div>
+                  </div>
                   <i className='fa-regular fa-circle-dot' />
                 </div>
               </div>
@@ -586,7 +595,24 @@ const Search2 = () => {
                       maxDate={maxDate}
                       value={departure_date}
                       onChange={handleDate}
-                      renderInput={(params) => <TextField {...params} helperText={null} onClick={(e) => setShow(true)} />}
+                      // renderInput={(params) => <TextField {...params} helperText={null} InputProps={{
+                      //   ...params.InputProps,
+                      //   readOnly: true, // Prevents direct input
+                      //   style: { cursor: "pointer" }, // Set cursor style to pointer
+                      // }} onClick={(e) => setShow(true)} />}
+
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          helperText={null}
+                          onClick={(e) => setShow(true)}
+                        />
+                      )}
+                      inputProps={{
+                        autoComplete: "off",
+                        readOnly: true,
+                        // style: { cursor: "pointer" },
+                      }}
                     />
                   </LocalizationProvider>
                 </div>
@@ -627,7 +653,7 @@ const Search2 = () => {
               <div className='col-md-4 col-sm-12' style={{ padding: 0 }}>
                 <div className='row' style={{ padding: 0 }}>
                   <div className='col-md-5 col-sm-12 search-fg-wrap'>
-                    <div className='search-form-item' style={{ padding: '0px 15px 0 10px' }}>
+                    <div className='search-form-item' style={{ padding: '0px 15px 0 10px', zIndex:'0' }}>
                       <select name='duration' onChange={handleDays}>
                         <option value={1}>1</option>
                         <option value={2}>2</option>

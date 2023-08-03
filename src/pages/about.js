@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '../components/global-components/navbar';
 import PageHeader from '../components/global-components/page-header';
 import Intro from '../components/section-components/intro-v3';

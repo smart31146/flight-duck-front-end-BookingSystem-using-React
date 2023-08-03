@@ -13,7 +13,7 @@ import Subscribe from './section-components/subscribe';
 import Footer from './global-components/footer';
 
 const Home_V2 = () => {
-    return <div>
+    return <div>      
         <Navbar />
         <Banner />
         <Search />

@@ -2,26 +2,38 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
 import {useGlobalState} from "../../index";
+import { useState } from 'react';
+import LoadingBox from '../section-components/loading-box';
 
 const LiveFlightItem = (flightDetails) => {
   const [return_date] = useGlobalState("return_date")
   const [departureDate] = useGlobalState("departure_date");
+  const [loading, setLoading] = useState(false);
   const openInNewTab = (url) => {
    
     
     // console.log("save flight urls=======", url);
     
       localStorage.setItem('flight_booking_url', url);
-      window.location.href = `#booking-confirmation`
+      // window.location.href = `#booking-confirmation`
    
     console.log(flightDetails)
     localStorage.setItem('flight_details', JSON.stringify(flightDetails));
     console.log("create new page that only shows hotel and flight booking===")
+    setLoading(true)
     // window.location.href = `#destination-details`
   }
 
   return (
     <div className="single-destinations-list style-three">
+      <LoadingBox
+              open={loading}
+              onClose={() => {
+                setLoading(false)
+              }}
+              timeout={5000}
+              url={'/booking-confirmation'}
+            />
       <div className="thumb">
         <img src={flightDetails.agent.image} alt={flightDetails.agent.name} style={{"objectFit": "scale-down"}} />
       </div>

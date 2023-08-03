@@ -15,6 +15,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
+import LoadingBox from './loading-box'
 const TourListV2 = () => {
   const [values, setValues] = useState({
     price_sort: 'down',
@@ -64,6 +65,8 @@ const TourListV2 = () => {
   let [flightsCompleteList] = useGlobalState('flightsCompleteList')
   let [currencySymbol] = useGlobalState('currencySymbol')
   let [liveFlightAttempts] = useGlobalState('liveFlightAttempts')
+
+
 
   useEffect(() => {
     // const destination = localStorage.getItem("flight_destination");
@@ -314,7 +317,7 @@ const TourListV2 = () => {
     console.log(flightsPaginated_data)
   }
 
-  const sortSearchResultsBasedOnPrices = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const sortSearchResultsBasedOnPrices = (event) => {
     let price = event.target.value
     setTimeout(() => {
       
@@ -435,7 +438,7 @@ const TourListV2 = () => {
   return (
     <div className='tour-list-area pd-top-120 viaje-go-top'>
       <div className='container'>
-        {loadingMessage()}
+       
         <div className='row'>
           <div className='col-xl-9 col-lg-8 order-lg-12'>
             <div className='tp-tour-list-search-area'>

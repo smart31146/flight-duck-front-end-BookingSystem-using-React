@@ -166,8 +166,9 @@ const BookingConfirmation = () => {
     )}
 
     const stripeBooking = () => {
-      return ( <div className="stripe "> <Stripe  /> </div> )
-  }
+      console.log(roomName, roomDetails['net']);
+      return ( <div className="stripe "> <Stripe/> </div> )
+    }
 
   return (
       renderBookingDetails()

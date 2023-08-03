@@ -3,20 +3,24 @@
 import React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, Elements, ElementsConsumer } from '@stripe/react-stripe-js';
-import { hotelBookingAPI } from '../auth/helper';
+import API_URL, { hotelBookingAPI } from '../auth/helper';
 import { withRouter } from "react-router-dom";
 import './stripe.css';
 import { sendEmailAPI } from './api';
+import { Component } from 'react';
 
 
 //this is the third
 // booking page,used as a component
 
-class CheckoutForm extends React.Component {
+class CheckoutForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       address: { line1: null, city: null, state: null, country: null, postal_code: null },
+      fullname: '',
+      phone: '',
+      email: '',
       stripeToken: {},
       booking: {},
       loading: false
@@ -24,6 +28,31 @@ class CheckoutForm extends React.Component {
   }
   handleSubmit = async (event) => {
     event.preventDefault();
+    // Save Database.
+    const roomName = localStorage.getItem("hotel_room_name");
+    const roomDetails = JSON.parse(localStorage.getItem("hotel_room_details"));
+    const packageDetails = JSON.parse(localStorage.getItem("packageDetails"));
+    console.log(roomName, roomDetails['net']);
+    const data = {
+      fullname : this.state.fullname,
+      email : this.state.email,
+      phone: this.state.phone,
+      room : roomName,
+      rate : roomDetails['net'],
+      check_in: packageDetails['inbounddate'],
+      check_out : packageDetails['outbounddate']
+    }
+    fetch(`${API_URL}booking/add`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then((response) => {
+        console.log(response.json());
+      })
+      .catch((err) => console.log(err));
+    //End
+
     const { stripe, elements } = this.props;
     if (!stripe || !elements) {
       return;
@@ -75,6 +104,10 @@ class CheckoutForm extends React.Component {
     this.setState({ address: addr })
   };
 
+  handleChange = (e) => {
+    this.setState({[e.target.name]: e.target.value});
+  };
+
   render() {
     const { stripe } = this.props;
     return (
@@ -87,16 +120,16 @@ class CheckoutForm extends React.Component {
 
         <div className="form-group">
           <label>Full Name</label>
-          <input className="form-control" name="line1" onChange={this.handleAddress} />
+          <input className="form-control" name="fullname" onChange={this.handleChange} />
         </div>
         <div className="form-group">
           <label>Email</label>
-          <input className="form-control" name="line1" onChange={this.handleAddress} />
+          <input className="form-control" name="email" onChange={this.handleChange} />
         </div>
         <div className="row">
           <div className="form-group col-md-6">
             <label>Phone</label>
-            <input className="form-control" name="state" onChange={this.handleAddress} />
+            <input className="form-control" name="phone" onChange={this.handleChange} />
           </div>
           <div className="form-group col-md-6">
             <label>Country</label>
@@ -160,6 +193,7 @@ class CheckoutForm extends React.Component {
           !!!this.state.loading ?
 
             <div className="row">
+
               <button type="submit" disabled={!stripe} >
                 Pay Now
               </button>
