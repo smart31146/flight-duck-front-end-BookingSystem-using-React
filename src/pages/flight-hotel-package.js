@@ -33,9 +33,9 @@ const FlightHotelPackage = () => {
       
     return <div>
         
-        <PageHeader1 headertitle={1}  
-                    duckUrl='assets/img/Ducks/duck_for_calender.png'
-                    calendar={true}  />
+        {/*<PageHeader1 headertitle={1}  */}
+        {/*            duckUrl='assets/img/Ducks/duck_for_calender.png'*/}
+        {/*            calendar={true}  />*/}
         <HotelFlightPackageList />
         {/* <Subscribe /> */}
         <Footer />

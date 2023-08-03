@@ -75,10 +75,9 @@ class CheckoutForm extends Component {
         address: this.state.address || null
       }
       this.setState({ loading: true });
-
       hotelBookingAPI(data)
           .then((res) => {
-            this.setState({ loading: true });
+            this.setState({ loading: false });
             if (localStorage.getItem("only_hotel") == 'false') {
               let flightBookingUrl = localStorage.getItem('flight_booking_url');
               //window.location.href = flightBookingUrl;
@@ -86,9 +85,9 @@ class CheckoutForm extends Component {
             window.location.href = '#destination-details'
 
             // Sending an email after a successful booking
-              sendEmailAPI("bishop.alexander@gmail.com", {})
-                  .then((res) => console.log('Email sent successfully'))
-                  .catch((err) => console.error('Failed to send email:', err));
+            sendEmailAPI("bishop.alexander@gmail.com", {})
+                .then((res) => console.log('Email sent successfully'))
+                .catch((err) => console.error('Failed to send email:', err));
 
           })
           .catch((e) => {
@@ -111,13 +110,14 @@ class CheckoutForm extends Component {
   render() {
     const { stripe } = this.props;
     return (
-      <form onSubmit={this.handleSubmit} className="jumbotron">
-        <p><b>Personal details</b></p>
-        {/* <div className="form-group">
+        <form onSubmit={this.handleSubmit} className="jumbotron">
+          <p><b>Personal details</b></p>
+          {/* <div className="form-group">
           <lable>Email</lable>
           <input className="form-control" name="email" />
         </div> */}
 
+<<<<<<< HEAD
         <div className="form-group">
           <label>Full Name</label>
           <input className="form-control" name="fullname" onChange={this.handleChange} />
@@ -130,52 +130,58 @@ class CheckoutForm extends Component {
           <div className="form-group col-md-6">
             <label>Phone</label>
             <input className="form-control" name="phone" onChange={this.handleChange} />
+=======
+          <div className="form-group">
+            <label>Full Name</label>
+            <input className="form-control" name="line1" onChange={this.handleAddress} />
+>>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
           </div>
-          <div className="form-group col-md-6">
-            <label>Country</label>
-            <input className="form-control" name="country" onChange={this.handleAddress} />
+          <div className="form-group">
+            <label>Email</label>
+            <input className="form-control" name="line1" onChange={this.handleAddress} />
           </div>
-        </div>
-        <p><b>Credit Card details</b></p>
+          <div className="row">
+            <div className="form-group col-md-6">
+              <label>Phone</label>
+              <input className="form-control" name="state" onChange={this.handleAddress} />
+            </div>
+            <div className="form-group col-md-6">
+              <label>Country</label>
+              <input className="form-control" name="country" onChange={this.handleAddress} />
+            </div>
+          </div>
+          <p><b>Credit Card details</b></p>
 
 
-        <div className="form-group">
-          <label>Card Holder Name</label>
-          <input className="form-control" required name="name" onChange={this.handleAddress} />
-        </div>
-        <div className="form-group">
-          <label>Card Details</label>
-          <CardElement
-            options={{
-              style: {
-                base: {
-                  fontSize: '16px',
-                  color: '#424770',
-                  '::placeholder': {
-                    color: '#aab7c4',
+          <div className="form-group">
+            <label>Card Holder Name</label>
+            <input className="form-control" required name="name" onChange={this.handleAddress} />
+          </div>
+          <div className="form-group">
+            <label>Card Details</label>
+            <CardElement
+                options={{
+                  style: {
+                    base: {
+                      fontSize: '16px',
+                      color: '#424770',
+                      '::placeholder': {
+                        color: '#aab7c4',
+                      },
+                    },
+                    invalid: {
+                      color: '#9e2146',
+                    },
                   },
-                },
-                invalid: {
-                  color: '#9e2146',
-                },
-              },
-            }}
-          />
-        </div>
+                }}
+            />
+          </div>
 
-        <div className="form-group">
-          <label>Address</label>
-          <input className="form-control" name="line1" onChange={this.handleAddress} />
-        </div>
-        <div className="row">
-          <div className="form-group col-md-3" >
-            <label>City</label>
-            <input className="form-control" name="city" onChange={this.handleAddress} />
+          <div className="form-group">
+            <label>Address</label>
+            <input className="form-control" name="line1" onChange={this.handleAddress} />
           </div>
-          <div className="form-group col-md-3">
-            <label>State</label>
-            <input className="form-control" name="state" onChange={this.handleAddress} />
-          </div>
+<<<<<<< HEAD
           <div className="form-group col-md-3">
             <label>Country</label>
             <input className="form-control" name="country" onChange={this.handleAddress} />
@@ -197,16 +203,47 @@ class CheckoutForm extends Component {
               <button type="submit" disabled={!stripe} >
                 Pay Now
               </button>
+=======
+          <div className="row">
+            <div className="form-grou col-md-3" >
+              <label>City</label>
+              <input className="form-control" name="city" onChange={this.handleAddress} />
+>>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
             </div>
-            :
-            <div className="row" style={{ textAlign: 'center', marginTop: "20px" }}>
-              <div className="col-12">
-                <i className="fa fa-refresh fa-2x fa-spin"></i>
-              </div>
-              <p className="col-12">Don't Refresh page while loading payment</p>
+            <div className="form-group col-md-3">
+              <label>State</label>
+              <input className="form-control" name="state" onChange={this.handleAddress} />
             </div>
-        }
-      </form>
+            <div className="form-group col-md-3">
+              <label>Country</label>
+              <input className="form-control" name="country" onChange={this.handleAddress} />
+            </div>
+            <div className="form-group col-md-3">
+              <label>ZIP</label>
+              <input className="form-control" name="postal_code" onChange={this.handleAddress} />
+            </div>
+          </div>
+
+
+
+
+          {
+            !!!this.state.loading ?
+
+                <div className="row">
+                  <button type="submit" disabled={!stripe} >
+                    Pay Now
+                  </button>
+                </div>
+                :
+                <div className="row" style={{ textAlign: 'center', marginTop: "20px" }}>
+                  <div className="col-12">
+                    <i className="fa fa-refresh fa-2x fa-spin"></i>
+                  </div>
+                  <p className="col-12">Don't Refresh page while loading payment</p>
+                </div>
+          }
+        </form>
 
 
 
@@ -216,11 +253,11 @@ class CheckoutForm extends Component {
 
 const InjectedCheckoutForm = () => {
   return (
-    <ElementsConsumer>
-      {({ elements, stripe }) => (
-        <CheckoutForm elements={elements} stripe={stripe} />
-      )}
-    </ElementsConsumer>
+      <ElementsConsumer>
+        {({ elements, stripe }) => (
+            <CheckoutForm elements={elements} stripe={stripe} />
+        )}
+      </ElementsConsumer>
   );
 };
 
@@ -228,9 +265,9 @@ const stripePromise = loadStripe('pk_test_51IHEQ8IZl69pMaQienjOVfzufNB2dkbuwLFuY
 
 const Stripe = ({ usersDetailsList }) => {
   return (
-    <Elements stripe={stripePromise} usersDetailsList={usersDetailsList}>
-      <InjectedCheckoutForm />
-    </Elements>
+      <Elements stripe={stripePromise} usersDetailsList={usersDetailsList}>
+        <InjectedCheckoutForm />
+      </Elements>
   );
 };
 

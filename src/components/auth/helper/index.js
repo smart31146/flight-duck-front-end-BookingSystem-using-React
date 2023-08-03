@@ -236,6 +236,10 @@ export const saveFlightsSearchDataToLocalStorage = (details) => {
 };
 
 export const saveHotelSearchDataToLocalStorage = (details) => {
+  console.log("this is inside saveHotelSearchDataToLocalStorage", details)
+
+  console.log("this is destinationName", details.destinationName)
+
   if (details.originCode !== "") {
     localStorage.setItem("origin", details.originCode);
   }
@@ -243,7 +247,7 @@ export const saveHotelSearchDataToLocalStorage = (details) => {
   localStorage.setItem("destination", details.destinationCode);
   localStorage.setItem("hotel_destination", details.hotelDestinationCode);
   localStorage.setItem("departure_date", details.updatedDepartureDate);
-  localStorage.setItem("departure_date", details.updatedReturnDate);
+  localStorage.setItem("return_date", details.updatedReturnDate);
   localStorage.setItem("adults", details.adults);
   localStorage.setItem("children", details.children);
   localStorage.setItem("days", details.days);
@@ -251,9 +255,16 @@ export const saveHotelSearchDataToLocalStorage = (details) => {
 };
 
 export const savePackageSearchDataToLocalStorage = (details) => {
+  console.log(details)
+  console.log("below is being saved for days to storage")
+  localStorage.setItem("destinationName", details.destinationName);
+  console.log("savePackageSearchDataToLocalStorage",details.destinationName)
+  console.log(details.days)
   saveHotelSearchDataToLocalStorage(details);
   localStorage.setItem("searchForMonths", details.searchForMonths);
+  localStorage.setItem("days", details.days);
 };
+
 
 const zeroIfNull = (val) => {
   if (typeof val === "undefined" || val == "undefined") {

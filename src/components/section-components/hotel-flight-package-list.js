@@ -23,6 +23,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import CustomPagination from '../flights/pagination';
+import LoadingBox from "./loading-box";
+import './blur.css';
+import PageHeader1 from "../global-components/page-header1";
 
 const HotelFlightPackageList = () => {
   const [values, setValues] = useState({
@@ -33,6 +36,8 @@ const HotelFlightPackageList = () => {
     pageNumber: 0,
     priceRange: [10, 5001],
   });
+
+  const [selectedValue, setSelectedValue] = useState('low');
   
   const { loading, starRating, accommodationType, hotelName, pageNumber, priceRange
   } = values;
@@ -140,6 +145,7 @@ const HotelFlightPackageList = () => {
   let [price_sort_text] = useGlobalState("price_sort_text")
   let [departure_time_sort] = useGlobalState("departure_time_sort")
   let [departure_time_sort_text] = useGlobalState("departure_time_sort_text");
+  let [calendarPrices] = useGlobalState("calendarPrices")
   const [isReturn] = useGlobalState("isReturn")
 
 
@@ -223,7 +229,7 @@ const HotelFlightPackageList = () => {
         "trip_days":  days,
         "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
         "user_id": user_id,
-        // 'bestDeal': bestDeal
+        "destinationName": localStorage.getItem("destinationName")
       })
     })
         .then((response) => {
@@ -271,62 +277,95 @@ const HotelFlightPackageList = () => {
     console.log("loading at start is" + loading);
 
     if(hotelFlightPackageList.length==0)
-    getCacheFlightHotelsPackageSwitch()
-        .then((data) => {
-          if (data && data.list && data.list.length > 0) {
-            result = paginate(data.list);
+      getCacheFlightHotelsPackageSwitch()
+          .then((data) => {
+            if (data && data.list && data.list.length > 0) {
+              result = paginate(data.list);
 
-            for (let i = 0; i < data.list.length; i++) {
-              completeList.push(data.list[i]);
-              filteredData.push(data.list[i]);
+              for (let i = 0; i < data.list.length; i++) {
+                completeList.push(data.list[i]);
+                filteredData.push(data.list[i]);
+              }
+
+              for (let i = 0; i < result[pageNumber].length; i++) {
+                hotelFlightPackageList.push(result[pageNumber][i]);
+              }
+
+              for (let i = 0; i < result.length; i++) {
+                paginated_data.push(result[i]);
+              }
+
+              for (let i = 0; i < data.list[data.list.length - 1].calendar.length; i++) {
+                calendarPrices.push(data.list[data.list.length - 1].calendar[i]);
+              }
+
+              // Save the processed data to localStorage
+              localStorage.setItem("cachedHotelFlightPackageList", JSON.stringify(hotelFlightPackageList));
+
+              localStorage.setItem("calendarPrices", JSON.stringify(calendarPrices));
+
+              // Save the calendar array into a constant
+              // calenderPrices = data.list[data.list.length - 1].calendar;
+
+            } else {
+              console.log("sorry no packages found========");
             }
 
-            for (let i = 0; i < result[pageNumber].length; i++) {
-              hotelFlightPackageList.push(result[pageNumber][i]);
-            }
-
-            for (let i = 0; i < result.length; i++) {
-              paginated_data.push(result[i]);
-            }
-
-            // Save the processed data to localStorage
-            localStorage.setItem("cachedHotelFlightPackageList", JSON.stringify(hotelFlightPackageList));
-          } else {
-            console.log("sorry no packages found========");
-          }
-
-          setValues({ ...values, loading: false });
-        })
-        .catch((e) => {
-          if (e === "No cached data available") {
-            getCacheFlightHotelsPackage()
-                .then((data) => {
-                  // Process the data similar to the code in the .then() block above
-                })
-                .catch((error) => {
-                  console.log("packages data error=======", error);
-                  setValues({ ...values, loading: false });
-                });
-          } else {
-            console.log("packages data error=======", e);
             setValues({ ...values, loading: false });
-          }
-        });
+            handleOptionChange({ target: { value: 'low' } });
+          })
+          .catch((e) => {
+            if (e === "No cached data available") {
+              getCacheFlightHotelsPackage()
+                  .then((data) => {
+                    // Process the data similar to the code in the .then() block above
+                  })
+                  .catch((error) => {
+                    console.log("packages data error=======", error);
+                    setValues({ ...values, loading: false });
+                  });
+            } else {
+              console.log("packages data error=======", e);
+              setValues({ ...values, loading: false });
+            }
+          });
+    console.log("Here is calendar data", calendarPrices)
   };
 
 
+  const isLoading = () => {
+    if (loading)
+      return true
+    else
+      return false
+  }
+
   const loadingMessage = () => {
     return (
-      loading && (
-        <div className="preloader" id="preloader">
-          <div className="preloader-inner">
-            <div className="spinner">
-              <div className="dot1"></div>
-              <div className="dot2"></div>
-            </div>
-          </div>
+        <div>
+          <LoadingBox
+              open={values.loading}
+              onClose={() => {
+                isLoading()
+              }}
+              timeout={5000}
+          />
         </div>
-      )
+    );
+  };
+
+  const loadingMessage1 = () => {
+    return (
+        loading && (
+            <div className="preloader" id="preloader">
+              <div className="preloader-inner">
+                <div className="spinner">
+                  <div className="dot1"></div>
+                  <div className="dot2"></div>
+                </div>
+              </div>
+            </div>
+        )
     );
   };
 
@@ -566,6 +605,7 @@ const HotelFlightPackageList = () => {
 
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedValue(event.target.value);
     console.log("handle low top", event.target.value)
     if(event.target.value=='low') 
     { console.log('low')
@@ -584,7 +624,12 @@ const HotelFlightPackageList = () => {
   };
   
   return(
-
+  <div className={`App ${loading ? 'blur-effect' : ''}`}>
+        <PageHeader1
+            headertitle={1}
+            duckUrl='assets/img/Ducks/duck_for_calender.png'
+            calendar={true}
+        />
     <div className="tour-list-area pd-top-120 viaje-go-top">
       <div className="container">
         {loadingMessage()}
@@ -598,6 +643,7 @@ const HotelFlightPackageList = () => {
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
                     name="row-radio-buttons-group"
+                    value={selectedValue}
                     
                     onChange={handleOptionChange}
                   >
@@ -691,6 +737,7 @@ const HotelFlightPackageList = () => {
         </div>
       </div>
     </div>
+  </div>
     )
 }
 

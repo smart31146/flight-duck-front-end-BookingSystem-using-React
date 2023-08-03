@@ -43,9 +43,9 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	origin: "",
 	departure_date: "",
 	return_date: "",
-	adults: null,
-	children: null,
-	days: null,
+	adults: 1,
+	children: 0,
+	days: 1,
 	isReturn: true,
 	paginated_data: [],
 	completeList: [],
@@ -61,6 +61,7 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	accommodationType: '',
 	currencySymbol: "",
 	flightsPaginated_data: [],
+	calendarPrices: [],
 	flightsFilteredData: [],
 	flightsCompleteList: [],
 	liveFlightsList: [],
@@ -80,9 +81,10 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	],
 	selectedCurrency: "AUD",
 	liveFlightAttempts: 0,
-	isLocal: true,
+	isLocal: false,
 	topState:[],
-	starRating:''
+	starRating:'',
+	hasLoaded: false
 });
 
 class Root extends Component {

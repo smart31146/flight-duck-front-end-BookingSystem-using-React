@@ -30,6 +30,7 @@ import './search-option.css'
 import { Fighter_List } from './fighter-list'
 import { useRef } from 'react'
 
+
 const printGlobalState = (destination, origin, departureDate, returnDate, adults, children, days) => {
   console.log('destination is ' + destination)
   console.log('origin is ' + origin)
@@ -45,9 +46,14 @@ const printGlobalState2 = (isReturn) => {
 }
 
 const Search2 = () => {
+  const history = useHistory();
+
   localStorage.setItem('cachedHotelFlightPackageList', null)
   localStorage.setItem('packageDetails', null)
+  localStorage.setItem('calendarPrices', [] )
+
   setGlobalState('hotelFlightPackageList', [])
+  setGlobalState('calendarPrices', [])
 
   const [destination, setDestination] = useState('')
   const [origin, setOrigin] = useState('')
@@ -238,6 +244,9 @@ const Search2 = () => {
   const handleDays = (event) => {
     var d = event.target.value
     var period = d
+    setGlobalState("days", d)
+    console.log("days is")
+    console.log(days_num)
 
     if (daysUnit === 'weeks') {
       period = d * 7
@@ -267,6 +276,7 @@ const Search2 = () => {
     setGlobalState(name, event.target.value)
     setValues({ ...values, error: false, [name]: event.target.value })
 
+<<<<<<< HEAD
     if (name === "destination") {
       setDestination(event.target.value);
       console.log("this is pre destination API req")
@@ -303,6 +313,41 @@ const Search2 = () => {
           console.log(resp);
           // setOriginList(resp['list'])
         })
+=======
+    if (!isLocal) {
+    	if (name === "destination") {
+    		console.log("this is pre destination API req")
+    		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
+    		fetch(
+    			url, {
+    			method: 'GET',
+    			headers: {
+    				'Content-Type': 'application/json'
+    			}
+    		}).then(resp => resp.json())
+    			.then((resp) => {
+    				destinationListData(resp['list'])
+    			})
+    	}
+    	else if (name === "origin") {
+    		console.log("this is origin API fetch")
+    		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
+    		fetch(
+    			url, {
+    			method: 'GET',
+    			headers: {
+    				'Content-Type': 'application/json'
+    			}
+    		}
+    		)
+    			.then(resp => resp.json()
+    			)
+    			.then((resp) => {
+    				originListData(resp['list'])
+    			})
+    	}
+    	console.log("this is post ALL API CALL")
+>>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
     }
   }
 
@@ -328,9 +373,80 @@ const Search2 = () => {
     }
   }
   const onSearchInfoSubmit = (event) => {
+<<<<<<< HEAD
     // /
+=======
+    console.log("onSearchInfoSubmit is called");
+    event.preventDefault();
+    console.log("onSearchInfoSubmit is called2");
 
-    event.preventDefault()
+    if (destination === origin) {
+    	setValues({
+    		...values,
+    		error: true,
+    		errorMessage: "Destination and Origin cannot be same"
+    	});
+    	return;
+    }
+
+    console.log("onSearchInfoSubmit is called3");
+
+    const destinationCode = destinationList.find((dest) => dest.airport_name === destination).airport_code;
+    const originCode = originList.find((org) => org.airport_name === origin).airport_code;
+    const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
+    const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
+    const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
+
+    console.log("onSearchInfoSubmit is called4");
+
+    // if (returnDate !== null) {
+    // 	if (returnDate < departureDate) {
+    // 		setValues({
+    // 			...values,
+    // 			error: true,
+    // 			errorMessage: "Return Date should be greater than Departure Date"
+    // 		});
+    //
+    // 		return;
+    // 	}
+
+    	// updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
+    // }
+
+    console.log("onSearchInfoSubmit is called5");
+
+    setGlobalState("destination_code", destinationCode);
+    setGlobalState("origin", originCode);
+    setGlobalState("hotel_destination", hotelDestinationCode);
+    setGlobalState("departure_date", updatedDepartureDate);
+    setGlobalState("return_date", updatedReturnDate);
+
+    console.log("This is the currecny format")
+    console.log(currency_format)
+>>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
+
+    console.log("This is the days")
+    console.log(days_num)
+
+    console.log("This is the destination")
+    console.log(destination)
+
+    savePackageSearchDataToLocalStorage({
+      destinationCode: destinationCode,
+      originCode: originCode,
+      updatedDepartureDate: updatedDepartureDate,
+      hotelDestinationCode: hotelDestinationCode,
+      updatedReturnDate: updatedReturnDate,
+      adults: adults,
+      children: children,
+      searchForMonths: searchForMonths,
+      days: days_num,
+      currency_format: currency_format,
+      destinationName: destination,
+    });
+
+
+    // event.preventDefault()
 
     // if (destination === origin) {
     // 	setValues({
@@ -353,41 +469,27 @@ const Search2 = () => {
     // const originCode = originList.find((org) => org.airport_name === origin).airport_code;
     // const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
 
-    const destinationCode = ''
-    const originCode = ''
-    const hotelDestinationCode = ''
-    const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE)
-    const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE)
+    // const destinationCode = ''
+    // const originCode = ''
+    // const hotelDestinationCode = ''
+    // const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE)
+    // const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE)
 
     // setGlobalState("destination_code", destinationCode)
     // setGlobalState("origin", originCode)
     setGlobalState('hotel_destination', hotelDestinationCode)
     setGlobalState('departure_date', updatedDepartureDate)
     setGlobalState('return_date', updatedReturnDate)
-    setGlobalState('days', days)
 
     console.log('This is the currecny format')
     console.log(currency_format)
 
-    savePackageSearchDataToLocalStorage({
-      destinationCode,
-      originCode,
-      updatedDepartureDate,
-      hotelDestinationCode,
-      updatedReturnDate,
-      adults,
-      children,
-      searchForMonths,
-      days,
-      currency_format,
-    })
-    // localStorage.removeItem("only_hotel");
-    // localStorage.removeItem("only_flight");
-    // localStorage.setItem("only_hotel", "false");
 
-    // history.push("/flight-hotel-package");
+    history.push("/flight-hotel-package");
 
-    setLoading(true)
+    // setLoading(true)
+    console.log("loading is")
+    console.log(loading)
   }
 
   const customerDialogHtml = (
@@ -514,6 +616,7 @@ const Search2 = () => {
             <div className='row'>
               <div className='col-lg-3 col-md-6 col-sm-12 search-form-item-wrap'>
                 <div className='search-form-item'>
+<<<<<<< HEAD
                   <div style={{ height: '50px', display: 'flex', flexDirection: 'row' }}>
                     <input
                       minLength={1}
@@ -544,11 +647,38 @@ const Search2 = () => {
                       }
                     </div>
                   </div>
+=======
+                  <DebounceInput
+                    minLength={1}
+                    debounceTimeout={400}
+                    input
+                    type='text'
+                    list='data2'
+                    placeholder='From'
+                    value={origin}
+                    onChange={handleChange('origin')}
+                    required
+                  />
+                  <datalist id="data2">
+                    <select>
+                      {
+                        originList.map(originItem => {
+                          return (
+                              <option key={`o2${originItem.airport_name}`}>
+                                {originItem.airport_name}
+                              </option>
+                          )
+                        })
+                      }
+                    </select>
+                  </datalist>
+>>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
                   <i className='fa-sharp fa-solid fa-location-dot' />
                 </div>
               </div>
               <div className='col-lg-3 col-md-6 col-sm-12 search-form-item-wrap'>
                 <div className='search-form-item'>
+<<<<<<< HEAD
                   <div style={{ height: '50px', display: 'flex', flexDirection: 'row' }}>
                     <input
                       minLength={1}
@@ -579,6 +709,32 @@ const Search2 = () => {
                       }
                     </div>
                   </div>
+=======
+                  <DebounceInput
+                    minLength={1}
+                    debounceTimeout={400}
+                    input
+                    type='text'
+                    list='data1'
+                    placeholder='Where To?'
+                    value={destination}
+                    onChange={handleChange('destination')}
+                    required
+                  />
+                  <datalist id="data1">
+                    <select>
+                      {
+                        destinationList.map(originItem => {
+                          return (
+                              <option key={`o${originItem.airport_name}`}>
+                                {originItem.airport_name}
+                              </option>
+                          )
+                        })
+                      }
+                    </select>
+                  </datalist>
+>>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
                   <i className='fa-regular fa-circle-dot' />
                 </div>
               </div>
@@ -623,7 +779,7 @@ const Search2 = () => {
                     <div className='search-form-adult-sub-wrap' style={{ width: '55%' }}>
                       <i className='fa fa-suitcase-rolling icon-suitcase' style={{ marginLeft: -15 }} />
                       <span className='text'>
-                        {adults !== null ? adults : '0'} Adults {children !== null ? children : '0'} Children
+                        {adults !== null ? adults : adults} Adults {children !== null ? children : children} Children
                       </span>
                     </div>
                     <span className='vertical-line'></span>

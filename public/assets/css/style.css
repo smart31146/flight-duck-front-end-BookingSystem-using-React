@@ -9133,17 +9133,17 @@ span {
 .my-select-container select::-ms-expand {
   display: none;
 }
-.react-datepicker__day--selected span{
-  border-radius: 0;
-  padding: 7px;
-  background-color: green;
-}
-.react-datepicker__day--selected .double{
-  padding: 7px 11px;
-}
-.react-datepicker__day--selected {
-  background-color: green;
-}
+/*.react-datepicker__day--selected span{*/
+/*  border-radius: 0;*/
+/*  padding: 7px;*/
+/*  background-color: green;*/
+/*}*/
+/*.react-datepicker__day--selected .double{*/
+/*  padding: 7px 11px;*/
+/*}*/
+/*.react-datepicker__day--selected {*/
+/*  background-color: green;*/
+/*}*/
 .normal {
   padding: 5px;
   border-radius: 50%;
@@ -9571,7 +9571,7 @@ border-radius: 10px;
 .calandar .react-datepicker__day--keyboard-selected, 
 .react-datepicker__month-text--keyboard-selected, 
 .react-datepicker__quarter-text--keyboard-selected, 
-.react-datepicker__year-text--keyboard-selected {
+.react-datepicker__year-text--keyboard-selected, .react-datepicker__day--selected {
   border-radius: 0.3rem;
   background-color: #2a87d0;
   color: #000 !important;
@@ -9579,9 +9579,6 @@ border-radius: 10px;
 .tour-details-header {
     background-image: linear-gradient(to top right, #470073, #15056D);
     padding: 170px 0 200px !important;
-}
-.stripe .form-group {
-  padding: 0;
 }
 
 .react-datepicker__day--outside-month {
