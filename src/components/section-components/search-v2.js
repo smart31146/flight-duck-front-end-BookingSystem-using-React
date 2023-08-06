@@ -10,6 +10,8 @@ import { DebounceInput } from 'react-debounce-input'
 import Moment from 'moment'
 // import parse from 'html-react-parser';
 import { addDays } from 'date-fns'
+import { Fighter_List } from './fighter-list'
+import { useRef } from 'react'
 
 // Load Mui Components
 import Dialog from '@mui/material/Dialog'
@@ -27,8 +29,6 @@ import { savePackageSearchDataToLocalStorage } from '../auth/helper/index'
 import { setGlobalState, useGlobalState } from '../../index'
 import LoadingBox from './loading-box'
 import './search-option.css'
-import { Fighter_List } from './fighter-list'
-import { useRef } from 'react'
 
 
 const printGlobalState = (destination, origin, departureDate, returnDate, adults, children, days) => {
@@ -64,7 +64,7 @@ const Search2 = () => {
   const [days_num] = useGlobalState('days')
   const [currency_format] = useGlobalState('selectedCurrency')
   const [isReturn] = useGlobalState('isReturn')
-  
+
   // const classes = useStyles();
 
   const [searchForMonths, setSearchForMonths] = useState(false)
@@ -119,14 +119,14 @@ const Search2 = () => {
 
   // console.log('globalstate print in SEARCH function')
   printGlobalState(
-    destination,
-    origin,
-    departure_date,
-    return_date,
-    adults_num,
-    children_num,
-    days_num,
-    currency_format,
+      destination,
+      origin,
+      departure_date,
+      return_date,
+      adults_num,
+      children_num,
+      days_num,
+      currency_format,
   )
   printGlobalState2(isReturn)
 
@@ -135,19 +135,6 @@ const Search2 = () => {
     if (!isLocal) {
       const country_code = localStorage.getItem('country_code')
       if (country_code === null) return
-
-      const url = `${API_URL}flights/get-airport-code/?country=${country_code}`
-      fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((resp) => resp.json())
-        .then((resp) => {
-          setOriginList(resp['list'])
-          setDestinationList(resp['list'])
-        })
     }
   }, [])
 
@@ -157,11 +144,11 @@ const Search2 = () => {
 
   const errorAlertDialog = () => {
     return (
-      error && (
-        <SweetAlert danger title='Error' onConfirm={hideAlert}>
-          {errorMessage}
-        </SweetAlert>
-      )
+        error && (
+            <SweetAlert danger title='Error' onConfirm={hideAlert}>
+              {errorMessage}
+            </SweetAlert>
+        )
     )
   }
 
@@ -172,10 +159,10 @@ const Search2 = () => {
         'Content-Type': 'application/json',
       },
     })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        setValues({ ...values, error: false, originList: resp['list'] })
-      })
+        .then((resp) => resp.json())
+        .then((resp) => {
+          setValues({ ...values, error: false, originList: resp['list'] })
+        })
   }
 
   const handleDate = (date) => {
@@ -269,134 +256,77 @@ const Search2 = () => {
 
   const debouncedHandleSearch = debounce(handleSearch, 300)
 
-
   const handleChange = (name) => (event) => {
     setOriginList([]);
     setDestinationList([]);
     setGlobalState(name, event.target.value)
     setValues({ ...values, error: false, [name]: event.target.value })
 
-<<<<<<< HEAD
     if (name === "destination") {
       setDestination(event.target.value);
       console.log("this is pre destination API req")
       const url = `https://www.skyscanner.com/g/autosuggest-search/api/v1/search-flight/US/en-GB/${event.target.value}?isDestination=true&enable_general_search_v2=true&autosuggestExp=ranking_v2`
       fetch(
-        url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then(resp => resp.json())
-        .then((resp) => {
-          setDestinationList(resp);
-          console.log(resp);
-          // setDestinationList(resp['list'])
-        })
+          url, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(resp => resp.json())
+          .then((resp) => {
+            setDestinationList(resp);
+            console.log(resp);
+            // setDestinationList(resp['list'])
+          })
     }
     else if (name === "origin") {
       setOrigin(event.target.value);
       const url = `https://www.skyscanner.com/g/autosuggest-search/api/v1/search-flight/US/en-GB/${event.target.value}?isDestination=false&enable_general_search_v2=true&autosuggestExp=ranking_v2`
       fetch(
-        url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
+          url, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
       )
 
-        .then(resp => resp.json()
-        )
-        .then((resp) => {
-          setOriginList(resp);
-          console.log(resp);
-          // setOriginList(resp['list'])
-        })
-=======
-    if (!isLocal) {
-    	if (name === "destination") {
-    		console.log("this is pre destination API req")
-    		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
-    		fetch(
-    			url, {
-    			method: 'GET',
-    			headers: {
-    				'Content-Type': 'application/json'
-    			}
-    		}).then(resp => resp.json())
-    			.then((resp) => {
-    				destinationListData(resp['list'])
-    			})
-    	}
-    	else if (name === "origin") {
-    		console.log("this is origin API fetch")
-    		const url = `${API_URL}flights/get-airport-code/?query=${event.target.value}`
-    		fetch(
-    			url, {
-    			method: 'GET',
-    			headers: {
-    				'Content-Type': 'application/json'
-    			}
-    		}
-    		)
-    			.then(resp => resp.json()
-    			)
-    			.then((resp) => {
-    				originListData(resp['list'])
-    			})
-    	}
-    	console.log("this is post ALL API CALL")
->>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
+          .then(resp => resp.json()
+          )
+          .then((resp) => {
+            setOriginList(resp);
+            console.log(resp);
+            // setOriginList(resp['list'])
+          })
     }
   }
 
-  const selectFighter = (name, item) => {
-    console.log(name, item);
-    if (name === 'origin') {
-      setOrigin(`${item.PlaceName} (${item.PlaceId})`);
-      setOriginList([])
-    }
-    else {
-      setDestination(`${item.PlaceName} (${item.PlaceId})`);
-      setDestinationList([]);
-    }
-  }
-  const clearFighter = (name) => {
-    if(name === 'origin'){
-      setOrigin('');
-      originRef.current.focus();
-    }
-    else{
-      setDestination('');
-      destinationRef.current.focus();
-    }
-  }
   const onSearchInfoSubmit = (event) => {
-<<<<<<< HEAD
-    // /
-=======
     console.log("onSearchInfoSubmit is called");
     event.preventDefault();
     console.log("onSearchInfoSubmit is called2");
 
     if (destination === origin) {
-    	setValues({
-    		...values,
-    		error: true,
-    		errorMessage: "Destination and Origin cannot be same"
-    	});
-    	return;
+      setValues({
+        ...values,
+        error: true,
+        errorMessage: "Destination and Origin cannot be same"
+      });
+      return;
     }
 
     console.log("onSearchInfoSubmit is called3");
 
-    const destinationCode = destinationList.find((dest) => dest.airport_name === destination).airport_code;
-    const originCode = originList.find((org) => org.airport_name === origin).airport_code;
-    const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
-    const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
-    const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
-
+    // const destinationCode = destinationList.find((dest) => dest.airport_name === destination).airport_code;
+    // const originCode = originList.find((org) => org.airport_name === origin).airport_code;
+    // const hotelDestinationCode = destinationList.find((dest) => dest.airport_name === destination).city__city_code;
+    // const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE);
+    // const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
+    const destinationCode = ''
+    const originCode = ''
+    const hotelDestinationCode = ''
+    const updatedDepartureDate = Moment(departureDate).format(Moment.HTML5_FMT.DATE)
+    const updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE)
     console.log("onSearchInfoSubmit is called4");
 
     // if (returnDate !== null) {
@@ -410,8 +340,9 @@ const Search2 = () => {
     // 		return;
     // 	}
 
-    	// updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
+    // updatedReturnDate = Moment(returnDate).format(Moment.HTML5_FMT.DATE);
     // }
+
 
     console.log("onSearchInfoSubmit is called5");
 
@@ -423,7 +354,6 @@ const Search2 = () => {
 
     console.log("This is the currecny format")
     console.log(currency_format)
->>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
 
     console.log("This is the days")
     console.log(days_num)
@@ -492,89 +422,111 @@ const Search2 = () => {
     console.log(loading)
   }
 
+  const selectFighter = (name, item) => {
+    console.log(name, item);
+    if (name === 'origin') {
+      setOrigin(`${item.PlaceName} (${item.PlaceId})`);
+      setOriginList([])
+    }
+    else {
+      setDestination(`${item.PlaceName} (${item.PlaceId})`);
+      setDestinationList([]);
+    }
+  }
+  const clearFighter = (name) => {
+    if(name === 'origin'){
+      setOrigin('');
+      originRef.current.focus();
+    }
+    else{
+      setDestination('');
+      destinationRef.current.focus();
+    }
+  }
+
   const customerDialogHtml = (
-    <div className='adults-dialog' style={{ padding: 0, margin: 0, width: '100%' }}>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Subscribe</DialogTitle>
-        <DialogContent>
-          <div className='container form-wrap'>
-            <div className='row'>
-              <div className='col-sm-12' style={{ padding: '0px', margin: '15px auto' }}>
-                <label for='starRating'>Hotel Rating</label>
-                <select clssName='form-control' name='starRating' onChange={handleStar}>
-                  <option value='Any'>Any</option>
-                  <option value='Un stared'>Un stared</option>
-                  <option value='1 Star'>1 Star</option>
-                  <option value='2 Star'>2 Star</option>
-                  <option value='3 Star'>3 Star</option>
-                  <option value='4 Star'>4 Star</option>
-                  <option value='5 Star'>5 Star</option>
-                </select>
+      <div className='adults-dialog' style={{ padding: 0, margin: 0, width: '100%' }}>
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <DialogTitle>Subscribe</DialogTitle>
+          <DialogContent>
+            <div className='container form-wrap'>
+              <div className='row'>
+                <div className='col-sm-12' style={{ padding: '0px', margin: '15px auto' }}>
+                  <label for='starRating'>Hotel Rating</label>
+                  <select clssName='form-control' name='starRating' onChange={handleStar}>
+                    <option value='Any'>Any</option>
+                    <option value='Un stared'>Un stared</option>
+                    <option value='1 Star'>1 Star</option>
+                    <option value='2 Star'>2 Star</option>
+                    <option value='3 Star'>3 Star</option>
+                    <option value='4 Star'>4 Star</option>
+                    <option value='5 Star'>5 Star</option>
+                  </select>
+                </div>
+              </div>
+              <div className='row' style={{ marginTop: 10 }}>
+                <div style={{ width: '40%' }}>
+                  <div>Adults &nbsp;{adults}</div>
+                  <div>Age 16+</div>
+                </div>
+                <div className='item-wrapper' style={{ width: '60%' }}>
+                  <div className='adult-dig-item'>
+                    <button className='btn-adult' onClick={() => handleAdultsNum(-1)}>
+                      -
+                    </button>
+                  </div>
+                  <div className='adult-dig-item' style={{ paddingTop: 20 }}>
+                    {adults}
+                  </div>
+                  <div className='adult-dig-item'>
+                    <button className='btn-adult' onClick={() => handleAdultsNum(1)}>
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className='row' style={{ marginTop: 10 }}>
+                <div style={{ width: '40%' }}>
+                  <div>Children &nbsp;{children}</div>
+                  <div>Aged 0 to 15</div>
+                </div>
+                <div className='item-wrapper' style={{ width: '60%' }}>
+                  <div className='adult-dig-item'>
+                    <button className='btn-adult' onClick={() => handleChildrenNum(-1)}>
+                      -
+                    </button>
+                  </div>
+                  <div className='adult-dig-item' style={{ paddingTop: 20 }}>
+                    {children}
+                  </div>
+                  <div className='adult-dig-item'>
+                    <button className='btn-adult' onClick={() => handleChildrenNum(1)}>
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className='row' style={{ marginTop: 15 }}>
+                <p>
+                  Your age at tiem of travel must be valid for the age category booked. Airlines have restrictions on
+                  under 18s travelling alone.
+                  <br />
+                  Age limits and policies for travelling with children may vary so please check with the airline before
+                  booking.
+                </p>
               </div>
             </div>
-            <div className='row' style={{ marginTop: 10 }}>
-              <div style={{ width: '40%' }}>
-                <div>Adults &nbsp;{adults}</div>
-                <div>Age 16+</div>
-              </div>
-              <div className='item-wrapper' style={{ width: '60%' }}>
-                <div className='adult-dig-item'>
-                  <button className='btn-adult' onClick={() => handleAdultsNum(-1)}>
-                    -
-                  </button>
-                </div>
-                <div className='adult-dig-item' style={{ paddingTop: 20 }}>
-                  {adults}
-                </div>
-                <div className='adult-dig-item'>
-                  <button className='btn-adult' onClick={() => handleAdultsNum(1)}>
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className='row' style={{ marginTop: 10 }}>
-              <div style={{ width: '40%' }}>
-                <div>Children &nbsp;{children}</div>
-                <div>Aged 0 to 15</div>
-              </div>
-              <div className='item-wrapper' style={{ width: '60%' }}>
-                <div className='adult-dig-item'>
-                  <button className='btn-adult' onClick={() => handleChildrenNum(-1)}>
-                    -
-                  </button>
-                </div>
-                <div className='adult-dig-item' style={{ paddingTop: 20 }}>
-                  {children}
-                </div>
-                <div className='adult-dig-item'>
-                  <button className='btn-adult' onClick={() => handleChildrenNum(1)}>
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className='row' style={{ marginTop: 15 }}>
-              <p>
-                Your age at tiem of travel must be valid for the age category booked. Airlines have restrictions on
-                under 18s travelling alone.
-                <br />
-                Age limits and policies for travelling with children may vary so please check with the airline before
-                booking.
-              </p>
-            </div>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <button
-            className='btn btn-primary btnAccept'
-            onClick={handleAccept}
-            style={{ padding: 'auto', margin: '0 auto 10px auto', height: 50, width: '90%' }}>
-            Apply
-          </button>
-        </DialogActions>
-      </Dialog>
-    </div>
+          </DialogContent>
+          <DialogActions>
+            <button
+                className='btn btn-primary btnAccept'
+                onClick={handleAccept}
+                style={{ padding: 'auto', margin: '0 auto 10px auto', height: 50, width: '90%' }}>
+              Apply
+            </button>
+          </DialogActions>
+        </Dialog>
+      </div>
   )
 
   function getCustomerDialog() {
@@ -584,291 +536,237 @@ const Search2 = () => {
   let logoUrl = process.env.PUBLIC_URL + '/' + 'assets/img/others/new.png'
 
   return (
-    <div className='banner-area banner-area-option viaje-go-top'>
-      <div className='banner-slider-option'>
-        <div className='search-page-container'>
-          <div>
-            <LoadingBox
-              open={loading}
-              onClose={() => {
-                setLoading(false)
-              }}
-              timeout={5000}
-              url={'/flight-hotel-package'}
-            />
-          </div>
-          <div className='search-page-logo'>
-            <Link className='ads-thumb' to=''>
-              <img src={logoUrl} alt='ads' />
-            </Link>
-          </div>
-          <div className='search-page-header'>
-            <div className='col-12'>
-              <h1 className='search-page-header main-title'>Travel smarter</h1>
+      <div className='banner-area banner-area-option viaje-go-top'>
+        <div className='banner-slider-option'>
+          <div className='search-page-container'>
+            <div>
+              <LoadingBox
+                  open={loading}
+                  onClose={() => {
+                    setLoading(false)
+                  }}
+                  timeout={5000}
+                  url={'/flight-hotel-package'}
+              />
             </div>
-            <div className='col-12'>
-              <h3 className='search-page-header sub-title'>
-                Flight Duck uses AI to combine flight and hotel data to find you the best travel deals
-              </h3>
+            <div className='search-page-logo'>
+              <Link className='ads-thumb' to=''>
+                <img src={logoUrl} alt='ads' />
+              </Link>
             </div>
-          </div>
-          <div className='search-form-group1'>
-            <div className='row'>
-              <div className='col-lg-3 col-md-6 col-sm-12 search-form-item-wrap'>
-                <div className='search-form-item'>
-<<<<<<< HEAD
-                  <div style={{ height: '50px', display: 'flex', flexDirection: 'row' }}>
-                    <input
-                      minLength={1}
-                      debounceTimeout={400}
-                      input
-                      type='text'
-                      list='data1'
-                      placeholder='From'
-                      value={origin}
-                      ref={originRef}
-                      onChange={handleChange('origin')}
-                      required
-                    />
+            <div className='search-page-header'>
+              <div className='col-12'>
+                <h1 className='search-page-header main-title'>Travel smarter</h1>
+              </div>
+              <div className='col-12'>
+                <h3 className='search-page-header sub-title'>
+                  Flight Duck uses AI to combine flight and hotel data to find you the best travel deals
+                </h3>
+              </div>
+            </div>
+            <div className='search-form-group1'>
+              <div className='row'>
+                <div className='col-lg-3 col-md-6 col-sm-12 search-form-item-wrap'>
+                  <div className='search-form-item'>
+                    <div style={{ height: '50px', display: 'flex', flexDirection: 'row' }}>
+                      <input
+                          minLength={1}
+                          debounceTimeout={400}
+                          input
+                          type='text'
+                          list='data1'
+                          placeholder='From'
+                          value={origin}
+                          ref={originRef}
+                          onChange={handleChange('origin')}
+                          required
+                      />
 
-                    {origin && <svg onClick={() => clearFighter('origin')} style={{ height: '15px', marginTop: '20px', marginRight: '15px' }} className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                    </svg>}
-                  </div>
-
-                  <div>
-                    <div style={{ width: '300px', backgroundColor: 'white', borderRadius: '6px', cursor: 
-                    'pointer', position: 'relative', zIndex: '10' }}>
-                      {
-                        originList.map((item, key) => (
-                          <div key={key} onMouseEnter =  {()=>setHoverItem(key)} 
-                          style={{ padding: '5px', display: 'flex', justifyContent: 'center', fontSize: '15px', borderBottom: '1px dashed grey', backgroundColor:hoverItem===key?'#f0f5f5':'white' }} onClick={() => selectFighter('origin', item)}>{`${item.PlaceName} (${item.PlaceId})`}</div>
-                        ))
-                      }
+                      {origin && <svg onClick={() => clearFighter('origin')} style={{ height: '15px', marginTop: '20px', marginRight: '15px' }} className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                      </svg>}
                     </div>
-                  </div>
-=======
-                  <DebounceInput
-                    minLength={1}
-                    debounceTimeout={400}
-                    input
-                    type='text'
-                    list='data2'
-                    placeholder='From'
-                    value={origin}
-                    onChange={handleChange('origin')}
-                    required
-                  />
-                  <datalist id="data2">
-                    <select>
-                      {
-                        originList.map(originItem => {
-                          return (
-                              <option key={`o2${originItem.airport_name}`}>
-                                {originItem.airport_name}
-                              </option>
-                          )
-                        })
-                      }
-                    </select>
-                  </datalist>
->>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
-                  <i className='fa-sharp fa-solid fa-location-dot' />
-                </div>
-              </div>
-              <div className='col-lg-3 col-md-6 col-sm-12 search-form-item-wrap'>
-                <div className='search-form-item'>
-<<<<<<< HEAD
-                  <div style={{ height: '50px', display: 'flex', flexDirection: 'row' }}>
-                    <input
-                      minLength={1}
-                      debounceTimeout={400}
-                      input
-                      type='text'
-                      list='data1'
-                      placeholder='To'
-                      ref={destinationRef}
-                      value={destination}
-                      onChange={handleChange('destination')}
-                      required
-                    />
 
-                    {destination && <svg onClick={() => clearFighter('destination')} style={{ height: '15px', marginTop: '20px', marginRight: '15px' }} className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                    </svg>}
-                  </div>
-
-                  <div>
-                    <div style={{ width: '300px', backgroundColor: 'white', borderRadius: '6px', cursor: 'pointer', zIndex:'10', position: 'relative' }}>
-                      {
-                        destinationList.map((item, key) => (
-                          <div key={key} onMouseEnter =  {()=>setHoverItem(key)} 
-                          style={{ padding: '5px', display: 'flex', justifyContent: 'center', fontSize: '15px', borderBottom: '1px dashed grey', backgroundColor:hoverItem===key?'#f0f5f5':'white' }} 
-                          onClick={() => selectFighter('destination', item)}>{`${item.PlaceName} (${item.PlaceId})`}</div>
-                        ))
-                      }
+                    <div>
+                      <div style={{ width: '300px', backgroundColor: 'white', borderRadius: '6px', cursor:
+                            'pointer', position: 'relative', zIndex: '10' }}>
+                        {
+                          originList.map((item, key) => (
+                              <div key={key} onMouseEnter =  {()=>setHoverItem(key)}
+                                   style={{ padding: '5px', display: 'flex', justifyContent: 'center', fontSize: '15px', borderBottom: '1px dashed grey', backgroundColor:hoverItem===key?'#f0f5f5':'white' }} onClick={() => selectFighter('origin', item)}>{`${item.PlaceName} (${item.PlaceId})`}</div>
+                          ))
+                        }
+                      </div>
                     </div>
+                    <i className='fa-sharp fa-solid fa-location-dot' />
                   </div>
-=======
-                  <DebounceInput
-                    minLength={1}
-                    debounceTimeout={400}
-                    input
-                    type='text'
-                    list='data1'
-                    placeholder='Where To?'
-                    value={destination}
-                    onChange={handleChange('destination')}
-                    required
-                  />
-                  <datalist id="data1">
-                    <select>
-                      {
-                        destinationList.map(originItem => {
-                          return (
-                              <option key={`o${originItem.airport_name}`}>
-                                {originItem.airport_name}
-                              </option>
-                          )
-                        })
-                      }
-                    </select>
-                  </datalist>
->>>>>>> aaab2136e9a139b6613acbd8496df34c00ef6fd6
-                  <i className='fa-regular fa-circle-dot' />
                 </div>
-              </div>
-              <div className='col-lg-2 col-md-6 col-sm-12 search-form-item-wrap'>
-                <div className='search-form-item'>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      open={show}
-                      onOpen={() => setShow(true)}
-                      onClose={() => setShow(false)}
-                      views={['year', 'month']}
-                      openTo='month'
-                      minDate={minDate}
-                      maxDate={maxDate}
-                      value={departure_date}
-                      onChange={handleDate}
-                      // renderInput={(params) => <TextField {...params} helperText={null} InputProps={{
-                      //   ...params.InputProps,
-                      //   readOnly: true, // Prevents direct input
-                      //   style: { cursor: "pointer" }, // Set cursor style to pointer
-                      // }} onClick={(e) => setShow(true)} />}
+                <div className='col-lg-3 col-md-6 col-sm-12 search-form-item-wrap'>
+                  <div className='search-form-item'>
+                    <div style={{ height: '50px', display: 'flex', flexDirection: 'row' }}>
+                      <input
+                          minLength={1}
+                          debounceTimeout={400}
+                          input
+                          type='text'
+                          list='data1'
+                          placeholder='To'
+                          ref={destinationRef}
+                          value={destination}
+                          onChange={handleChange('destination')}
+                          required
+                      />
 
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          helperText={null}
-                          onClick={(e) => setShow(true)}
-                        />
-                      )}
-                      inputProps={{
-                        autoComplete: "off",
-                        readOnly: true,
-                        // style: { cursor: "pointer" },
-                      }}
-                    />
-                  </LocalizationProvider>
+                      {destination && <svg onClick={() => clearFighter('destination')} style={{ height: '15px', marginTop: '20px', marginRight: '15px' }} className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                      </svg>}
+                    </div>
+
+                    <div>
+                      <div style={{ width: '300px', backgroundColor: 'white', borderRadius: '6px', cursor: 'pointer', zIndex:'10', position: 'relative' }}>
+                        {
+                          destinationList.map((item, key) => (
+                              <div key={key} onMouseEnter =  {()=>setHoverItem(key)}
+                                   style={{ padding: '5px', display: 'flex', justifyContent: 'center', fontSize: '15px', borderBottom: '1px dashed grey', backgroundColor:hoverItem===key?'#f0f5f5':'white' }}
+                                   onClick={() => selectFighter('destination', item)}>{`${item.PlaceName} (${item.PlaceId})`}</div>
+                          ))
+                        }
+                      </div>
+                    </div>
+                    <i className='fa-regular fa-circle-dot' />
+                  </div>
                 </div>
-              </div>
-              <div className='col-lg-4 col-md-6 col-sm-12 search-form-item-wrap'>
-                <div className='search-form-item' onClick={() => setOpen(true)}>
-                  <div className='search-form-adult-wrap'>
-                    <div className='search-form-adult-sub-wrap' style={{ width: '55%' }}>
-                      <i className='fa fa-suitcase-rolling icon-suitcase' style={{ marginLeft: -15 }} />
-                      <span className='text'>
-                        {adults !== null ? adults : adults} Adults {children !== null ? children : children} Children
+                <div className='col-lg-2 col-md-6 col-sm-12 search-form-item-wrap'>
+                  <div className='search-form-item'>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                          open={show}
+                          onOpen={() => setShow(true)}
+                          onClose={() => setShow(false)}
+                          views={['year', 'month']}
+                          openTo='month'
+                          minDate={minDate}
+                          maxDate={maxDate}
+                          value={departure_date}
+                          onChange={handleDate}
+                          // renderInput={(params) => <TextField {...params} helperText={null} InputProps={{
+                          //   ...params.InputProps,
+                          //   readOnly: true, // Prevents direct input
+                          //   style: { cursor: "pointer" }, // Set cursor style to pointer
+                          // }} onClick={(e) => setShow(true)} />}
+
+                          renderInput={(params) => (
+                              <TextField
+                                  {...params}
+                                  helperText={null}
+                                  onClick={(e) => setShow(true)}
+                              />
+                          )}
+                          inputProps={{
+                            autoComplete: "off",
+                            readOnly: true,
+                            // style: { cursor: "pointer" },
+                          }}
+                      />
+                    </LocalizationProvider>
+                  </div>
+                </div>
+                <div className='col-lg-4 col-md-6 col-sm-12 search-form-item-wrap'>
+                  <div className='search-form-item' onClick={() => setOpen(true)}>
+                    <div className='search-form-adult-wrap'>
+                      <div className='search-form-adult-sub-wrap' style={{ width: '55%' }}>
+                        <i className='fa fa-suitcase-rolling icon-suitcase' style={{ marginLeft: -15 }} />
+                        <span className='text'>
+                        {adults !== null ? adults : '0'} Adults {children !== null ? children : '0'} Children
                       </span>
-                    </div>
-                    <span className='vertical-line'></span>
-                    <div className='search-form-adult-sub-wrap' style={{ width: '35%' }}>
+                      </div>
+                      <span className='vertical-line'></span>
+                      <div className='search-form-adult-sub-wrap' style={{ width: '35%' }}>
                       <span style={{ width: '10%' }}>
                         <i className='fa fa-star icon-star' />
                       </span>
-                      <span className='text' style={{ width: '80%' }}>
+                        <span className='text' style={{ width: '80%' }}>
                         {values.starRating === '' ? 'Any' : values.starRating}
                       </span>
-                      <span style={{ width: '10%', padding: 'auto' }}>
+                        <span style={{ width: '10%', padding: 'auto' }}>
                         <i className='fa-solid fa-sort-down' />
                       </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className='search-form-group2'>
-            <div className='row'>
-              <div className='col-md-4 col-sm-12' style={{ paddingLeft: 0 }}>
-                <div className='search-title-item search'>
-                  <p>I want to go away for</p>
-                </div>
-              </div>
-              <div className='col-md-4 col-sm-12' style={{ padding: 0 }}>
-                <div className='row' style={{ padding: 0 }}>
-                  <div className='col-md-5 col-sm-12 search-fg-wrap'>
-                    <div className='search-form-item' style={{ padding: '0px 15px 0 10px', zIndex:'0' }}>
-                      <select name='duration' onChange={handleDays}>
-                        <option value={1}>1</option>
-                        <option value={2}>2</option>
-                        <option value={3}>3</option>
-                        <option value={4}>4</option>
-                        <option value={5}>5</option>
-                        <option value={6}>6</option>
-                        <option value={7}>7</option>
-                        <option value={8}>8</option>
-                        <option value={9}>9</option>
-                        <option value={10}>10</option>
-                        <option value={11}>11</option>
-                        <option value={12}>12</option>
-                        <option value={13}>13</option>
-                        <option value={14}>14</option>
-                        <option value={15}>15</option>
-                        <option value={16}>16</option>
-                        <option value={17}>17</option>
-                        <option value={18}>18</option>
-                        <option value={19}>19</option>
-                        <option value={20}>20</option>
-                        <option value={21}>21</option>
-                        <option value={22}>22</option>
-                        <option value={23}>23</option>
-                        <option value={24}>24</option>
-                        <option value={25}>25</option>
-                        <option value={26}>26</option>
-                        <option value={27}>27</option>
-                        <option value={28}>28</option>
-                        <option value={29}>29</option>
-                        <option value={30}>30</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className='col-md-7 col-sm-12 search-fg-wrap'>
-                    <div className='search-form-item' style={{ padding: '0 15px 0 10px' }}>
-                      <select onChange={handleDaysUnit}>
-                        <option value='days'>Days</option>
-                        <option value='weeks'>Weeks</option>
-                        <option value='month'>Monthes</option>
-                      </select>
-                    </div>
+            <div className='search-form-group2'>
+              <div className='row'>
+                <div className='col-md-4 col-sm-12' style={{ paddingLeft: 0 }}>
+                  <div className='search-title-item search'>
+                    <p>I want to go away for</p>
                   </div>
                 </div>
-              </div>
-              <div className='col-md-4 col-sm-12 search-fg-wrap'>
-                <input
-                  type='button'
-                  className='search-button'
-                  value='SEARCH THE BEST DEAL'
-                  onClick={onSearchInfoSubmit}
-                />
+                <div className='col-md-4 col-sm-12' style={{ padding: 0 }}>
+                  <div className='row' style={{ padding: 0 }}>
+                    <div className='col-md-5 col-sm-12 search-fg-wrap'>
+                      <div className='search-form-item' style={{ padding: '0px 15px 0 10px', zIndex:'0' }}>
+                        <select name='duration' onChange={handleDays}>
+                          <option value={1}>1</option>
+                          <option value={2}>2</option>
+                          <option value={3}>3</option>
+                          <option value={4}>4</option>
+                          <option value={5}>5</option>
+                          <option value={6}>6</option>
+                          <option value={7}>7</option>
+                          <option value={8}>8</option>
+                          <option value={9}>9</option>
+                          <option value={10}>10</option>
+                          <option value={11}>11</option>
+                          <option value={12}>12</option>
+                          <option value={13}>13</option>
+                          <option value={14}>14</option>
+                          <option value={15}>15</option>
+                          <option value={16}>16</option>
+                          <option value={17}>17</option>
+                          <option value={18}>18</option>
+                          <option value={19}>19</option>
+                          <option value={20}>20</option>
+                          <option value={21}>21</option>
+                          <option value={22}>22</option>
+                          <option value={23}>23</option>
+                          <option value={24}>24</option>
+                          <option value={25}>25</option>
+                          <option value={26}>26</option>
+                          <option value={27}>27</option>
+                          <option value={28}>28</option>
+                          <option value={29}>29</option>
+                          <option value={30}>30</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className='col-md-7 col-sm-12 search-fg-wrap'>
+                      <div className='search-form-item' style={{ padding: '0 15px 0 10px' }}>
+                        <select onChange={handleDaysUnit}>
+                          <option value='days'>Days</option>
+                          <option value='weeks'>Weeks</option>
+                          <option value='month'>Monthes</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className='col-md-4 col-sm-12 search-fg-wrap'>
+                  <input
+                      type='button'
+                      className='search-button'
+                      value='SEARCH THE BEST DEAL'
+                      onClick={onSearchInfoSubmit}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
+        {getCustomerDialog()}
       </div>
-      {getCustomerDialog()}
-    </div>
   )
 }
 
