@@ -84,7 +84,10 @@ export const { setGlobalState, useGlobalState } = createGlobalState({
 	isLocal: false,
 	topState:[],
 	starRating:'',
-	hasLoaded: false
+	hasLoaded: false,
+	originCodeToApi: "",
+	destinationCodeToApi: "",
+	destinationName: "",
 });
 
 class Root extends Component {

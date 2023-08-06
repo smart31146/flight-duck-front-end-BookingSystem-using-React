@@ -55,8 +55,9 @@ const Search2 = () => {
   setGlobalState('hotelFlightPackageList', [])
   setGlobalState('calendarPrices', [])
 
-  const [destination, setDestination] = useState('')
-  const [origin, setOrigin] = useState('')
+  const [destination] = useGlobalState('destination')
+  const [destinationName] = useGlobalState('destinationName')
+  const [origin] = useGlobalState('origin')
   const [departure_date] = useGlobalState('departure_date')
   const [return_date] = useGlobalState('return_date')
   const [adults_num] = useGlobalState('adults')
@@ -135,6 +136,17 @@ const Search2 = () => {
     if (!isLocal) {
       const country_code = localStorage.getItem('country_code')
       if (country_code === null) return
+
+      const url = `${API_URL}flights/get-airport-code/?country=${country_code}`
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+          .then((resp) => resp.json())
+          .then((resp) => {
+          })
     }
   }, [])
 
@@ -262,42 +274,54 @@ const Search2 = () => {
     setGlobalState(name, event.target.value)
     setValues({ ...values, error: false, [name]: event.target.value })
 
+    const queryParameters = {
+      locale: "en-GB",
+      market: "AU",
+      searchTerm: event.target.value
+    };
+
     if (name === "destination") {
-      setDestination(event.target.value);
+      setGlobalState("destination", event.target.value)
       console.log("this is pre destination API req")
-      const url = `https://www.skyscanner.com/g/autosuggest-search/api/v1/search-flight/US/en-GB/${event.target.value}?isDestination=true&enable_general_search_v2=true&autosuggestExp=ranking_v2`
+      const url = `http://127.0.0.1:8000/autosuggest/`
       fetch(
           url, {
-            method: 'GET',
+            method: 'POST',
             headers: {
               'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ query: queryParameters }) // Include the query object in the body
           }).then(resp => resp.json())
           .then((resp) => {
+            console.log(resp)
             setDestinationList(resp);
-            console.log(resp);
+            // console.log(resp);
             // setDestinationList(resp['list'])
           })
     }
     else if (name === "origin") {
-      setOrigin(event.target.value);
-      const url = `https://www.skyscanner.com/g/autosuggest-search/api/v1/search-flight/US/en-GB/${event.target.value}?isDestination=false&enable_general_search_v2=true&autosuggestExp=ranking_v2`
-      fetch(
-          url, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
+      setGlobalState("origin", event.target.value)
+      const url = `http://127.0.0.1:8000/autosuggest/`
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query: queryParameters }) // Include the query object in the body
+      })
+          .then(resp => {
+            if (!resp.ok) {
+              return resp.text().then(text => Promise.reject(text));
             }
-          }
-      )
-
-          .then(resp => resp.json()
-          )
+            return resp.json();
+          })
           .then((resp) => {
             setOriginList(resp);
             console.log(resp);
-            // setOriginList(resp['list'])
           })
+          .catch(error => {
+            console.error('There was an error!', error);
+          });
     }
   }
 
@@ -372,7 +396,7 @@ const Search2 = () => {
       searchForMonths: searchForMonths,
       days: days_num,
       currency_format: currency_format,
-      destinationName: destination,
+      destinationName,
     });
 
 
@@ -425,21 +449,25 @@ const Search2 = () => {
   const selectFighter = (name, item) => {
     console.log(name, item);
     if (name === 'origin') {
-      setOrigin(`${item.PlaceName} (${item.PlaceId})`);
+      setGlobalState("originCodeToApi", item.iataCode)
+      console.log(item.IataCode)
       setOriginList([])
     }
     else {
-      setDestination(`${item.PlaceName} (${item.PlaceId})`);
+      setGlobalState("destinationCodeToApi", item.iataCode)
+      setGlobalState("destinationName", item.name)
+      console.log("One of these below needs to have SOMEHTING")
+      console.log(item.iataCode)
       setDestinationList([]);
     }
   }
   const clearFighter = (name) => {
     if(name === 'origin'){
-      setOrigin('');
+      setGlobalState("origin", ``)
       originRef.current.focus();
     }
     else{
-      setDestination('');
+      setGlobalState("destination", ``)
       destinationRef.current.focus();
     }
   }
@@ -593,7 +621,7 @@ const Search2 = () => {
                         {
                           originList.map((item, key) => (
                               <div key={key} onMouseEnter =  {()=>setHoverItem(key)}
-                                   style={{ padding: '5px', display: 'flex', justifyContent: 'center', fontSize: '15px', borderBottom: '1px dashed grey', backgroundColor:hoverItem===key?'#f0f5f5':'white' }} onClick={() => selectFighter('origin', item)}>{`${item.PlaceName} (${item.PlaceId})`}</div>
+                                   style={{ padding: '5px', display: 'flex', justifyContent: 'center', fontSize: '15px', borderBottom: '1px dashed grey', backgroundColor:hoverItem===key?'#f0f5f5':'white' }} onClick={() => selectFighter('origin', item)}>{`${item.cityName} (${item.iataCode})`}</div>
                           ))
                         }
                       </div>
@@ -628,7 +656,8 @@ const Search2 = () => {
                           destinationList.map((item, key) => (
                               <div key={key} onMouseEnter =  {()=>setHoverItem(key)}
                                    style={{ padding: '5px', display: 'flex', justifyContent: 'center', fontSize: '15px', borderBottom: '1px dashed grey', backgroundColor:hoverItem===key?'#f0f5f5':'white' }}
-                                   onClick={() => selectFighter('destination', item)}>{`${item.PlaceName} (${item.PlaceId})`}</div>
+                                   onClick={() => selectFighter('destination', item)}>{`${item.cityName} (${item.iataCode
+                              })`}</div>
                           ))
                         }
                       </div>
