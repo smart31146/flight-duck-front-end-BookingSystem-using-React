@@ -205,7 +205,7 @@ const HotelFlightPackageList = () => {
                 "country": countryCode,
                 "currency_format": selectedCurrency,
                 "locale": "EN",
-                "destination_code": hotelCode,
+                "destination_code": destinationCodeToApi,
                 "trip_days":  zeroIfNull(days),
                 "number_of_extended_months": localStorage.getItem("searchForMonths") == 'true' ? 2 : 0,
                 "user_id": user_id

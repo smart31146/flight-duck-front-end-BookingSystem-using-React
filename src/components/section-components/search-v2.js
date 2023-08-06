@@ -65,6 +65,7 @@ const Search2 = () => {
   const [days_num] = useGlobalState('days')
   const [currency_format] = useGlobalState('selectedCurrency')
   const [isReturn] = useGlobalState('isReturn')
+  const [destinationCodeToApi] = useGlobalState('destinationCodeToApi')
 
   // const classes = useStyles();
 
@@ -386,7 +387,7 @@ const Search2 = () => {
     console.log(destination)
 
     savePackageSearchDataToLocalStorage({
-      destinationCode: destinationCode,
+      destinationCode: destinationCodeToApi,
       originCode: originCode,
       updatedDepartureDate: updatedDepartureDate,
       hotelDestinationCode: hotelDestinationCode,
